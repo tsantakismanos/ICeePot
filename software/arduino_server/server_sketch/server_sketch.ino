@@ -1,3 +1,17 @@
+/* 
+  author: tsantakis manos
+  date: 16/01/2013
+******************************  
+  description:
+   server sketch to be uploaded & run on an arduino board
+   with ethernet interface and SD card support.
+   This server performs 2 tasks:
+    - taking periodical measurements of analog input taken from arduino analog pins 
+      & writing this information to the SD card
+    - responding to a client request containing the char g (GET)
+      to the given port & IP & sending the contents of the SD card
+      in the form: <time>|<analog_pin>|value     
+*/
 
 #include <SD.h>
 #include <Ethernet.h>
