@@ -20,6 +20,9 @@
 //#include <Time.h> TODO: implement 
 //#include <NTP.h> TODO: implement 
 
+#define anl_pins_counter 1
+#define interval_in_min 1  //time interval (in minutes) between measurement
+
 //helper functions declaration
 String get_moist_from_sensor_in_row(short anl_pin);
 void get_measurements();
@@ -27,12 +30,10 @@ void store_row_to_sd(String row);
 void send_all_rows_to_client(EthernetClient client);
 void configure_anl_pins();
 
-//analog pins
-short anl_pins_counter = 1;
-short anl_pins[1];
+//analog pins array
+short anl_pins[anl_pins_counter];
 
-//variables for periodic measurement
-unsigned long interval_in_min = 1;
+//variable for periodic measurement
 unsigned long last_measur_time = 0;
 
 byte mac[] = { 0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED };
@@ -172,11 +173,6 @@ void send_all_rows_to_client(EthernetClient client)
     d = file.read();
     client.write(d);
     client.flush();
-   // if(c=='\n')
-  //  {
-    //  client.println("<br />");
-    //  client.flush();
-  //  }
               
   }
   
