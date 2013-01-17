@@ -1,6 +1,7 @@
 /* 
   author: tsantakis manos
   date: 16/01/2013
+  licence: GPL
 ******************************  
   description:
    server sketch to be uploaded & run on an arduino board
