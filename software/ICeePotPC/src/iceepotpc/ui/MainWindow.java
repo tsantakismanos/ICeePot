@@ -102,12 +102,13 @@ public class MainWindow {
 					is = s.getInputStream();
 					
 					//get & print response
-					do
+					response = is.read();
+					
+					while(response != -1)
 					{
-						response = is.read();
 						response_str = response_str + (char)response;
-						
-					}while(response != -1);
+						response = is.read();
+					}
 					
 					txtResults.setText(response_str);
 					
