@@ -85,7 +85,7 @@ public class MainWindow {
 				Socket s = null;
 				try 
 				{
-					byte[] request = {'g'};
+					byte[] request = {'1','1','1','9','7','0','.','t','x','t','\0'};
 					int response = 0;
 					String response_str = "";
 					s = new Socket("homeplants.dyndns.org", 3629);
