@@ -21,9 +21,9 @@
 //#include <NTP.h> TODO: implement 
 
 #define anl_pins_counter 1
-#define interval_in_min 1  //time interval (in minutes) between measurement
+#define interval_in_min 15  //time interval (in minutes) between measurement
 #define max_months_in_sd 12
-#define debug_mode true
+//#define debug_mode true
 
 //helper functions declaration
 String get_moist_from_sensor_in_row(short anl_pin);
@@ -153,7 +153,7 @@ void get_measurements(){
   unsigned long now = millis();
   String row;
   
-  if((now - last_measur_time) > (10000 * interval_in_min)){ 
+  if((now - last_measur_time) > (60000 * interval_in_min)){ 
     
     for(byte i=0; i<anl_pins_counter; i++){
       row = get_value_from_sensor_in_row(anl_pins[i]);
