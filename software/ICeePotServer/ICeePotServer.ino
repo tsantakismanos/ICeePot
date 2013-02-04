@@ -18,31 +18,31 @@
 #include <Ethernet.h>
 #include <SPI.h>
 #include <Time.h>
-//#include <NTP.h> TODO: implement 
+
 
 #define anl_pins_counter 1
-#define interval_in_min 15  //time interval (in minutes) between measurement
+#define interval_in_min 1  //time interval (in minutes) between measurement
 #define max_months_in_sd 12
-//#define debug_mode true
+#define debug_mode true
 
 //helper functions declaration
-String get_moist_from_sensor_in_row(short anl_pin);
 void get_measurements();
-void store_row_to_sd(String row);
+void store_row_to_sd(String row, time_t now_in_secs);
 void send_file_rows_to_client(EthernetClient client, char* date);
 void cfg_pins_array();
-String get_filename_based_on_date();
 
 //analog pins array
 short anl_pins[anl_pins_counter];
 
 //variable for periodic measurement
-unsigned long last_measur_time = 0;
+time_t last_measur_time = 0;
 
 byte mac[] = { 0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED };
 
 //this server's IP
-IPAddress server_ip(192,168,1,20);
+//IPAddress server_ip(192,168,1,20);
+
+byte ip[] = { 192, 168, 1, 20 };
 
 //server instantiation
 EthernetServer server(3629);
@@ -51,19 +51,23 @@ EthernetServer server(3629);
 //basic initiating setup
 void setup() {
   
-  //TODO: implement synchronize_time();
   #ifdef debug_mode
     Serial.begin(9600);
   #endif
   
+  //set to now
+  setTime(23,30,00,4,2,2013);
+ 
+
   cfg_pins_array();
   
   //network & ICeePot server initialization
-  Ethernet.begin(mac, server_ip);
+  Ethernet.begin(mac, ip);
   server.begin();
   
   #ifdef debug_mode
     Serial.println("Ethernet and server set");
+    Serial.flush();
   #endif
 
 
@@ -72,10 +76,12 @@ void setup() {
   if(SD.begin(4) == false){
     #ifdef debug_mode
       Serial.println("Error in SD initialization");
+      Serial.flush();
     #endif
     return;
   }
   
+  SD.remove("22013.txt");
 }
 
 
@@ -94,6 +100,7 @@ void loop() {
     
     #ifdef debug_mode
       Serial.println("Client connected");
+      Serial.flush();
     #endif
     
     //new message to be read
@@ -112,6 +119,7 @@ void loop() {
           #ifdef debug_mode
             String s(server_msg);
             Serial.println("Got the message: "+s);
+            Serial.flush();
           #endif
     
           send_file_rows_to_client(client,server_msg);
@@ -129,72 +137,58 @@ void loop() {
 
 //helper method definitions
 
-/* helper method that reads the sensor value from the
-*  pin declared and returns a row of the form:
-*  time|pin|value
-*/
-String get_value_from_sensor_in_row(short anl_pin){
-  
-  int anl_val = analogRead(anl_pin);
-  
-  //the elapsed time in millis from the arduino powered on moment
-  time_t now_in_millis = now();
-
-  String res = String(now_in_millis) + "|" + String(anl_pin) + "|" + String(anl_val);
-  
-  return res;
-}
 
 /* helper method that gets the moisture values from all pins
    if a specified ammount of time (defined in mins) has passed
 */
 void get_measurements(){
   
-  unsigned long now = millis();
-  String row;
+  //time value to be kept in each row
+  //unsigned long now_in_millis = millis();
   
-  if((now - last_measur_time) > (60000 * interval_in_min)){ 
+  //time value to be compared for interval & file creation
+  time_t now_in_secs = now();
+  
+  String row;
+  int anl_value = 0;
+  
+  if((now_in_secs - last_measur_time) > (60 * interval_in_min)){
+   
+      #ifdef debug_mode
+        Serial.println("Time for measurement "+String(now_in_secs));
+        Serial.flush();
+      #endif
     
     for(byte i=0; i<anl_pins_counter; i++){
-      row = get_value_from_sensor_in_row(anl_pins[i]);
-      store_row_to_sd(row);
-            
-      last_measur_time = now;
+      
+      anl_value = analogRead(anl_pins[i]);
+      row = String(day(now_in_secs)) + "|" + String(hour(now_in_secs))  + ":" + String(minute(now_in_secs)) + ":" + String(second(now_in_secs)) + "|" + String(anl_pins[i]) + "|" + String(anl_value);
+      store_row_to_sd(row, now_in_secs);
+      
+      //delay between each writing      
+      delay(500);
     }
-    delay(1000);
-    
+    last_measur_time = now_in_secs;
   }
 }
 
-/*helper method which creates & returns a string
- containing the filename which is produced from the 
- day/month/year concatenation */
-String get_filename_based_on_date(){
-  
-  time_t now_in_millis = now();
-
-  byte now_day = day(now_in_millis);
-  byte now_month = month(now_in_millis);
-  int now_year = year(now_in_millis);
-  
-  String filename_str = String(now_day) + String(now_month) + String(now_year) + ".txt";
-  
-  return filename_str;
-}
 
 /* helper method that writes a given row to the SD output file
 */
-void store_row_to_sd(String row){
+void store_row_to_sd(String row, time_t now_in_secs){
   
   File file;
   
   short bytes_written = 0;
      
-  //get the appropriate filename
-  String filename_str=get_filename_based_on_date();
+  //construct the appropriate filename
+  byte now_month = month(now_in_secs);
+  int now_year = year(now_in_secs);
+  String filename_str = String(now_month) + String(now_year) + ".txt";
   
   #ifdef debug_mode
         Serial.println("File to write row to: "+filename_str);
+        Serial.flush();
   #endif
   
   char filename[filename_str.length() + 1];
@@ -202,32 +196,12 @@ void store_row_to_sd(String row){
 
   //open the file  
   file = SD.open(filename, FILE_WRITE);
-  
-
-    #ifdef debug_mode
-      if(!file){
-        Serial.println("File to write cannot be opened: "+filename_str);
-      }
-      else{
-        Serial.println("File opened for writing: "+filename_str);
-      }
-    #endif
-  
  
   //format the row to be written
   char row_in_chars[row.length()+1];
   row.toCharArray(row_in_chars,row.length()+1);
   
   bytes_written = file.println(row_in_chars);
-  
-  #ifdef debug_mode
-    if(bytes_written == 0){
-     Serial.println("problem in writing row value to file");
-    }
-    else{
-      Serial.println("writen to file the row: "+row);
-    }
-  #endif
 
   file.flush();
   file.close();
@@ -246,6 +220,7 @@ void send_file_rows_to_client(EthernetClient client, char* date){
       if(!file){
            String s(date);
             Serial.println("File to read from cannot be opened: "+s);
+            Serial.flush();
       }
     #endif
   
@@ -272,7 +247,10 @@ void cfg_pins_array(){
   
   #ifdef debug_mode
     Serial.println("Configuring pins done");
+    Serial.flush();
   #endif
 
 }
+
+
 
