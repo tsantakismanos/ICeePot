@@ -18,178 +18,191 @@
 #include <Ethernet.h>
 #include <SPI.h>
 #include <Time.h>
-//#include <NTP.h> TODO: implement 
+
 
 #define anl_pins_counter 1
 #define interval_in_min 1  //time interval (in minutes) between measurement
-#define months_in_SD 24
+#define max_months_in_sd 12
+#define debug_mode true
 
 //helper functions declaration
-String get_moist_from_sensor_in_row(short anl_pin);
 void get_measurements();
-void store_row_to_sd(String row);
-void send_all_rows_to_client(EthernetClient client);
-void configure_anl_pins();
-String get_filename_based_on_now();
+void store_row_to_sd(String row, time_t now_in_secs);
+void send_file_rows_to_client(EthernetClient client, char* date);
+void cfg_pins_array();
 
 //analog pins array
 short anl_pins[anl_pins_counter];
 
 //variable for periodic measurement
-unsigned long last_measur_time = 0;
+time_t last_measur_time = 0;
 
 byte mac[] = { 0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED };
 
 //this server's IP
-IPAddress server_ip(192,168,1,20);
+//IPAddress server_ip(192,168,1,20);
+
+byte ip[] = { 192, 168, 1, 20 };
 
 //server instantiation
 EthernetServer server(3629);
 
-String filenames[months_in_SD];
-short int filenames_count=0;
 
-void setup() 
-{
-  //TODO: implement synchronize_time();
+//basic initiating setup
+void setup() {
   
-  configure_anl_pins();
+  #ifdef debug_mode
+    Serial.begin(9600);
+  #endif
+  
+  //set to now
+  setTime(23,30,00,4,2,2013);
+ 
+
+  cfg_pins_array();
   
   //network & ICeePot server initialization
-  Ethernet.begin(mac, server_ip);
+  Ethernet.begin(mac, ip);
   server.begin();
+  
+  #ifdef debug_mode
+    Serial.println("Ethernet and server set");
+    Serial.flush();
+  #endif
+
 
   //SD neccessary calls
   pinMode(10, OUTPUT);
-  if(SD.begin(4) == false)
-  {
+  if(SD.begin(4) == false){
+    #ifdef debug_mode
+      Serial.println("Error in SD initialization");
+      Serial.flush();
+    #endif
     return;
   }
   
+  SD.remove("22013.txt");
 }
 
-void loop() 
-{
+
+
+//forever
+void loop() {
+  
   get_measurements();
+  
+  char server_msg[20];
+  byte srv_msg_cnt;
   
   // listen for incoming clients
   EthernetClient client = server.available();
   if (client){
     
-    while (client.connected())
-    {
-      if (client.available())
-      {
+    #ifdef debug_mode
+      Serial.println("Client connected");
+      Serial.flush();
+    #endif
+    
+    //new message to be read
+    srv_msg_cnt = 0;
+    
+    while (client.connected()){
+      if (client.available()){
+        
         char c = client.read();
-        if (c == 'g')
-        {
-            send_all_rows_to_client(client);
-            
-            client.flush();
-            break;
+        
+        server_msg[srv_msg_cnt] = c;
+        srv_msg_cnt++;
+        
+        if(c == '\0'){
+          
+          #ifdef debug_mode
+            String s(server_msg);
+            Serial.println("Got the message: "+s);
+            Serial.flush();
+          #endif
+    
+          send_file_rows_to_client(client,server_msg);
+
+          break;
         }
       }
     }   
     delay(100);
     // close the connection:
     client.stop();
-  
   }
-  
 }
-
-
 
 
 //helper method definitions
-
-/* helper method that reads the sensor value from the
-*  pin declared and returns a row of the form:
-*  time|pin|value
-*/
-String get_value_from_sensor_in_row(short anl_pin)
-{
-  int anl_val = analogRead(anl_pin);
-  //unsigned long time = millis(); //the elapsed time in millis from the arduino powered on moment
-  
-  time_t now_in_millis = now();
-
-  int now_second = second(now_in_millis);
-  int now_minute = minute(now_in_millis);
-  int now_hour = hour(now_in_millis);
-  int now_day = day(now_in_millis);
-  int now_month = month(now_in_millis);
-  int now_year = year(now_in_millis);
-  
-  String res = String(now_hour) + ":" + String(now_minute) + ":" + String(now_second) + "-" + String(now_day) + "/" + String(now_month) + "/" + String(now_year) + "|" + String(anl_pin) + "|" + String(anl_val);
-  
-  return res;
-}
 
 
 /* helper method that gets the moisture values from all pins
    if a specified ammount of time (defined in mins) has passed
 */
-void get_measurements()
-{
-  unsigned long now = millis();
-  if((now - last_measur_time) > (60000 * interval_in_min)){ 
+void get_measurements(){
+  
+  //time value to be kept in each row
+  //unsigned long now_in_millis = millis();
+  
+  //time value to be compared for interval & file creation
+  time_t now_in_secs = now();
+  
+  String row;
+  int anl_value = 0;
+  
+  if((now_in_secs - last_measur_time) > (60 * interval_in_min)){
+   
+      #ifdef debug_mode
+        Serial.println("Time for measurement "+String(now_in_secs));
+        Serial.flush();
+      #endif
     
-    for(int i=0; i<anl_pins_counter; i++){
-      String row = get_value_from_sensor_in_row(anl_pins[i]);
-      store_row_to_sd(row);
-            
-      last_measur_time = now;
+    for(byte i=0; i<anl_pins_counter; i++){
+      
+      anl_value = analogRead(anl_pins[i]);
+      row = String(day(now_in_secs)) + "|" + String(hour(now_in_secs))  + ":" + String(minute(now_in_secs)) + ":" + String(second(now_in_secs)) + "|" + String(anl_pins[i]) + "|" + String(anl_value);
+      store_row_to_sd(row, now_in_secs);
+      
+      //delay between each writing      
+      delay(500);
     }
-    delay(1000);
-    
+    last_measur_time = now_in_secs;
   }
 }
 
-/*helper method which creates & returns a string
- containing the filename which is produced from the 
- day/month/year concatenation */
-String get_filename_based_on_now()
-{
-  time_t now_in_millis = now();
-
-  int now_day = day(now_in_millis);
-  int now_month = month(now_in_millis);
-  int now_year = year(now_in_millis);
-  
-  //String filename_str = String(now_day) + "_" + String(now_month) + "_" + String(now_year) + ".txt";
-  String filename_str = String(now_day) + String(now_month) + String(now_year) + ".txt";
-  
-  return filename_str;
-}
 
 /* helper method that writes a given row to the SD output file
 */
-void store_row_to_sd(String row)
-{
-  //get the appropriate filename
-  String filename_str=get_filename_based_on_now();
+void store_row_to_sd(String row, time_t now_in_secs){
+  
+  File file;
+  
+  short bytes_written = 0;
+     
+  //construct the appropriate filename
+  byte now_month = month(now_in_secs);
+  int now_year = year(now_in_secs);
+  String filename_str = String(now_month) + String(now_year) + ".txt";
+  
+  #ifdef debug_mode
+        Serial.println("File to write row to: "+filename_str);
+        Serial.flush();
+  #endif
   
   char filename[filename_str.length() + 1];
- 
   filename_str.toCharArray(filename, filename_str.length() + 1);
-  
-  
-  //if it is the first record of the month
-  if(SD.exists(filename) == false){
-    
-    filenames[filenames_count]= filename_str;
-    filenames_count++;
-  }
-  
-  File file = SD.open(filename, FILE_WRITE);
-  
+
+  //open the file  
+  file = SD.open(filename, FILE_WRITE);
+ 
+  //format the row to be written
   char row_in_chars[row.length()+1];
-  
   row.toCharArray(row_in_chars,row.length()+1);
   
-  int bytes_written = file.println(row_in_chars);
-  
+  bytes_written = file.println(row_in_chars);
+
   file.flush();
   file.close();
 }
@@ -197,45 +210,47 @@ void store_row_to_sd(String row)
 /* helper method that sends the content of the SD file
   to the client given
 */
-void send_all_rows_to_client(EthernetClient client)
-{
-  String filename_str;
+void send_file_rows_to_client(EthernetClient client, char* date){
   
-  //no measurement yet
-  if(filenames_count ==  0)
-    client.println("Measurements not present yet...");
-    
-  //all files - all months
-  for(int i=0; i<filenames_count; i++){
-    
-    filename_str = filenames[i];
+  char d;
   
-    char filename[filename_str.length() + 1];
- 
-    filename_str.toCharArray(filename, filename_str.length() + 1);
-        
-    File file = SD.open(filename);
-    char d,c;
-    
-    
-    while(file.available()>0)
-    {
-      c = file.peek();
+  File file = SD.open(date);
+  
+  #ifdef debug_mode
+      if(!file){
+           String s(date);
+            Serial.println("File to read from cannot be opened: "+s);
+            Serial.flush();
+      }
+    #endif
+  
+  if(!file){
+     client.println("Measurements not present yet...");
+     client.flush();
+     
+   }
+   
+   while(file.available()>0){
       d = file.read();
       client.write(d);
       client.flush();
-                
     }
+   
+   file.close();  
     
-    file.close();
-  }
-  
 }
 
 /* helper method configuring the analog input pins*/
-void configure_anl_pins()
-{
+void cfg_pins_array(){
+  
   anl_pins[0] = 0;
+  
+  #ifdef debug_mode
+    Serial.println("Configuring pins done");
+    Serial.flush();
+  #endif
+
 }
+
 
 
