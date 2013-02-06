@@ -18,6 +18,7 @@
 #include <Ethernet.h>
 #include <SPI.h>
 #include <Time.h>
+#include <NTP.h>
 
 
 #define anl_pins_counter 1
@@ -44,6 +45,8 @@ byte mac[] = { 0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED };
 
 byte ip[] = { 192, 168, 1, 20 };
 
+IPAddress ntp_server_ip(64, 90, 182, 55); // time.nist.gov NTP server
+
 //server instantiation
 EthernetServer server(3629);
 
@@ -56,8 +59,21 @@ void setup() {
   #endif
   
   //set to now
-  setTime(23,30,00,4,2,2013);
- 
+  //setTime(23,30,00,4,2,2013);
+  unsigned long now_in_millis = synchronize_time(ntp_server_ip);
+  if(now_in_millis != 0){
+    setTime(now_in_millis);
+    #ifdef debug_mode
+      Serial.println("Time synchronized: "+now_in_millis);
+      Serial.flush();
+    #endif
+  }
+  else{
+    #ifdef debug_mode
+      Serial.println("Time not synchronized");
+      Serial.flush();
+    #endif
+  }
 
   cfg_pins_array();
   
@@ -152,7 +168,7 @@ void get_measurements(){
   String row;
   int anl_value = 0;
   
-  if((now_in_secs - last_measur_time) > (60 * interval_in_min)){
+  if((now_in_secs - last_measur_time) > (10 * interval_in_min)){
    
       #ifdef debug_mode
         Serial.println("Time for measurement "+String(now_in_secs));
