@@ -60,11 +60,11 @@ void setup() {
   
   //set to now
   //setTime(23,30,00,4,2,2013);
-  unsigned long now_in_millis = synchronize_time(ntp_server_ip);
-  if(now_in_millis != 0){
-    setTime(now_in_millis);
+  unsigned long now_in_seconds = synchronize_time(ntp_server_ip);
+  if(now_in_seconds != 0){
+    setTime(now_in_seconds);
     #ifdef debug_mode
-      Serial.println("Time synchronized: "+now_in_millis);
+      Serial.println("Time synchronized: "+now_in_seconds);
       Serial.flush();
     #endif
   }
@@ -168,7 +168,7 @@ void get_measurements(){
   String row;
   int anl_value = 0;
   
-  if((now_in_secs - last_measur_time) > (10 * interval_in_min)){
+  if((now_in_secs - last_measur_time) > (60 * interval_in_min)){
    
       #ifdef debug_mode
         Serial.println("Time for measurement "+String(now_in_secs));
@@ -178,7 +178,8 @@ void get_measurements(){
     for(byte i=0; i<anl_pins_counter; i++){
       
       anl_value = analogRead(anl_pins[i]);
-      row = String(day(now_in_secs)) + "|" + String(hour(now_in_secs))  + ":" + String(minute(now_in_secs)) + ":" + String(second(now_in_secs)) + "|" + String(anl_pins[i]) + "|" + String(anl_value);
+      //row = String(day(now_in_secs)) + "|" + String(hour(now_in_secs))  + ":" + String(minute(now_in_secs)) + ":" + String(second(now_in_secs)) + "|" + String(anl_pins[i]) + "|" + String(anl_value);
+      row = String(now_in_secs) + "|" + String(anl_pins[i]) + "|" + String(anl_value);
       store_row_to_sd(row, now_in_secs);
       
       //delay between each writing      
