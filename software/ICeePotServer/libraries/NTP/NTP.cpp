@@ -9,62 +9,51 @@
  
  created 4 Sep 2010 
  by Michael Margolis
- modified 9 Apr 2012
+ modified 17 Sep 2010
  by Tom Igoe
- modified 21 Jul 2012
- by Tomas Galan
- modified 15 Jan 2013
- by Manos Tsantakis
  
  This code is in the public domain.
 
  */
 
-
+       
 #include <Ethernet.h>
 #include <EthernetUdp.h>
-#include <SPI.h>
-#include "NTP.h"
-#include <Time.h>
+#include <NTP.h>
 
-  byte mac[] = { 0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED };
+// Enter a MAC address for your controller below.
+// Newer Ethernet shields have a MAC address printed on a sticker on the shield
+extern byte mac[];
 
-  IPAddress time_server_ip(192, 43, 244, 18);
-  
-  EthernetUDP Udp;
+unsigned int localPort = 8888;      // local port to listen for UDP packets
 
-  const int NTP_PACKET_SIZE= 48;
+//IPAddress timeServer(64, 90, 182, 55); // time.nist.gov NTP server
 
-  byte packetBuffer[NTP_PACKET_SIZE];
-  
-  const int timeZoneOffset= +1; // GMT zone;
+const int NTP_PACKET_SIZE= 48; // NTP time stamp is in the first 48 bytes of the message
 
+byte packetBuffer[ NTP_PACKET_SIZE]; //buffer to hold incoming and outgoing packets 
 
-void synchronize_time(){
+// A UDP instance to let us send and receive packets over UDP
+EthernetUDP Udp;
 
-
-
-  unsigned int localPort = 8888;      // local port to listen for UDP packets
-
-  
-  while(Ethernet.begin(mac) == 0){
-    //until connection is established
-  }
-  
-  Udp.begin(localPort);
-  
-  setSyncProvider(getNtpTime);
-  
-  while(timeStatus()== timeNotSet)   
-     ;
-  
-}
-
-unsigned long getNtpTime()
+unsigned long synchronize_time(IPAddress ntp_server_ip) 
 {
-  sendNTPpacket(time_server_ip); // send an NTP packet to a time server
-  delay(1000);
+ 
+  unsigned long epoch = 0;
+
+  // start Ethernet and UDP
+  if (Ethernet.begin(mac) == 0) {
+    return epoch;
+  }
+  Udp.begin(localPort);
+
+  sendNTPpacket(ntp_server_ip); // send an NTP packet to a time server
+  
+  
+    // wait to see if a reply is available
+  delay(1000);  
   if ( Udp.parsePacket() ) {  
+    
     // We've received a packet, read the data from it
     Udp.read(packetBuffer,NTP_PACKET_SIZE);  // read the packet into the buffer
 
@@ -75,13 +64,18 @@ unsigned long getNtpTime()
     unsigned long lowWord = word(packetBuffer[42], packetBuffer[43]);  
     // combine the four bytes (two words) into a long integer
     // this is NTP time (seconds since Jan 1 1900):
-    unsigned long secsSince1900 = highWord << 16 | lowWord; 
+    unsigned long secsSince1900 = highWord << 16 | lowWord;  
+    
+    // Unix time starts on Jan 1 1970. In seconds, that's 2208988800:
     const unsigned long seventyYears = 2208988800UL;     
-    // subtract seventy years and add the time zone:
-    unsigned long epoch = secsSince1900 - seventyYears + (timeZoneOffset * 3600L);
-    return epoch;
+    // subtract seventy years:
+    epoch = secsSince1900 - seventyYears;  
+    
   }
-  return 0;
+  // wait ten seconds before asking for the time again
+  delay(4000);
+
+  return epoch; 
 }
 
 // send an NTP request to the time server at the given address 
@@ -107,3 +101,12 @@ unsigned long sendNTPpacket(IPAddress& address)
   Udp.write(packetBuffer,NTP_PACKET_SIZE);
   Udp.endPacket(); 
 }
+
+
+
+
+
+
+
+
+
