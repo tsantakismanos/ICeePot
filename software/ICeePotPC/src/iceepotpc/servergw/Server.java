@@ -25,7 +25,7 @@ public class Server {
 	 *            : pot defined by the caller
 	 * @return: an arraylist of measurements (pot-moment-value)
 	 */
-	public ArrayList<Meauserement> GetMeasurements(Calendar c, int pot) {
+	public static ArrayList<Meauserement> GetMeasurements(Calendar c, int pot) {
 
 		ArrayList<Meauserement> measurements = new ArrayList<Meauserement>();
 		
@@ -95,7 +95,7 @@ public class Server {
 	 * @param pot: the desired pot
 	 * @return the results in an arraylist form
 	 */
-	public ArrayList<Meauserement> GetMeasurements(Calendar cFrom, Calendar cTo, int pot){
+	public static ArrayList<Meauserement> GetMeasurements(Calendar cFrom, Calendar cTo, int pot){
 		
 		ArrayList<Meauserement> measurements = new ArrayList<Meauserement>();
 		
@@ -115,7 +115,7 @@ public class Server {
 	 * @param s: a row of the form: seconds|pin|value
 	 * @return a measurement object with the above values after parsing that row
 	 */
-	private Meauserement ParseMeasurementRow(String s){
+	private static Meauserement ParseMeasurementRow(String s){
 		
 		String[] parts = s.split("|");
 		

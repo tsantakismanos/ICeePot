@@ -13,6 +13,9 @@
  */
 package iceepotpc.ui;
 
+import iceepotpc.servergw.Meauserement;
+import iceepotpc.servergw.Server;
+
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
@@ -21,17 +24,20 @@ import javax.swing.JButton;
 
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.Socket;
-import java.net.UnknownHostException;
+
+
 import javax.swing.JTextArea;
 
 import javax.swing.JTabbedPane;
 import javax.swing.JPanel;
 import javax.swing.JLabel;
 import java.awt.Toolkit;
+
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+
+
 import javax.swing.JMenuBar;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
@@ -39,14 +45,13 @@ import javax.swing.JTextField;
 
 
 
-
 public class MainWindow {
 
 	private JFrame frame;
-	private JTextField textField;
-	private JTextField textField_1;
-	private JTextField textField_2;
-	private JTextField textField_3;
+	private JTextField txtLastValue;
+	private JTextField txtLastTime;
+	private JTextField txtDateFrom;
+	private JTextField txtDateTo;
 
 	/**
 	 * Launch the application.
@@ -99,112 +104,68 @@ public class MainWindow {
 		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 		frame.getContentPane().add(tabbedPane, BorderLayout.CENTER);
 		
-		JPanel panel1 = new JPanel();
-		panel1.setToolTipText("");
-		tabbedPane.addTab("\u0392\u03B1\u03C3\u03B9\u03BB\u03B9\u03BA\u03CC\u03C2", null, panel1, null);
-		panel1.setLayout(null);
+		JPanel pnlBasil = new JPanel();
+		pnlBasil.setToolTipText("");
+		tabbedPane.addTab("\u0392\u03B1\u03C3\u03B9\u03BB\u03B9\u03BA\u03CC\u03C2", null, pnlBasil, null);
+		pnlBasil.setLayout(null);
 		
 		final JTextArea txtResults = new JTextArea();
-		txtResults.setBounds(47, 58, 283, 239);
-		panel1.add(txtResults);
+		txtResults.setBounds(47, 58, 601, 239);
+		pnlBasil.add(txtResults);
 		txtResults.setColumns(50);
 		txtResults.setRows(10);
 		
 		JButton btnGet = new JButton("Get Info");
 		btnGet.setBounds(599, 338, 73, 23);
-		panel1.add(btnGet);
+		pnlBasil.add(btnGet);
 		
 		JLabel lblLastMeasruement = new JLabel("Last measruement: ");
 		lblLastMeasruement.setBounds(47, 11, 102, 14);
-		panel1.add(lblLastMeasruement);
+		pnlBasil.add(lblLastMeasruement);
 		
-		textField = new JTextField();
-		textField.setBounds(159, 8, 86, 20);
-		panel1.add(textField);
-		textField.setColumns(10);
+		txtLastValue = new JTextField();
+		txtLastValue.setBounds(159, 8, 86, 20);
+		pnlBasil.add(txtLastValue);
+		txtLastValue.setColumns(10);
 		
 		JLabel lblAt = new JLabel("at");
 		lblAt.setBounds(264, 11, 22, 14);
-		panel1.add(lblAt);
+		pnlBasil.add(lblAt);
 		
-		textField_1 = new JTextField();
-		textField_1.setBounds(285, 8, 86, 20);
-		panel1.add(textField_1);
-		textField_1.setColumns(10);
+		txtLastTime = new JTextField();
+		txtLastTime.setBounds(285, 8, 86, 20);
+		pnlBasil.add(txtLastTime);
+		txtLastTime.setColumns(10);
 		
-		textField_2 = new JTextField();
-		textField_2.setToolTipText("month/year");
-		textField_2.setBounds(472, 308, 86, 20);
-		panel1.add(textField_2);
-		textField_2.setColumns(10);
+		txtDateFrom = new JTextField();
+		txtDateFrom.setToolTipText("month/year");
+		txtDateFrom.setBounds(472, 308, 86, 20);
+		pnlBasil.add(txtDateFrom);
+		txtDateFrom.setColumns(10);
 		
 		JLabel lblDateFrom = new JLabel("date from:");
 		lblDateFrom.setBounds(369, 311, 86, 14);
-		panel1.add(lblDateFrom);
+		pnlBasil.add(lblDateFrom);
 		
-		textField_3 = new JTextField();
-		textField_3.setToolTipText("month/year");
-		textField_3.setBounds(472, 339, 86, 20);
-		panel1.add(textField_3);
-		textField_3.setColumns(10);
+		txtDateTo = new JTextField();
+		txtDateTo.setToolTipText("month/year");
+		txtDateTo.setBounds(472, 339, 86, 20);
+		pnlBasil.add(txtDateTo);
+		txtDateTo.setColumns(10);
 		
 		JLabel lblDateTo = new JLabel("date to:");
 		lblDateTo.setBounds(369, 342, 46, 14);
-		panel1.add(lblDateTo);
+		pnlBasil.add(lblDateTo);
+		
+		
 		btnGet.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				InputStream is = null;
-				OutputStream os = null;
-				Socket s = null;
-				try 
-				{
-					byte[] request = {'2','2','0','1','3','.','t','x','t','\0'};
-					int response = 0;
-					String response_str = "";
-					s = new Socket("homeplants.dyndns.org", 3629);
-					
-					
-					os = s.getOutputStream();
-			
-					
-					//send request
-					os.write(request);
-					os.flush();
-					
-					
-					is = s.getInputStream();
-					
-					//get & print response
-					response = is.read();
-					
-					while(response != -1)
-					{
-						response_str = response_str + (char)response;
-						response = is.read();
-					}
-					
-					txtResults.setText(response_str);
-					
-					
-					
-				} catch (UnknownHostException ex) {
-					// TODO Auto-generated catch block
-					ex.printStackTrace();
-				} catch (IOException ex) {
-					// TODO Auto-generated catch block
-					ex.printStackTrace();
-				}
-				finally{
-					try {
-						is.close();
-						s.close();
-					} catch (IOException ex) {
-						// TODO Auto-generated catch block
-						ex.printStackTrace();
-					}
-					
-				}
+				
+				//initialize the calendar to be given to the server
+				Calendar c = Calendar.getInstance();
+				Date d ; 
+				ArrayList<Meauserement> measurements = Server.GetMeasurements(c, 0);
 				
 			}
 		});
