@@ -13,9 +13,6 @@
  */
 package iceepotpc.ui;
 
-import iceepotpc.servergw.Meauserement;
-import iceepotpc.servergw.Server;
-
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
@@ -33,25 +30,28 @@ import javax.swing.JPanel;
 import javax.swing.JLabel;
 import java.awt.Toolkit;
 
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 
 
 import javax.swing.JMenuBar;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JTextField;
+import javax.swing.JComboBox;
+
+
 
 
 
 public class MainWindow {
+	
+	private String[] availableMonths = {"Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"};
+	private String[] availableYears = {"2011","2012","2013","2014"};
+	
 
 	private JFrame frame;
 	private JTextField txtLastValue;
 	private JTextField txtLastTime;
-	private JTextField txtDateFrom;
-	private JTextField txtDateTo;
 
 	/**
 	 * Launch the application.
@@ -99,6 +99,12 @@ public class MainWindow {
 		mnFile.add(mntmAddPot);
 		
 		JMenuItem mntmClose = new JMenuItem("Close");
+		mntmClose.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				
+			}
+		});
 		mnFile.add(mntmClose);
 		
 		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
@@ -116,7 +122,7 @@ public class MainWindow {
 		txtResults.setRows(10);
 		
 		JButton btnGet = new JButton("Get Info");
-		btnGet.setBounds(599, 338, 73, 23);
+		btnGet.setBounds(562, 343, 86, 23);
 		pnlBasil.add(btnGet);
 		
 		JLabel lblLastMeasruement = new JLabel("Last measruement: ");
@@ -137,36 +143,61 @@ public class MainWindow {
 		pnlBasil.add(txtLastTime);
 		txtLastTime.setColumns(10);
 		
-		txtDateFrom = new JTextField();
-		txtDateFrom.setToolTipText("month/year");
-		txtDateFrom.setBounds(472, 308, 86, 20);
-		pnlBasil.add(txtDateFrom);
-		txtDateFrom.setColumns(10);
-		
-		JLabel lblDateFrom = new JLabel("date from:");
-		lblDateFrom.setBounds(369, 311, 86, 14);
+		JLabel lblDateFrom = new JLabel("From");
+		lblDateFrom.setBounds(321, 322, 46, 14);
 		pnlBasil.add(lblDateFrom);
 		
-		txtDateTo = new JTextField();
-		txtDateTo.setToolTipText("month/year");
-		txtDateTo.setBounds(472, 339, 86, 20);
-		pnlBasil.add(txtDateTo);
-		txtDateTo.setColumns(10);
-		
-		JLabel lblDateTo = new JLabel("date to:");
-		lblDateTo.setBounds(369, 342, 46, 14);
+		JLabel lblDateTo = new JLabel("To");
+		lblDateTo.setBounds(321, 347, 46, 14);
 		pnlBasil.add(lblDateTo);
+		
+		final JComboBox cmbMonthFrom = new JComboBox();
+		cmbMonthFrom.setBounds(378, 318, 71, 20);
+		for(int i=0; i<availableMonths.length; i++)
+			cmbMonthFrom.addItem(availableMonths[i]);
+		pnlBasil.add(cmbMonthFrom);
+		
+		final JComboBox cmbYearFrom = new JComboBox();
+		cmbYearFrom.setBounds(459, 318, 73, 20);
+		for(int i=0; i< availableYears.length; i++)
+			cmbYearFrom.addItem(availableYears[i]);
+		pnlBasil.add(cmbYearFrom);
+		
+		final JComboBox cmbMonthTo = new JComboBox();
+		cmbMonthTo.setBounds(377, 344, 72, 20);
+		for(int i=0; i<availableMonths.length; i++)
+			cmbMonthTo.addItem(availableMonths[i]);
+		pnlBasil.add(cmbMonthTo);
+		
+		final JComboBox cmbYearTo = new JComboBox();
+		cmbYearTo.setBounds(459, 344, 73, 20);
+		for(int i=0; i< availableYears.length; i++)
+			cmbYearTo.addItem(availableYears[i]);
+		pnlBasil.add(cmbYearTo);
 		
 		
 		btnGet.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				
-				//initialize the calendar to be given to the server
-				Calendar c = Calendar.getInstance();
-				Date d ; 
-				ArrayList<Meauserement> measurements = Server.GetMeasurements(c, 0);
+				Calendar from = Calendar.getInstance();
+				from.set(Calendar.MONTH, cmbMonthFrom.getSelectedIndex()+1);
+				from.set(Calendar.DAY_OF_MONTH, 1);
+				from.set(Calendar.YEAR, Integer.parseInt((String)cmbYearFrom.getSelectedItem()));
 				
+				Calendar to = Calendar.getInstance();
+				to.set(Calendar.MONTH, cmbMonthTo.getSelectedIndex()+1);
+				to.set(Calendar.DAY_OF_MONTH, 1);
+				to.set(Calendar.YEAR, Integer.parseInt((String)cmbYearTo.getSelectedItem()));
+				
+				if(from.getTime().getTime() > to.getTime().getTime()){
+					AlertDialog ad = new AlertDialog();
+					ad.setVisible(true);
+				}
+				else
+				//ArrayList<Meauserement> measurements = Server.GetMeasurements(c, 0);
+					txtResults.setText(from.get(Calendar.MONTH) + "/" + from.get(Calendar.YEAR) + "-" +
+									to.get(Calendar.MONTH) + "/" + to.get(Calendar.YEAR));
 			}
 		});
 		
