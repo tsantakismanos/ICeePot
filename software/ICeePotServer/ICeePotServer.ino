@@ -24,7 +24,7 @@
 #define anl_pins_counter 1
 #define interval_in_min 1  //time interval (in minutes) between measurement
 #define max_months_in_sd 12
-#define debug_mode true
+//#define debug_mode true
 
 //helper functions declaration
 void get_measurements();
@@ -97,7 +97,7 @@ void setup() {
     return;
   }
   
-  SD.remove("22013.txt");
+  //SD.remove("22013.txt");
 }
 
 
