@@ -13,6 +13,9 @@
  */
 package iceepotpc.ui;
 
+import iceepotpc.servergw.Meauserement;
+import iceepotpc.servergw.Server;
+
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
@@ -30,6 +33,7 @@ import javax.swing.JPanel;
 import javax.swing.JLabel;
 import java.awt.Toolkit;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 
 
@@ -194,10 +198,15 @@ public class MainWindow {
 					AlertDialog ad = new AlertDialog();
 					ad.setVisible(true);
 				}
-				else
-				//ArrayList<Meauserement> measurements = Server.GetMeasurements(c, 0);
-					txtResults.setText(from.get(Calendar.MONTH) + "/" + from.get(Calendar.YEAR) + "-" +
-									to.get(Calendar.MONTH) + "/" + to.get(Calendar.YEAR));
+				else{
+					ArrayList<Meauserement> measurements = Server.GetMeasurements(from, 0);
+					for(int i=0; i<measurements.size(); i++)
+						txtResults.setText(measurements.get(i).getMoment() + "|" +
+											measurements.get(i).getPot() + "|" +
+											measurements.get(i).getValue());	
+				//	txtResults.setText(from.get(Calendar.MONTH) + "/" + from.get(Calendar.YEAR) + "-" +
+				//					to.get(Calendar.MONTH) + "/" + to.get(Calendar.YEAR));
+				}
 			}
 		});
 		
