@@ -43,7 +43,7 @@ public class Server {
 		try {
 			
 			//byte[] request = { '2', '2', '0', '1', '3', '.', 't', 'x', 't','\0' };
-			request_str.concat("\0");
+			request_str = request_str.concat("\0");
 			byte[] request = request_str.getBytes();
 			
 			int response = 0;
@@ -124,9 +124,9 @@ public class Server {
 	 */
 	private static Meauserement ParseMeasurementRow(String s){
 		
-		String[] parts = s.split("|");
+		String[] parts = s.split("\\|");
 		
-		Meauserement m = new Meauserement(Integer.parseInt(parts[1]), Double.parseDouble(parts[1]), Double.parseDouble(parts[2]));
+		Meauserement m = new Meauserement(Integer.parseInt(parts[1]), Double.parseDouble(parts[0]), Double.parseDouble(parts[2]));
 		
 		return m;
 	}

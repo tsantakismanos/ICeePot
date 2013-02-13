@@ -246,7 +246,8 @@ public class MainWindow{
 							txtResults.setText("No measurements yet");
 						else
 							for(int i=0; i<measurements.size(); i++)
-								txtResults.setText(measurements.get(i).getMoment() + "|" + 
+								txtResults.setText(txtResults.getText() + "\n" +
+													measurements.get(i).getMoment() + "|" + 
 													measurements.get(i).getPot() + "|" +
 													measurements.get(i).getValue());	
 					} catch (Exception e1) {
