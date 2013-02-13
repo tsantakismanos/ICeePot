@@ -35,7 +35,7 @@ public class Server {
 		String excMessage = "";
 		
 		//construct the request in a string
-		String request_str = c.get(Calendar.MONTH) + c.get(Calendar.YEAR) + ".txt";
+		String request_str = Integer.toString(c.get(Calendar.MONTH)) + Integer.toString(c.get(Calendar.YEAR)) + ".txt";
 
 		InputStream is = null;
 		OutputStream os = null;
