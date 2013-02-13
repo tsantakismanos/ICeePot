@@ -1,5 +1,7 @@
 package iceepotpc.servergw;
 
+import iceepotpc.appication.Context;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -24,10 +26,13 @@ public class Server {
 	 * @param pot
 	 *            : pot defined by the caller
 	 * @return: an arraylist of measurements (pot-moment-value)
+	 * @throws Exception 
 	 */
-	public static ArrayList<Meauserement> GetMeasurements(Calendar c, int pot) {
+	public static ArrayList<Meauserement> GetMeasurements(Calendar c, int pot) throws Exception {
 
 		ArrayList<Meauserement> measurements = new ArrayList<Meauserement>();
+		
+		String excMessage = "";
 		
 		//construct the request in a string
 		String request_str = c.get(Calendar.MONTH) + c.get(Calendar.YEAR) + ".txt";
@@ -43,7 +48,7 @@ public class Server {
 			
 			int response = 0;
 			String response_str = "";
-			s = new Socket("homeplants.dyndns.org", 3629);
+			s = new Socket(Context.serverHost, Context.serverPort);
 
 			os = s.getOutputStream();
 
@@ -71,18 +76,19 @@ public class Server {
 			}
 
 		} catch (UnknownHostException ex) {
-			// TODO Auto-generated catch block
-			ex.printStackTrace();
+			excMessage = excMessage + "\n" + ex.getMessage(); 
+			throw new Exception(excMessage);
 		} catch (IOException ex) {
-			// TODO Auto-generated catch block
-			ex.printStackTrace();
+			excMessage = excMessage + "\n" + ex.getMessage(); 
 		} finally {
 			try {
 				is.close();
 				s.close();
-			} catch (IOException ex) {
-				// TODO Auto-generated catch block
-				ex.printStackTrace();
+				if(excMessage != "")
+					throw new Exception(excMessage);
+			} catch (Exception ex) {
+				excMessage = excMessage + "\n" + ex.getMessage(); 
+				throw new Exception(excMessage);
 			}
 
 		}
@@ -94,8 +100,9 @@ public class Server {
 	 * @param cTo: the month to....
 	 * @param pot: the desired pot
 	 * @return the results in an arraylist form
+	 * @throws Exception 
 	 */
-	public static ArrayList<Meauserement> GetMeasurements(Calendar cFrom, Calendar cTo, int pot){
+	public static ArrayList<Meauserement> GetMeasurements(Calendar cFrom, Calendar cTo, int pot) throws Exception{
 		
 		ArrayList<Meauserement> measurements = new ArrayList<Meauserement>();
 		
