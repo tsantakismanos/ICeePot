@@ -14,8 +14,6 @@
 package iceepotpc.ui;
 
 import iceepotpc.appication.Context;
-import iceepotpc.servergw.Meauserement;
-import iceepotpc.servergw.Server;
 
 import java.awt.EventQueue;
 import java.awt.Window;
@@ -23,48 +21,31 @@ import java.awt.Window;
 
 import javax.swing.JFrame;
 import java.awt.BorderLayout;
-import javax.swing.JButton;
 
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 
-import javax.swing.JTextArea;
 
 import javax.swing.JTabbedPane;
-import javax.swing.JPanel;
-import javax.swing.JLabel;
 import java.awt.Toolkit;
-
-import java.util.ArrayList;
-import java.util.Calendar;
-
 
 import javax.swing.JMenuBar;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
-import javax.swing.JScrollPane;
-import javax.swing.JTextField;
-import javax.swing.JComboBox;
 import javax.swing.JWindow;
-import javax.swing.ScrollPaneConstants;
 
 
 
 
-
-
+/**
+ * @author tsantakis
+ * The application's main window where a menu bar is displayed and a set of tabs
+ * each one of them representing a pot.
+ */
 public class MainWindow{
 	
-	
-	private String[] availableMonths = {"Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"};
-	private String[] availableYears = {"2011","2012","2013","2014"};
-	
-
 	private JFrame frame;
-	private JTextField txtLastValue;
-	private JTextField txtLastTime;
 
 	/**
 	 * Launch the application.
@@ -157,6 +138,15 @@ public class MainWindow{
 	 *  to create a Tab which represents a pot (input / output)
 	 */
 	public void createTab(JTabbedPane tabbedPane, String descr, final int pin){
+		PotPanel pnlPot = new PotPanel(pin, frame);
+		tabbedPane.addTab(descr, null, pnlPot, null);
+	}
+	
+	/**
+	 *  helper method that is called when it is required
+	 *  to create a Tab which represents a pot (input / output)
+	 */
+	/*public void createTab(JTabbedPane tabbedPane, String descr, final int pin){
 		
 		JPanel pnlPot = new JPanel();
 		pnlPot.setToolTipText("");
@@ -267,5 +257,5 @@ public class MainWindow{
 				//					to.get(Calendar.MONTH) + "/" + to.get(Calendar.YEAR));
 			}
 		});
-	}
+	}*/
 }
