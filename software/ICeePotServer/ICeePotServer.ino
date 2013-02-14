@@ -22,9 +22,9 @@
 
 
 #define anl_pins_counter 1
-#define interval_in_min 1  //time interval (in minutes) between measurement
+#define interval_in_min 20 //time interval (in minutes) between measurementσ
 #define max_months_in_sd 12
-//#define debug_mode true
+#define debug_mode true
 
 //helper functions declaration
 void get_measurements();
@@ -41,8 +41,6 @@ time_t last_measur_time = 0;
 byte mac[] = { 0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED };
 
 //this server's IP
-//IPAddress server_ip(192,168,1,20);
-
 byte ip[] = { 192, 168, 1, 20 };
 
 IPAddress ntp_server_ip(64, 90, 182, 55); // time.nist.gov NTP server
