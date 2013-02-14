@@ -44,9 +44,11 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.JComboBox;
 import javax.swing.JWindow;
+import javax.swing.ScrollPaneConstants;
 
 
 
@@ -162,7 +164,12 @@ public class MainWindow{
 		
 		final JTextArea txtResults = new JTextArea();
 		txtResults.setBounds(47, 58, 601, 239);
-		pnlPot.add(txtResults);
+		JScrollPane sp = new JScrollPane(txtResults);
+		sp.setSize(600, 200);
+		sp.setLocation(50, 70);
+		sp.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+		sp.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		pnlPot.add(sp);
 		txtResults.setColumns(50);
 		txtResults.setRows(10);
 		
