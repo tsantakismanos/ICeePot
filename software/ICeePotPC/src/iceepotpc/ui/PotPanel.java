@@ -62,23 +62,25 @@ public class PotPanel extends JPanel {
 		btnGet.setBounds(562, 343, 86, 23);
 		this.add(btnGet);
 		
-		JLabel lblLastMeasruement = new JLabel("Last measruement: ");
-		lblLastMeasruement.setBounds(47, 11, 102, 14);
+		JLabel lblLastMeasruement = new JLabel("Last measurement");
+		lblLastMeasruement.setBounds(47, 11, 142, 14);
 		this.add(lblLastMeasruement);
 		
 		txtLastValue = new JTextField();
-		txtLastValue.setBounds(159, 8, 86, 20);
+		txtLastValue.setBounds(206, 9, 71, 20);
 		this.add(txtLastValue);
 		txtLastValue.setColumns(10);
+		txtLastValue.setEditable(false);
 		
 		JLabel lblAt = new JLabel("at");
-		lblAt.setBounds(264, 11, 22, 14);
+		lblAt.setBounds(285, 11, 22, 14);
 		this.add(lblAt);
 		
 		txtLastTime = new JTextField();
-		txtLastTime.setBounds(285, 8, 86, 20);
+		txtLastTime.setBounds(314, 9, 124, 20);
 		this.add(txtLastTime);
 		txtLastTime.setColumns(10);
+		txtLastTime.setEditable(false);
 		
 		JLabel lblDateFrom = new JLabel("From");
 		lblDateFrom.setBounds(321, 322, 46, 14);
@@ -133,12 +135,15 @@ public class PotPanel extends JPanel {
 						measurements = Server.GetMeasurements(from, pin);
 						if(measurements == null || measurements.size() == 0)
 							txtResults.setText("No measurements yet");
-						else
+						else{
 							for(int i=0; i<measurements.size(); i++)
 								txtResults.setText(txtResults.getText() + "\n" +
 													measurements.get(i).getMoment() + "|" + 
 													measurements.get(i).getPot() + "|" +
-													measurements.get(i).getValue());	
+													measurements.get(i).getValue());
+							txtLastTime.setText(String.valueOf(measurements.get(measurements.size()-1).getMoment()));
+							txtLastValue.setText(String.valueOf(measurements.get(measurements.size()-1).getValue()));
+						}
 					} catch (Exception e1) {
 						JOptionPane.showMessageDialog(frame, e1.getMessage(), "Warning", JOptionPane.ERROR_MESSAGE);
 					}
