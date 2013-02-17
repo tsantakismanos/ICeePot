@@ -22,5 +22,6 @@ public class Context {
 	public static String serverHost = "homeplants.dyndns.org";
 	public static int serverPort = 3629;
 	
+	public static boolean isDebug = true;
 
 }

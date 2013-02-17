@@ -126,7 +126,7 @@ public class Server {
 		
 		String[] parts = s.split("\\|");
 		
-		Meauserement m = new Meauserement(Integer.parseInt(parts[1]), Double.parseDouble(parts[0]), Double.parseDouble(parts[2]));
+		Meauserement m = new Meauserement(Integer.parseInt(parts[1]), Long.parseLong(parts[0])*1000, Double.parseDouble(parts[2]));
 		
 		return m;
 	}

@@ -22,11 +22,11 @@ public class Meauserement implements Serializable{
 	 */
 	private static final long serialVersionUID = 3977644217746517687L;
 	private int pot;
-	private double moment;
+	private long moment;
 	private double value;
 	
 	
-	public Meauserement(int pot, double moment, double value) {
+	public Meauserement(int pot, long moment, double value) {
 		super();
 		this.pot = pot;
 		this.moment = moment;
@@ -38,10 +38,10 @@ public class Meauserement implements Serializable{
 	public void setPot(int pot) {
 		this.pot = pot;
 	}
-	public double getMoment() {
+	public long getMoment() {
 		return moment;
 	}
-	public void setMoment(double moment) {
+	public void setMoment(long moment) {
 		this.moment = moment;
 	}
 	public double getValue() {

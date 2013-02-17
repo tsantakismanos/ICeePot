@@ -1,5 +1,6 @@
 package iceepotpc.ui;
 
+import iceepotpc.appication.Context;
 import iceepotpc.charteng.ChartCreator;
 import iceepotpc.servergw.Meauserement;
 import iceepotpc.servergw.Server;
@@ -18,6 +19,7 @@ import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
 
 import org.jfree.chart.ChartPanel;
+import org.jfree.chart.JFreeChart;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
@@ -50,19 +52,22 @@ public class PotPanel extends JPanel {
 		this.setLayout(null);
 		
 		final JTextArea txtResults = new JTextArea();
-		txtResults.setBounds(47, 58, 601, 239);
-		JScrollPane sp = new JScrollPane(txtResults);
-		sp.setSize(183, 200);
-		sp.setLocation(50, 70);
-		sp.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
-		sp.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-		this.add(sp);
-		txtResults.setColumns(50);
-		txtResults.setRows(10);
+		if(Context.isDebug){
+			
+			txtResults.setBounds(47, 58, 601, 239);
+			JScrollPane sp = new JScrollPane(txtResults);
+			sp.setSize(183, 200);
+			sp.setLocation(50, 70);
+			sp.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+			sp.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+			this.add(sp);
+			txtResults.setColumns(50);
+			txtResults.setRows(10);
+		}
 		
 		JButton btnGet = new JButton("Get Info");
 		
-		btnGet.setBounds(562, 343, 86, 23);
+		btnGet.setBounds(562, 343, 114, 23);
 		this.add(btnGet);
 		
 		JLabel lblLastMeasruement = new JLabel("Last measurement");
@@ -117,7 +122,9 @@ public class PotPanel extends JPanel {
 			cmbYearTo.addItem(availableYears[i]);
 		this.add(cmbYearTo);
 		
-				
+		final ChartPanel pnlChart = new ChartPanel(null);
+		add(pnlChart);
+						
 		btnGet.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				Calendar from = Calendar.getInstance();
@@ -136,15 +143,17 @@ public class PotPanel extends JPanel {
 				else{
 					ArrayList<Meauserement> measurements = null;
 					try {
-						measurements = Server.GetMeasurements(from, pin);
+						measurements = Server.GetMeasurements(from, to, pin);
 						if(measurements == null || measurements.size() == 0)
-							txtResults.setText("No measurements yet");
+							JOptionPane.showMessageDialog(frame, "Measurements not available yet", "Warning", JOptionPane.WARNING_MESSAGE);
 						else{
+							if(Context.isDebug){
 							for(int i=0; i<measurements.size(); i++)
 								txtResults.setText(txtResults.getText() + "\n" +
 													measurements.get(i).getMoment() + "|" + 
 													measurements.get(i).getPot() + "|" +
 													measurements.get(i).getValue());
+							}
 							Calendar c = Calendar.getInstance();
 							c.setTimeInMillis((long)measurements.get(measurements.size()-1).getMoment());
 							txtLastTime.setText(c.get(Calendar.DAY_OF_MONTH) + "/" +
@@ -155,11 +164,14 @@ public class PotPanel extends JPanel {
 							
 							//txtLastTime.setText(String.valueOf(measurements.get(measurements.size()-1).getMoment()));
 							txtLastValue.setText(String.valueOf(measurements.get(measurements.size()-1).getValue()));
-							ChartPanel pnlChart = ChartCreator.createChart(measurements);
-							pnlChart.setBounds(263, 70, 385, 200);
 							
-							add(pnlChart);
+							JFreeChart fc = ChartCreator.createChart(measurements);
+							//pnlChart = new ChartPanel(fc, false);
+							pnlChart.setChart(fc);
+							pnlChart.setBounds(263, 70, 385, 200);
 							pnlChart.setVisible(true);
+							
+							
 						}
 					} catch (Exception e1) {
 						JOptionPane.showMessageDialog(frame, e1.getMessage(), "Warning", JOptionPane.ERROR_MESSAGE);
@@ -170,43 +182,5 @@ public class PotPanel extends JPanel {
 			}
 		});
 		
-		/*btnGet.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				
-				Calendar from = Calendar.getInstance();
-				from.set(Calendar.MONTH, cmbMonthFrom.getSelectedIndex()+1);
-				from.set(Calendar.DAY_OF_MONTH, 1);
-				from.set(Calendar.YEAR, Integer.parseInt((String)cmbYearFrom.getSelectedItem()));
-				
-				Calendar to = Calendar.getInstance();
-				to.set(Calendar.MONTH, cmbMonthTo.getSelectedIndex()+1);
-				to.set(Calendar.DAY_OF_MONTH, 1);
-				to.set(Calendar.YEAR, Integer.parseInt((String)cmbYearTo.getSelectedItem()));
-				
-				if(from.getTime().getTime() > to.getTime().getTime()){
-					JOptionPane.showMessageDialog(frame, "The \"From\" date is after the \"To\" one", "Warning", JOptionPane.ERROR_MESSAGE);
-				}
-				else{
-					ArrayList<Meauserement> measurements = null;
-					try {
-						measurements = Server.GetMeasurements(from, pin);
-						if(measurements == null || measurements.size() == 0)
-							txtResults.setText("No measurements yet");
-						else
-							for(int i=0; i<measurements.size(); i++)
-								txtResults.setText(txtResults.getText() + "\n" +
-													measurements.get(i).getMoment() + "|" + 
-													measurements.get(i).getPot() + "|" +
-													measurements.get(i).getValue());	
-					} catch (Exception e1) {
-						JOptionPane.showMessageDialog(frame, e1.getMessage(), "Warning", JOptionPane.ERROR_MESSAGE);
-					}
-					
-				}
-				//txtResults.setText(from.get(Calendar.MONTH) + "/" + from.get(Calendar.YEAR) + "-" +
-				//					to.get(Calendar.MONTH) + "/" + to.get(Calendar.YEAR));
-			}
-		});*/
 	}
 }

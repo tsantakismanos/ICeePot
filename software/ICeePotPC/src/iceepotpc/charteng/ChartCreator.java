@@ -7,10 +7,9 @@ import java.util.Date;
 
 
 import org.jfree.chart.ChartFactory;
-import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 
-import org.jfree.data.time.Millisecond;
+import org.jfree.data.time.Second;
 import org.jfree.data.time.TimeSeries;
 import org.jfree.data.time.TimeSeriesCollection;
 import org.jfree.data.time.TimeSeriesDataItem;
@@ -23,7 +22,7 @@ import org.jfree.data.time.TimeSeriesDataItem;
 public class ChartCreator 
 {
 	
-	public static ChartPanel createChart(ArrayList<Meauserement> measurements){
+	public static JFreeChart createChart(ArrayList<Meauserement> measurements){
 		
 		
 		
@@ -32,17 +31,17 @@ public class ChartCreator
 		TimeSeries ts = new TimeSeries("Moisture Level");
 		
 		for(int i=0; i< measurements.size(); i++){
-			Date d = new Date((long)measurements.get(i).getMoment());
-			ts.add(new TimeSeriesDataItem(new Millisecond(d), measurements.get(i).getValue()));
+			Date d = new Date(measurements.get(i).getMoment());
+			ts.add(new TimeSeriesDataItem(new Second(d), measurements.get(i).getValue()));
 		}
 		
 		dataset.addSeries(ts);
 			
-		JFreeChart fchart = ChartFactory.createTimeSeriesChart("", "Time", "Moisture level", dataset, true, true, false);
+		JFreeChart fchart = ChartFactory.createTimeSeriesChart("", "Time", "Moisture level", dataset, false, true, false);
 		
-		ChartPanel cp = new ChartPanel(fchart);
+		//ChartPanel cp = new ChartPanel(fchart);
 		
-		return cp;
+		return fchart;
 		
 	}
 
