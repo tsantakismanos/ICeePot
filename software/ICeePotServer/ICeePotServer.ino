@@ -240,8 +240,8 @@ void send_file_rows_to_client(EthernetClient client, char* date){
     #endif
   
   if(!file){
-     client.println("Measurements not present yet...");
-     client.flush();
+     //client.println("Measurements not present yet...");
+     //client.flush();
      
    }
    
