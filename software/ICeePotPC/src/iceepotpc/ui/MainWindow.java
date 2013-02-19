@@ -30,6 +30,7 @@ import java.awt.event.MouseEvent;
 import javax.swing.JTabbedPane;
 import java.awt.Toolkit;
 
+import javax.swing.JDialog;
 import javax.swing.JMenuBar;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
@@ -84,17 +85,41 @@ public class MainWindow{
 		JMenuBar menuBar = new JMenuBar();
 		frame.getContentPane().add(menuBar, BorderLayout.NORTH);
 		
+		//File menu-bar item
 		JMenu mnFile = new JMenu("File");
 		menuBar.add(mnFile);
 		
+		//Settings menu item
 		JMenuItem mntmSettings = new JMenuItem("Settings");
+		mntmSettings.addMouseListener(new MouseAdapter() {
+
+			@Override
+			public void mousePressed(MouseEvent e) {
+				SettingsDialog dialog = new SettingsDialog();
+				dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+				dialog.setVisible(true);
+				dialog.pack();
+			}
+			
+		});
 		mnFile.add(mntmSettings);
-		
+
+		//Add pot menu item
 		JMenuItem mntmAddPot = new JMenuItem("Add Pot");
+		mntmAddPot.addMouseListener(new MouseAdapter() {
+
+			@Override
+			public void mousePressed(MouseEvent e) {
+				NewPotDialog dialog = new NewPotDialog();
+				dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+				dialog.setVisible(true);
+				dialog.pack();
+			}
+		});
 		mnFile.add(mntmAddPot);
 		
+		//Add close menu item
 		JMenuItem mntmClose = new JMenuItem("Close");
-		
 		mntmClose.addMouseListener(new MouseAdapter() {
 			
 			@Override
