@@ -34,26 +34,13 @@ public class SettingsDialog extends JDialog {
 	private JTextField txtServerHostName;
 	private JTextField txtServerPort;
 
-	/**
-	 * Launch the application.
-	 */
-	/*public static void main(String[] args) {
-		try {
-			SettingsDialog dialog = new SettingsDialog();
-			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-			dialog.setVisible(true);
-			dialog.pack();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}*/
-
+	
 	/**
 	 * Create the dialog.
 	 */
 	public SettingsDialog() {
 		setResizable(false);
-		setIconImage(Toolkit.getDefaultToolkit().getImage("C:\\Projects\\various\\ICeePot\\software\\ICeePotPC\\icons\\ICeePot_logo_new.png"));
+		setIconImage(Toolkit.getDefaultToolkit().getImage(SettingsDialog.class.getResource("/icons/ICeePot_logo_new.png")));
 		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 		setTitle("Settings");
 		setBounds(100, 100, 450, 300);
@@ -109,18 +96,21 @@ public class SettingsDialog extends JDialog {
 			{
 				JButton okButton = new JButton("OK");
 				okButton.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent e) {
+					public void actionPerformed(ActionEvent ae) {
 						if(txtServerHostName.getText().equals("") || txtServerPort.getText().equals(""))
-							JOptionPane.showMessageDialog((Component) e.getSource(), "Please fill all fields", "Error", JOptionPane.ERROR_MESSAGE);
+							JOptionPane.showMessageDialog((Component) ae.getSource(), "Please fill all fields", "Error", JOptionPane.ERROR_MESSAGE);
 						else
 						{
-							Context.serverHost = txtServerHostName.getText();
-							Context.serverPort = Integer.parseInt(txtServerPort.getText());
-							Window[] w = JWindow.getWindows();
-							for(int i=0; i<w.length; i++)
-								if(w[i].isVisible() && w[i].getClass() == SettingsDialog.class)
-									w[i].dispose();
-							Context.updateServerSettings();
+							try {
+								Context.updateServer(txtServerHostName.getText(), Integer.parseInt(txtServerPort.getText()));
+							} catch (Exception e) {
+								JOptionPane.showMessageDialog((Component) ae.getSource(), "Error in Updating server settings: "+e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+							}finally{
+								Window[] w = JWindow.getWindows();
+								for(int i=0; i<w.length; i++)
+									if(w[i].isVisible() && w[i].getClass() == SettingsDialog.class)
+										w[i].dispose();
+							}
 						}
 					}
 				});

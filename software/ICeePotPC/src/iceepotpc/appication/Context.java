@@ -102,16 +102,33 @@ public class Context {
 	/**
 	 * helper method to be called when UI is to create a new pot
 	 * @param p: the pot to be added to the context & to the settings file
+	 * @throws Exception 
 	 */
-	public static void addPot(Pot p){
+	public static void addPot(Pot p) throws Exception{
 		potDescrs.add(p);
 		addPotToSettings(p);
 	}
 	
-	/**
-	 * helper method which stores the context variables to the settings file 
+	/** helper method to be called when UI wants to update the server
+	 * information, Context is updated & settings file is modified 
+	 * @param hostName
+	 * @param port
+	 * @throws Exception 
 	 */
-	private static void addPotToSettings(Pot p){
+	public static void updateServer(String hostName, int port) throws Exception{
+		
+		serverHost = hostName;
+		serverPort = port;
+		
+		updateServerSettings();
+	}
+	
+	/**
+	 * helper method which stores the context variables to the settings file
+	 *  @param p: the pot to be added to the settings file 
+	 * @throws Exception 
+	 */
+	private static void addPotToSettings(Pot p) throws Exception{
 		Document dom;
 		
 		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
@@ -144,15 +161,16 @@ public class Context {
 			transformer.transform(source, result);
 			
 		} catch (Exception e){
-			//TODO: inform the caller
+			throw e;
 		}
 	}
 	
 	
 	/**
 	 * helper method which stores the context server variables to the settings file 
+	 * @throws Exception 
 	 */
-	public static void updateServerSettings(){
+	private static void updateServerSettings() throws Exception{
 		Document dom;
 		
 		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
@@ -179,7 +197,7 @@ public class Context {
 			transformer.transform(source, result);
 			
 		} catch (Exception e){
-			//TODO: inform the caller
+			throw e;
 		}
 	}
 

@@ -40,9 +40,10 @@ import javax.swing.JWindow;
 
 
 /**
- * @author tsantakis
  * The application's main window where a menu bar is displayed and a set of tabs
  * each one of them representing a pot.
+ * @author tsantakis
+ * 
  */
 public class MainWindow{
 	
@@ -80,7 +81,7 @@ public class MainWindow{
 		frame.setBounds(100, 100, 723, 487);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setTitle("ICeePot");
-		frame.setIconImage(Toolkit.getDefaultToolkit().getImage("C:\\Projects\\various\\ICeePot\\software\\ICeePotPC\\icons\\ICeePot_logo_new.png"));
+		frame.setIconImage(Toolkit.getDefaultToolkit().getImage(MainWindow.class.getResource("/icons/ICeePot_logo_new.png")));
 		
 		JMenuBar menuBar = new JMenuBar();
 		frame.getContentPane().add(menuBar, BorderLayout.NORTH);

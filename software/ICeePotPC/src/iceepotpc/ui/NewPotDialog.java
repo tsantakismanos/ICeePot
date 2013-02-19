@@ -53,7 +53,7 @@ public class NewPotDialog extends JDialog {
 	 */
 	public NewPotDialog() {
 		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-		setIconImage(Toolkit.getDefaultToolkit().getImage("C:\\Projects\\various\\ICeePot\\software\\ICeePotPC\\icons\\ICeePot_logo_new.png"));
+		setIconImage(Toolkit.getDefaultToolkit().getImage(NewPotDialog.class.getResource("/icons/ICeePot_logo_new.png")));
 		setTitle("Add New Pot");
 		setBounds(100, 100, 450, 300);
 		getContentPane().setLayout(new BorderLayout());
@@ -108,14 +108,17 @@ public class NewPotDialog extends JDialog {
 						else{
 							
 							Pot p = new Pot(txtPotDescr.getText(), Integer.parseInt(txtPotPin.getText()));
-							Context.potDescrs.add(p);
-							
-							Window[] w = JWindow.getWindows();
-							for(int i=0; i<w.length; i++)
-								if(w[i].isVisible() && w[i].getClass() == NewPotDialog.class)
-									w[i].dispose();
-							
-							Context.addPot(p);
+														
+							try {
+								Context.addPot(p);
+							} catch (Exception e1) {
+								JOptionPane.showMessageDialog((Component) e.getSource(), "Problem in adding port: "+e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+							}finally{
+								Window[] w = JWindow.getWindows();
+								for(int i=0; i<w.length; i++)
+									if(w[i].isVisible() && w[i].getClass() == NewPotDialog.class)
+										w[i].dispose();
+							}
 						}
 						
 					}
