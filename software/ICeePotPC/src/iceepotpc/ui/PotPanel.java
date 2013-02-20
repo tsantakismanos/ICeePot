@@ -5,6 +5,8 @@ import iceepotpc.charteng.ChartCreator;
 import iceepotpc.servergw.Meauserement;
 import iceepotpc.servergw.Server;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import javax.swing.JButton;
@@ -156,13 +158,9 @@ public class PotPanel extends JPanel {
 							}
 							Calendar c = Calendar.getInstance();
 							c.setTimeInMillis((long)measurements.get(measurements.size()-1).getMoment());
-							txtLastTime.setText(c.get(Calendar.DAY_OF_MONTH) + "/" +
-												c.get(Calendar.MONTH) + 1 + " " +
-												c.get(Calendar.HOUR_OF_DAY) + ":" +
-												c.get(Calendar.MINUTE) + ":" +
-												c.get(Calendar.SECOND));
+							DateFormat df = new SimpleDateFormat();
+							txtLastTime.setText(df.format(c.getTime()));
 							
-							//txtLastTime.setText(String.valueOf(measurements.get(measurements.size()-1).getMoment()));
 							txtLastValue.setText(String.valueOf(measurements.get(measurements.size()-1).getValue()));
 							
 							JFreeChart fc = ChartCreator.createChart(measurements);
