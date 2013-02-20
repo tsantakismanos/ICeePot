@@ -9,6 +9,8 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
+
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
@@ -43,6 +45,8 @@ public class PotPanel extends JPanel {
 	
 	private JTextField txtLastValue;
 	private JTextField txtLastTime;
+	
+	DateFormat df = new SimpleDateFormat();
 
 	
 	/**
@@ -152,13 +156,13 @@ public class PotPanel extends JPanel {
 							if(Context.isDebug){
 							for(int i=0; i<measurements.size(); i++)
 								txtResults.setText(txtResults.getText() + "\n" +
-													measurements.get(i).getMoment() + "|" + 
+													df.format(new Date(measurements.get(i).getMoment())) + "|" + 
 													measurements.get(i).getPot() + "|" +
 													measurements.get(i).getValue());
 							}
 							Calendar c = Calendar.getInstance();
 							c.setTimeInMillis((long)measurements.get(measurements.size()-1).getMoment());
-							DateFormat df = new SimpleDateFormat();
+							
 							txtLastTime.setText(df.format(c.getTime()));
 							
 							txtLastValue.setText(String.valueOf(measurements.get(measurements.size()-1).getValue()));
