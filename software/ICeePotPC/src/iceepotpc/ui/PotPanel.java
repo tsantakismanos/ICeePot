@@ -27,6 +27,8 @@ import org.jfree.chart.JFreeChart;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.awt.event.ItemListener;
+import java.awt.event.ItemEvent;
 
 /**
  * @author tsantakis
@@ -60,9 +62,9 @@ public class PotPanel extends JPanel {
 		final JTextArea txtResults = new JTextArea();
 		if(Context.isDebug){
 			
-			txtResults.setBounds(47, 58, 601, 239);
+			txtResults.setBounds(47, 58, 601, 400);
 			JScrollPane sp = new JScrollPane(txtResults);
-			sp.setSize(183, 200);
+			sp.setSize(183, 500);
 			sp.setLocation(50, 70);
 			sp.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
 			sp.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
@@ -73,7 +75,7 @@ public class PotPanel extends JPanel {
 		
 		JButton btnGet = new JButton("Get Info");
 		
-		btnGet.setBounds(562, 343, 114, 23);
+		btnGet.setBounds(757, 578, 114, 23);
 		this.add(btnGet);
 		
 		JLabel lblLastMeasruement = new JLabel("Last measurement");
@@ -97,36 +99,48 @@ public class PotPanel extends JPanel {
 		txtLastTime.setEditable(false);
 		
 		JLabel lblDateFrom = new JLabel("From");
-		lblDateFrom.setBounds(321, 322, 46, 14);
+		lblDateFrom.setBounds(504, 556, 46, 14);
 		this.add(lblDateFrom);
 		
 		JLabel lblDateTo = new JLabel("To");
-		lblDateTo.setBounds(321, 347, 46, 14);
+		lblDateTo.setBounds(504, 582, 46, 14);
 		this.add(lblDateTo);
 		
-		final JComboBox cmbMonthFrom = new JComboBox();
-		cmbMonthFrom.setBounds(378, 318, 71, 20);
-		for(int i=0; i<availableMonths.length; i++)
-			cmbMonthFrom.addItem(availableMonths[i]);
-		this.add(cmbMonthFrom);
-		
-		final JComboBox cmbYearFrom = new JComboBox();
-		cmbYearFrom.setBounds(459, 318, 73, 20);
-		for(int i=0; i< availableYears.length; i++)
-			cmbYearFrom.addItem(availableYears[i]);
-		this.add(cmbYearFrom);
 		
 		final JComboBox cmbMonthTo = new JComboBox();
-		cmbMonthTo.setBounds(377, 344, 72, 20);
+		cmbMonthTo.setBounds(568, 579, 72, 20);
 		for(int i=0; i<availableMonths.length; i++)
 			cmbMonthTo.addItem(availableMonths[i]);
 		this.add(cmbMonthTo);
 		
 		final JComboBox cmbYearTo = new JComboBox();
-		cmbYearTo.setBounds(459, 344, 73, 20);
+		cmbYearTo.setBounds(652, 579, 73, 20);
 		for(int i=0; i< availableYears.length; i++)
 			cmbYearTo.addItem(availableYears[i]);
 		this.add(cmbYearTo);
+		
+		final JComboBox cmbMonthFrom = new JComboBox();
+		cmbMonthFrom.addItemListener(new ItemListener() {
+			public void itemStateChanged(ItemEvent arg0) {
+				cmbMonthTo.setSelectedIndex(cmbMonthFrom.getSelectedIndex());				
+			}
+		});
+		cmbMonthFrom.setBounds(569, 547, 71, 20);
+		for(int i=0; i<availableMonths.length; i++)
+			cmbMonthFrom.addItem(availableMonths[i]);
+		this.add(cmbMonthFrom);
+		
+		final JComboBox cmbYearFrom = new JComboBox();
+		cmbYearFrom.addItemListener(new ItemListener() {
+			public void itemStateChanged(ItemEvent e) {
+				cmbYearTo.setSelectedIndex(cmbYearFrom.getSelectedIndex());
+			}
+		});
+		cmbYearFrom.setBounds(652, 547, 73, 20);
+		for(int i=0; i< availableYears.length; i++)
+			cmbYearFrom.addItem(availableYears[i]);
+		this.add(cmbYearFrom);
+				
 		
 		final ChartPanel pnlChart = new ChartPanel(null);
 		add(pnlChart);
@@ -170,7 +184,7 @@ public class PotPanel extends JPanel {
 							JFreeChart fc = ChartCreator.createChart(measurements);
 							//pnlChart = new ChartPanel(fc, false);
 							pnlChart.setChart(fc);
-							pnlChart.setBounds(263, 70, 385, 200);
+							pnlChart.setBounds(263, 70, 620, 460);
 							pnlChart.setVisible(true);
 							
 							
@@ -185,4 +199,6 @@ public class PotPanel extends JPanel {
 		});
 		
 	}
+	
+	
 }
