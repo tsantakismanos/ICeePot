@@ -39,8 +39,8 @@ public class SettingsDialog extends JDialog {
 	/**
 	 * Create the dialog.
 	 */
-	public SettingsDialog(Context c) {
-		cntx = c;
+	public SettingsDialog() {
+		cntx = Context.getInstance();
 		setResizable(false);
 		setIconImage(Toolkit.getDefaultToolkit().getImage(SettingsDialog.class.getResource("/icons/ICeePot_logo_new.png")));
 		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
@@ -79,7 +79,7 @@ public class SettingsDialog extends JDialog {
 			txtServerHostName = new JTextField();
 			contentPanel.add(txtServerHostName, "4, 4, 8, 1");
 			txtServerHostName.setColumns(10);
-			txtServerHostName.setText(cntx.serverHost);
+			txtServerHostName.setText(cntx.getServerHost());
 		}
 		{
 			JLabel lblServerPort = new JLabel("Server Port");
@@ -89,7 +89,7 @@ public class SettingsDialog extends JDialog {
 			txtServerPort = new JTextField();
 			contentPanel.add(txtServerPort, "4, 8, fill, default");
 			txtServerPort.setColumns(10);
-			txtServerPort.setText(String.valueOf(cntx.serverPort));
+			txtServerPort.setText(String.valueOf(cntx.getServerPort()));
 		}
 		{
 			JPanel buttonPane = new JPanel();

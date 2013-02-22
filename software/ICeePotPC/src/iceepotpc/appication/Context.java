@@ -3,7 +3,6 @@ package iceepotpc.appication;
 
 import java.io.File;
 import java.util.ArrayList;
-
 import java.util.Observer;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -25,29 +24,41 @@ import org.w3c.dom.NodeList;
  */
 public class Context{
 	
+	private static Context instance = null;
 	
 	/**
 	 *  arrayList keeping the descriptions of all monitored pots (the tabs to be generated)
 	 */
-	public ArrayList<Pot> potDescrs = new ArrayList<Pot>();
+	private ArrayList<Pot> potDescrs = new ArrayList<Pot>();
 	
 	
 	/**
 	 * server configuration (for opening the connection) 
 	 */
-	public String serverHost = "homeplants.dyndns.org";
-	public int serverPort = 3629;
+	private String serverHost = "homeplants.dyndns.org";
+	private int serverPort = 3629;
 	
-	public boolean isDebug = true;
+	private boolean debugMode = true;
 	
-	public ArrayList<Observer> uiElements = null; 
 	
+
+	private ArrayList<Observer> uiElements = null; 
+	
+	
+	public static Context getInstance(){
+		if(instance == null){
+			instance = new Context();
+			return instance;
+		}else{
+			return instance;
+		}
+	}
 	
 	/**
 	 * constructor which reads the settings xml file and applies the
 	 * configuration to Context variables
 	 */
-	public Context() {
+	private Context() {
 		
 		uiElements = new ArrayList<Observer>();
 		
@@ -106,6 +117,24 @@ public class Context{
 	}
 	
 	
+	public ArrayList<Pot> getPotDescrs() {
+		return potDescrs;
+	}
+
+	public boolean isDebugMode() {
+		return debugMode;
+	}
+	
+	
+
+	public String getServerHost() {
+		return serverHost;
+	}
+
+	public int getServerPort() {
+		return serverPort;
+	}
+
 	/**
 	 * helper method to be called when UI is to create a new pot
 	 * @param p: the pot to be added to the context & to the settings file
@@ -118,7 +147,7 @@ public class Context{
 		//notify the observers
 		if(uiElements != null)
 			for(int i=0; i<uiElements.size(); i++)
-				uiElements.get(i).update(null, null);
+				uiElements.get(i).update(null, potDescrs.size()-1);
 	}
 	
 	/** helper method to be called when UI wants to update the server
@@ -211,6 +240,10 @@ public class Context{
 		} catch (Exception e){
 			throw e;
 		}
+	}
+	
+	public void registerObserver(Observer obs){
+		uiElements.add(obs);
 	}
 
 

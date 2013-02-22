@@ -56,14 +56,14 @@ public class PotPanel extends JPanel {
 	/**
 	 * Create the panel.
 	 */
-	public PotPanel(final int pin,final JFrame frame, Context c) {
-		cntx = c;
+	public PotPanel(final int pin,final JFrame frame) {
+		cntx = Context.getInstance();
 		this.setToolTipText("");
 		
 		this.setLayout(null);
 		
 		final JTextArea txtResults = new JTextArea();
-		if(c.isDebug){
+		if(cntx.isDebugMode()){
 			
 			txtResults.setBounds(47, 58, 601, 400);
 			JScrollPane sp = new JScrollPane(txtResults);
@@ -170,7 +170,7 @@ public class PotPanel extends JPanel {
 						if(measurements == null || measurements.size() == 0)
 							JOptionPane.showMessageDialog(frame, "Measurements not available yet", "Warning", JOptionPane.WARNING_MESSAGE);
 						else{
-							if(cntx.isDebug){
+							if(cntx.isDebugMode()){
 							for(int i=0; i<measurements.size(); i++)
 								txtResults.setText(txtResults.getText() + "\n" +
 													df.format(new Date(measurements.get(i).getMoment())) + "|" + 

@@ -15,12 +15,12 @@ public class ICeePotPC {
 	 */
 	public static void main(String[] args) {
 		
-		Context c = new Context();
+		Context c = Context.getInstance();
 		
-		MainWindow window = new MainWindow(c);
+		MainWindow window = new MainWindow();
 		
 		//add the main window to the observers collection
-		c.uiElements.add(window);
+		c.registerObserver(window);
 	}
 	
 	

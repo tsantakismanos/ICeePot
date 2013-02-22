@@ -49,13 +49,14 @@ import javax.swing.JWindow;
 public class MainWindow implements Observer{
 	
 	private JFrame frame;
+	private JTabbedPane tabbedPane;
 	Context cntx;
 	
 	/**
 	 * Create the application's main window.
 	 */
-	public MainWindow(Context c) {
-		cntx = c;
+	public MainWindow() {
+		cntx = Context.getInstance();
 		initialize();
 		this.frame.setVisible(true);
 	}
@@ -84,7 +85,7 @@ public class MainWindow implements Observer{
 
 			@Override
 			public void mousePressed(MouseEvent e) {
-				SettingsDialog dialog = new SettingsDialog(cntx);
+				SettingsDialog dialog = new SettingsDialog();
 				dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 				dialog.setVisible(true);
 				dialog.pack();
@@ -121,12 +122,12 @@ public class MainWindow implements Observer{
 		});
 		mnFile.add(mntmClose);
 		
-		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
+		tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 		frame.getContentPane().add(tabbedPane, BorderLayout.CENTER);
 		
-		if(cntx.potDescrs != null)
-			for(int i=0; i<cntx.potDescrs.size(); i++)
-				createTab(tabbedPane, cntx.potDescrs.get(i).getDescr(), cntx.potDescrs.get(i).getPin());
+		if(cntx.getPotDescrs() != null)
+			for(int i=0; i<cntx.getPotDescrs().size(); i++)
+				createTab(tabbedPane, cntx.getPotDescrs().get(i).getDescr(), cntx.getPotDescrs().get(i).getPin());
 		
 		
 	}
@@ -137,7 +138,7 @@ public class MainWindow implements Observer{
 	 *  to create a Tab which represents a pot (input / output)
 	 */
 	public void createTab(JTabbedPane tabbedPane, String descr, final int pin){
-		PotPanel pnlPot = new PotPanel(pin, frame, cntx);
+		PotPanel pnlPot = new PotPanel(pin, frame);
 		tabbedPane.addTab(descr, null, pnlPot, null);
 	}
 
@@ -146,10 +147,10 @@ public class MainWindow implements Observer{
 	 */
 	@Override
 	public void update(Observable o, Object arg) {
+		
+		int position = Integer.parseInt(arg.toString());
 
-		this.frame.dispose();
-		this.initialize();
-		this.frame.setVisible(true);
+		createTab(tabbedPane, cntx.getPotDescrs().get(position).getDescr(), cntx.getPotDescrs().get(position).getPin());
 	}
 
 	
