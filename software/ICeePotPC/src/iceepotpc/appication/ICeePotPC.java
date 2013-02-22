@@ -15,11 +15,12 @@ public class ICeePotPC {
 	 */
 	public static void main(String[] args) {
 		
-		@SuppressWarnings("unused")
 		Context c = new Context();
 		
-		MainWindow.launch();
-
+		MainWindow window = new MainWindow(c);
+		
+		//add the main window to the observers collection
+		c.uiElements.add(window);
 	}
 	
 	

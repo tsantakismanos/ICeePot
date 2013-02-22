@@ -1,7 +1,10 @@
 package iceepotpc.appication;
 
+
 import java.io.File;
 import java.util.ArrayList;
+
+import java.util.Observer;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -20,22 +23,24 @@ import org.w3c.dom.NodeList;
  * Class that keeps the application settings and various constants
  * accessible from everywhere within the app classes *
  */
-public class Context {
+public class Context{
 	
 	
 	/**
 	 *  arrayList keeping the descriptions of all monitored pots (the tabs to be generated)
 	 */
-	public static ArrayList<Pot> potDescrs = new ArrayList<Pot>();
+	public ArrayList<Pot> potDescrs = new ArrayList<Pot>();
 	
 	
 	/**
 	 * server configuration (for opening the connection) 
 	 */
-	public static String serverHost = "homeplants.dyndns.org";
-	public static int serverPort = 3629;
+	public String serverHost = "homeplants.dyndns.org";
+	public int serverPort = 3629;
 	
-	public static boolean isDebug = true;
+	public boolean isDebug = true;
+	
+	public ArrayList<Observer> uiElements = null; 
 	
 	
 	/**
@@ -43,6 +48,8 @@ public class Context {
 	 * configuration to Context variables
 	 */
 	public Context() {
+		
+		uiElements = new ArrayList<Observer>();
 		
 		Document dom;
 		
@@ -57,18 +64,18 @@ public class Context {
 			//get the server name
 			try{
 				NodeList nlstServer = dom.getElementsByTagName("server_hostname");
-				Context.serverHost = nlstServer.item(0).getTextContent();
+				serverHost = nlstServer.item(0).getTextContent();
 			}catch(Exception e){
-				Context.serverHost = "N/A";
+				serverHost = "N/A";
 			}
 					
 		
 			//get the server port
 			try{
 				NodeList nlstServer = dom.getElementsByTagName("server_port");
-				Context.serverPort = Integer.parseInt(nlstServer.item(0).getTextContent());
+				serverPort = Integer.parseInt(nlstServer.item(0).getTextContent());
 			}catch(Exception e){
-				Context.serverPort = -1;
+				serverPort = -1;
 			}
 			
 			try {
@@ -85,16 +92,16 @@ public class Context {
 					
 					Pot p = new Pot(s,j);
 					
-					Context.potDescrs.add(p);
+					potDescrs.add(p);
 				}
 			} catch (Exception e){
-				Context.potDescrs = null;
+				potDescrs = null;
 			}
 			
 		} catch (Exception e){
-			Context.serverHost = "N/A";
-			Context.serverPort = -1;
-			Context.potDescrs = null;
+			serverHost = "N/A";
+			serverPort = -1;
+			potDescrs = null;
 		}
 	}
 	
@@ -104,9 +111,14 @@ public class Context {
 	 * @param p: the pot to be added to the context & to the settings file
 	 * @throws Exception 
 	 */
-	public static void addPot(Pot p) throws Exception{
+	public void addPot(Pot p) throws Exception{
 		potDescrs.add(p);
 		addPotToSettings(p);
+		
+		//notify the observers
+		if(uiElements != null)
+			for(int i=0; i<uiElements.size(); i++)
+				uiElements.get(i).update(null, null);
 	}
 	
 	/** helper method to be called when UI wants to update the server
@@ -115,7 +127,7 @@ public class Context {
 	 * @param port
 	 * @throws Exception 
 	 */
-	public static void updateServer(String hostName, int port) throws Exception{
+	public void updateServer(String hostName, int port) throws Exception{
 		
 		serverHost = hostName;
 		serverPort = port;
@@ -128,7 +140,7 @@ public class Context {
 	 *  @param p: the pot to be added to the settings file 
 	 * @throws Exception 
 	 */
-	private static void addPotToSettings(Pot p) throws Exception{
+	private void addPotToSettings(Pot p) throws Exception{
 		Document dom;
 		
 		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
@@ -170,7 +182,7 @@ public class Context {
 	 * helper method which stores the context server variables to the settings file 
 	 * @throws Exception 
 	 */
-	private static void updateServerSettings() throws Exception{
+	private void updateServerSettings() throws Exception{
 		Document dom;
 		
 		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
@@ -183,12 +195,12 @@ public class Context {
 			
 			//set the server name
 			NodeList nlstServer = dom.getElementsByTagName("server_hostname");
-			nlstServer.item(0).setTextContent(Context.serverHost);
+			nlstServer.item(0).setTextContent(serverHost);
 								
 		
 			//set the server port
 			nlstServer = dom.getElementsByTagName("server_port");
-			nlstServer.item(0).setTextContent(String.valueOf(Context.serverPort));
+			nlstServer.item(0).setTextContent(String.valueOf(serverPort));
 			
 			TransformerFactory transformerFactory = TransformerFactory.newInstance();
 			Transformer transformer = transformerFactory.newTransformer();

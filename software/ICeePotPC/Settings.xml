@@ -5,8 +5,4 @@
     	<descr>Basil</descr>
         <pin>0</pin>
     </pot>
-    <pot>
-    	<descr>Mint</descr>
-        <pin>1</pin>
-    </pot>
-<pot><descr>Benjamin</descr><pin>2</pin></pot></settings>
+</settings>

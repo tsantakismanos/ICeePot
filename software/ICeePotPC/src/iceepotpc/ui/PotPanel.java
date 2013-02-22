@@ -48,19 +48,22 @@ public class PotPanel extends JPanel {
 	private JTextField txtLastValue;
 	private JTextField txtLastTime;
 	
+	Context cntx;
+	
 	DateFormat df = new SimpleDateFormat();
 
 	
 	/**
 	 * Create the panel.
 	 */
-	public PotPanel(final int pin,final JFrame frame) {
+	public PotPanel(final int pin,final JFrame frame, Context c) {
+		cntx = c;
 		this.setToolTipText("");
 		
 		this.setLayout(null);
 		
 		final JTextArea txtResults = new JTextArea();
-		if(Context.isDebug){
+		if(c.isDebug){
 			
 			txtResults.setBounds(47, 58, 601, 400);
 			JScrollPane sp = new JScrollPane(txtResults);
@@ -163,11 +166,11 @@ public class PotPanel extends JPanel {
 				else{
 					ArrayList<Meauserement> measurements = null;
 					try {
-						measurements = Server.GetMeasurements(from, to, pin);
+						measurements = Server.GetMeasurements(from, to, pin, cntx);
 						if(measurements == null || measurements.size() == 0)
 							JOptionPane.showMessageDialog(frame, "Measurements not available yet", "Warning", JOptionPane.WARNING_MESSAGE);
 						else{
-							if(Context.isDebug){
+							if(cntx.isDebug){
 							for(int i=0; i<measurements.size(); i++)
 								txtResults.setText(txtResults.getText() + "\n" +
 													df.format(new Date(measurements.get(i).getMoment())) + "|" + 

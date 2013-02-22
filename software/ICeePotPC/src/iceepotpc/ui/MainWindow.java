@@ -15,7 +15,6 @@ package iceepotpc.ui;
 
 import iceepotpc.appication.Context;
 
-import java.awt.EventQueue;
 import java.awt.Window;
 
 
@@ -29,6 +28,8 @@ import java.awt.event.MouseEvent;
 
 import javax.swing.JTabbedPane;
 import java.awt.Toolkit;
+import java.util.Observable;
+import java.util.Observer;
 
 import javax.swing.JDialog;
 import javax.swing.JMenuBar;
@@ -45,31 +46,18 @@ import javax.swing.JWindow;
  * @author tsantakis
  * 
  */
-public class MainWindow{
+public class MainWindow implements Observer{
 	
 	private JFrame frame;
+	Context cntx;
 	
 	/**
-	 * Launch the application.
+	 * Create the application's main window.
 	 */
-	public static void launch() {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					MainWindow window = new MainWindow();
-					window.frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
-
-	/**
-	 * Create the application.
-	 */
-	public MainWindow() {
+	public MainWindow(Context c) {
+		cntx = c;
 		initialize();
+		this.frame.setVisible(true);
 	}
 
 	/**
@@ -96,7 +84,7 @@ public class MainWindow{
 
 			@Override
 			public void mousePressed(MouseEvent e) {
-				SettingsDialog dialog = new SettingsDialog();
+				SettingsDialog dialog = new SettingsDialog(cntx);
 				dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 				dialog.setVisible(true);
 				dialog.pack();
@@ -111,7 +99,7 @@ public class MainWindow{
 
 			@Override
 			public void mousePressed(MouseEvent e) {
-				NewPotDialog dialog = new NewPotDialog();
+				NewPotDialog dialog = new NewPotDialog(cntx);
 				dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 				dialog.setVisible(true);
 				dialog.pack();
@@ -136,9 +124,9 @@ public class MainWindow{
 		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 		frame.getContentPane().add(tabbedPane, BorderLayout.CENTER);
 		
-		if(Context.potDescrs != null)
-			for(int i=0; i<Context.potDescrs.size(); i++)
-				createTab(tabbedPane, Context.potDescrs.get(i).getDescr(), Context.potDescrs.get(i).getPin());
+		if(cntx.potDescrs != null)
+			for(int i=0; i<cntx.potDescrs.size(); i++)
+				createTab(tabbedPane, cntx.potDescrs.get(i).getDescr(), cntx.potDescrs.get(i).getPin());
 		
 		
 	}
@@ -149,8 +137,21 @@ public class MainWindow{
 	 *  to create a Tab which represents a pot (input / output)
 	 */
 	public void createTab(JTabbedPane tabbedPane, String descr, final int pin){
-		PotPanel pnlPot = new PotPanel(pin, frame);
+		PotPanel pnlPot = new PotPanel(pin, frame, cntx);
 		tabbedPane.addTab(descr, null, pnlPot, null);
 	}
+
+	/* (non-Javadoc)
+	 * @see java.util.Observer#update(java.util.Observable, java.lang.Object)
+	 */
+	@Override
+	public void update(Observable o, Object arg) {
+
+		this.frame.dispose();
+		this.initialize();
+		this.frame.setVisible(true);
+	}
+
+	
 	
 }

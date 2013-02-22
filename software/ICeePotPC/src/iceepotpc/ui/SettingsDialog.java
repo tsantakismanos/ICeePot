@@ -34,11 +34,13 @@ public class SettingsDialog extends JDialog {
 	private JTextField txtServerHostName;
 	private JTextField txtServerPort;
 
+	Context cntx;
 	
 	/**
 	 * Create the dialog.
 	 */
-	public SettingsDialog() {
+	public SettingsDialog(Context c) {
+		cntx = c;
 		setResizable(false);
 		setIconImage(Toolkit.getDefaultToolkit().getImage(SettingsDialog.class.getResource("/icons/ICeePot_logo_new.png")));
 		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
@@ -77,7 +79,7 @@ public class SettingsDialog extends JDialog {
 			txtServerHostName = new JTextField();
 			contentPanel.add(txtServerHostName, "4, 4, 8, 1");
 			txtServerHostName.setColumns(10);
-			txtServerHostName.setText(Context.serverHost);
+			txtServerHostName.setText(cntx.serverHost);
 		}
 		{
 			JLabel lblServerPort = new JLabel("Server Port");
@@ -87,7 +89,7 @@ public class SettingsDialog extends JDialog {
 			txtServerPort = new JTextField();
 			contentPanel.add(txtServerPort, "4, 8, fill, default");
 			txtServerPort.setColumns(10);
-			txtServerPort.setText(String.valueOf(Context.serverPort));
+			txtServerPort.setText(String.valueOf(cntx.serverPort));
 		}
 		{
 			JPanel buttonPane = new JPanel();
@@ -102,7 +104,7 @@ public class SettingsDialog extends JDialog {
 						else
 						{
 							try {
-								Context.updateServer(txtServerHostName.getText(), Integer.parseInt(txtServerPort.getText()));
+								cntx.updateServer(txtServerHostName.getText(), Integer.parseInt(txtServerPort.getText()));
 							} catch (Exception e) {
 								JOptionPane.showMessageDialog((Component) ae.getSource(), "Error in Updating server settings: "+e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 							}finally{

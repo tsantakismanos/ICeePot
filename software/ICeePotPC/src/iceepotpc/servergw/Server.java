@@ -28,7 +28,7 @@ public class Server {
 	 * @return: an arraylist of measurements (pot-moment-value)
 	 * @throws Exception 
 	 */
-	public static ArrayList<Meauserement> GetMeasurements(Calendar c, int pot) throws Exception {
+	public static ArrayList<Meauserement> GetMeasurements(Calendar c, int pot, Context cntx) throws Exception {
 
 		ArrayList<Meauserement> measurements = new ArrayList<Meauserement>();
 		
@@ -48,7 +48,7 @@ public class Server {
 			
 			int response = 0;
 			String response_str = "";
-			s = new Socket(Context.serverHost, Context.serverPort);
+			s = new Socket(cntx.serverHost, cntx.serverPort);
 
 			os = s.getOutputStream();
 
@@ -102,17 +102,17 @@ public class Server {
 	 * @return the results in an arraylist form
 	 * @throws Exception 
 	 */
-	public static ArrayList<Meauserement> GetMeasurements(Calendar cFrom, Calendar cTo, int pot) throws Exception{
+	public static ArrayList<Meauserement> GetMeasurements(Calendar cFrom, Calendar cTo, int pot, Context cntx) throws Exception{
 		
 		ArrayList<Meauserement> measurements = new ArrayList<Meauserement>();
 		
 		//for all months in range
 		while(cFrom.get(Calendar.MONTH) != cTo.get(Calendar.MONTH)){
-			measurements.addAll(GetMeasurements(cFrom, pot));
+			measurements.addAll(GetMeasurements(cFrom, pot, cntx));
 			cFrom.add(Calendar.MONTH, 1);
 		}
 		
-		measurements.addAll(GetMeasurements(cTo, pot));
+		measurements.addAll(GetMeasurements(cTo, pot, cntx));
 		
 		return measurements;
 		

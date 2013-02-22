@@ -33,10 +33,12 @@ public class NewPotDialog extends JDialog {
 	private final JPanel contentPanel = new JPanel();
 	private JTextField txtPotDescr;
 	private JTextField txtPotPin;
+	
+	Context cntx;
 
 	/**
 	 * Launch the application.
-	 */
+	 *//*
 	public static void main(String[] args) {
 		try {
 			NewPotDialog dialog = new NewPotDialog();
@@ -46,12 +48,13 @@ public class NewPotDialog extends JDialog {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-	}
+	}*/
 
 	/**
 	 * Create the dialog.
 	 */
-	public NewPotDialog() {
+	public NewPotDialog(Context c) {
+		cntx = c;
 		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 		setIconImage(Toolkit.getDefaultToolkit().getImage(NewPotDialog.class.getResource("/icons/ICeePot_logo_new.png")));
 		setTitle("Add New Pot");
@@ -110,7 +113,7 @@ public class NewPotDialog extends JDialog {
 							Pot p = new Pot(txtPotDescr.getText(), Integer.parseInt(txtPotPin.getText()));
 														
 							try {
-								Context.addPot(p);
+								cntx.addPot(p);
 							} catch (Exception e1) {
 								JOptionPane.showMessageDialog((Component) e.getSource(), "Problem in adding port: "+e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 							}finally{
