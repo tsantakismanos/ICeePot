@@ -136,8 +136,9 @@ public class MainWindow{
 		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 		frame.getContentPane().add(tabbedPane, BorderLayout.CENTER);
 		
-		for(int i=0; i<Context.potDescrs.size(); i++)
-			createTab(tabbedPane, Context.potDescrs.get(i).getDescr(), Context.potDescrs.get(i).getPin());
+		if(Context.potDescrs != null)
+			for(int i=0; i<Context.potDescrs.size(); i++)
+				createTab(tabbedPane, Context.potDescrs.get(i).getDescr(), Context.potDescrs.get(i).getPin());
 		
 		
 	}
