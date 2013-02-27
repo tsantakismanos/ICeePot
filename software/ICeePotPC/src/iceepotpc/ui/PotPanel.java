@@ -163,28 +163,27 @@ public class PotPanel extends JPanel {
 		final JTextArea txtResults = new JTextArea();
 		txtResults.setEditable(false);
 		txtResults.setTabSize(3);
-		txtResults.setPreferredSize(new Dimension(120, 600));
-		txtResults.setMinimumSize(new Dimension(120, 600));
-		txtResults.setMaximumSize(new Dimension(120, 600));
+		txtResults.setPreferredSize(new Dimension(120, 1000));
+		txtResults.setMinimumSize(new Dimension(120, 1000));
+		txtResults.setMaximumSize(new Dimension(120, 4000));
 		// txtResults.setMaximumSize(new Dimension(32767, 32767));
 		// txtResults.setMinimumSize(new Dimension(23, 23));
 
 		// txtResults.setBounds(47, 58, 601, 400);
 		JScrollPane sp = new JScrollPane(txtResults);
-		sp.setPreferredSize(new Dimension(120, 600));
-		sp.setMinimumSize(new Dimension(120, 600));
-		sp.setMaximumSize(new Dimension(120, 600));
+		sp.setPreferredSize(new Dimension(120, 450));
+		sp.setMinimumSize(new Dimension(120, 450));
+		sp.setMaximumSize(new Dimension(120, 450));
 		sp.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		sp.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		GridBagConstraints gbc_sp = new GridBagConstraints();
-		gbc_sp.anchor = GridBagConstraints.NORTH;
-		gbc_sp.fill = GridBagConstraints.HORIZONTAL;
+		gbc_sp.fill = GridBagConstraints.BOTH;
 		gbc_sp.insets = new Insets(0, 0, 5, 5);
 		gbc_sp.gridx = 1;
 		gbc_sp.gridy = 1;
 		this.add(sp, gbc_sp);
 		txtResults.setColumns(1);
-		txtResults.setRows(10);
+		txtResults.setRows(30);
 
 		final ChartPanel pnlChart = new ChartPanel(null);
 		pnlChart.setMaximumDrawWidth(2048);
@@ -194,7 +193,8 @@ public class PotPanel extends JPanel {
 		FlowLayout flowLayout = (FlowLayout) pnlChart.getLayout();
 		flowLayout.setAlignment(FlowLayout.LEFT);
 		GridBagConstraints gbc_pnlChart = new GridBagConstraints();
-		gbc_pnlChart.anchor = GridBagConstraints.NORTHWEST;
+		gbc_pnlChart.fill = GridBagConstraints.VERTICAL;
+		gbc_pnlChart.anchor = GridBagConstraints.WEST;
 		gbc_pnlChart.insets = new Insets(0, 0, 5, 0);
 		gbc_pnlChart.gridx = 3;
 		gbc_pnlChart.gridy = 1;

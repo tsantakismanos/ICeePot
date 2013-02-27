@@ -69,7 +69,7 @@ public class MainWindow implements Observer{
 		frame = new JFrame();
 		frame.setPreferredSize(new Dimension(920, 700));
 		frame.setMinimumSize(new Dimension(920, 700));
-		frame.setBounds(50, 50, 920, 700);
+		frame.setBounds(20, 20, 920, 700);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setTitle("ICeePot");
 		frame.setIconImage(Toolkit.getDefaultToolkit().getImage(MainWindow.class.getResource("/icons/ICeePot_logo_new.png")));
