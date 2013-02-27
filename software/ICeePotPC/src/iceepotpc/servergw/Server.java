@@ -67,7 +67,9 @@ public class Server {
 				if((char)response == '\n')
 				{
 					//a whole line has been read, parse, store and begin a new line
-					measurements.add(ParseMeasurementRow(response_str));
+					Meauserement m = ParseMeasurementRow(response_str);
+					if(m.getPot() == pot)
+					measurements.add(m);
 					
 					response_str = "";
 				}
