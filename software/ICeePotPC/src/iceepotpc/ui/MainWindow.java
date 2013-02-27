@@ -36,6 +36,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JWindow;
+import java.awt.Dimension;
 
 
 
@@ -66,8 +67,9 @@ public class MainWindow implements Observer{
 	 */
 	private void initialize() {
 		frame = new JFrame();
-		frame.setResizable(false);
-		frame.setBounds(50, 50, 922, 709);
+		frame.setPreferredSize(new Dimension(920, 700));
+		frame.setMinimumSize(new Dimension(920, 700));
+		frame.setBounds(50, 50, 920, 700);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setTitle("ICeePot");
 		frame.setIconImage(Toolkit.getDefaultToolkit().getImage(MainWindow.class.getResource("/icons/ICeePot_logo_new.png")));
@@ -123,6 +125,8 @@ public class MainWindow implements Observer{
 		mnFile.add(mntmClose);
 		
 		tabbedPane = new JTabbedPane(JTabbedPane.TOP);
+		tabbedPane.setMinimumSize(new Dimension(900, 780));
+		tabbedPane.setPreferredSize(new Dimension(900, 780));
 		frame.getContentPane().add(tabbedPane, BorderLayout.CENTER);
 		
 		if(cntx.getPotDescrs() != null)

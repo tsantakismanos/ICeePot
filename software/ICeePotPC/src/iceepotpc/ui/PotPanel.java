@@ -29,10 +29,22 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.ItemEvent;
+import java.awt.Component;
+import javax.swing.border.CompoundBorder;
+import java.awt.ComponentOrientation;
+import java.awt.Dimension;
+import com.jgoodies.forms.layout.FormLayout;
+import com.jgoodies.forms.layout.ColumnSpec;
+import com.jgoodies.forms.factories.FormFactory;
+import com.jgoodies.forms.layout.RowSpec;
+import java.awt.GridBagLayout;
+import java.awt.GridBagConstraints;
+import java.awt.Insets;
+import javax.swing.border.LineBorder;
+import java.awt.Color;
 
 /**
- * @author tsantakis
- * A tab where information and inputs per pot is displayed.
+ * @author tsantakis A tab where information and inputs per pot is displayed.
  * 
  */
 public class PotPanel extends JPanel {
@@ -42,166 +54,279 @@ public class PotPanel extends JPanel {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	private String[] availableMonths = {"Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"};
-	private String[] availableYears = {"2011","2012","2013","2014"};
-	
+	private String[] availableMonths = { "Jan", "Feb", "Mar", "Apr", "May",
+			"Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };
+	private String[] availableYears = { "2011", "2012", "2013", "2014" };
+
 	private JTextField txtLastValue;
 	private JTextField txtLastTime;
-	
+
 	Context cntx;
-	
+
 	DateFormat df = new SimpleDateFormat();
 
-	
 	/**
 	 * Create the panel.
 	 */
-	public PotPanel(final int pin,final JFrame frame) {
+	public PotPanel(final int pin, final JFrame frame) {
+		setSize(new Dimension(900, 780));
+		setMinimumSize(new Dimension(900, 780));
 		cntx = Context.getInstance();
 		this.setToolTipText("");
-		
-		this.setLayout(null);
-		
-		final JTextArea txtResults = new JTextArea();
-		if(cntx.isDebugMode()){
-			
-			txtResults.setBounds(47, 58, 601, 400);
-			JScrollPane sp = new JScrollPane(txtResults);
-			sp.setSize(183, 500);
-			sp.setLocation(50, 70);
-			sp.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
-			sp.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-			this.add(sp);
-			txtResults.setColumns(50);
-			txtResults.setRows(10);
-		}
-		
-		JButton btnGet = new JButton("Get Info");
-		
-		btnGet.setBounds(757, 578, 114, 23);
-		this.add(btnGet);
-		
+		GridBagLayout gridBagLayout = new GridBagLayout();
+		gridBagLayout.columnWidths = new int[] { 47, 186, 30, 620, 0 };
+		gridBagLayout.rowHeights = new int[] {29, 450, 85, 0};
+		gridBagLayout.columnWeights = new double[] { 0.0, 0.0, 0.0, 1.0,
+				Double.MIN_VALUE };
+		gridBagLayout.rowWeights = new double[] { 0.0, 1.0, 0.0,
+				Double.MIN_VALUE };
+		setLayout(gridBagLayout);
+
+		// last values panel
+		JPanel pnlLastValues = new JPanel();
+		pnlLastValues.setPreferredSize(new Dimension(410, 20));
+		pnlLastValues.setMinimumSize(new Dimension(410, 20));
+		pnlLastValues.setMaximumSize(new Dimension(410, 20));
+		pnlLastValues
+				.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
+		pnlLastValues.setAlignmentY(Component.TOP_ALIGNMENT);
+		pnlLastValues.setAlignmentX(Component.LEFT_ALIGNMENT);
+		GridBagConstraints gbc_pnlLastValues = new GridBagConstraints();
+		gbc_pnlLastValues.insets = new Insets(0, 0, 5, 0);
+		gbc_pnlLastValues.ipady = 5;
+		gbc_pnlLastValues.ipadx = 5;
+		gbc_pnlLastValues.gridwidth = 4;
+		gbc_pnlLastValues.anchor = GridBagConstraints.NORTHWEST;
+		gbc_pnlLastValues.gridx = 1;
+		gbc_pnlLastValues.gridy = 0;
+		add(pnlLastValues, gbc_pnlLastValues);
+		GridBagLayout gbl_pnlLastValues = new GridBagLayout();
+		gbl_pnlLastValues.columnWidths = new int[] { 150, 90, 40, 100 };
+		gbl_pnlLastValues.rowHeights = new int[] { 20 };
+		gbl_pnlLastValues.columnWeights = new double[] { 0.0, 0.0, 0.0, 0.0 };
+		gbl_pnlLastValues.rowWeights = new double[] { 0.0 };
+		pnlLastValues.setLayout(gbl_pnlLastValues);
+
 		JLabel lblLastMeasruement = new JLabel("Last measurement");
-		lblLastMeasruement.setBounds(47, 11, 142, 14);
-		this.add(lblLastMeasruement);
-		
+		lblLastMeasruement.setPreferredSize(new Dimension(130, 20));
+		lblLastMeasruement.setSize(new Dimension(130, 20));
+		lblLastMeasruement.setMinimumSize(new Dimension(130, 20));
+		lblLastMeasruement.setMaximumSize(new Dimension(130, 20));
+		lblLastMeasruement.setBorder(new CompoundBorder());
+		GridBagConstraints gbc_lblLastMeasruement = new GridBagConstraints();
+		gbc_lblLastMeasruement.anchor = GridBagConstraints.EAST;
+		gbc_lblLastMeasruement.fill = GridBagConstraints.VERTICAL;
+		gbc_lblLastMeasruement.insets = new Insets(0, 0, 0, 5);
+		gbc_lblLastMeasruement.gridx = 0;
+		gbc_lblLastMeasruement.gridy = 0;
+		pnlLastValues.add(lblLastMeasruement, gbc_lblLastMeasruement);
+
 		txtLastValue = new JTextField();
-		txtLastValue.setBounds(206, 9, 71, 20);
-		this.add(txtLastValue);
-		txtLastValue.setColumns(10);
+		txtLastValue.setPreferredSize(new Dimension(90, 20));
+		txtLastValue.setMargin(new Insets(10, 10, 10, 10));
+		txtLastValue.setMinimumSize(new Dimension(90, 20));
+		txtLastValue.setMaximumSize(new Dimension(90, 20));
+		GridBagConstraints gbc_txtLastValue = new GridBagConstraints();
+		gbc_txtLastValue.fill = GridBagConstraints.BOTH;
+		gbc_txtLastValue.insets = new Insets(0, 0, 0, 5);
+		gbc_txtLastValue.gridx = 1;
+		gbc_txtLastValue.gridy = 0;
+		pnlLastValues.add(txtLastValue, gbc_txtLastValue);
 		txtLastValue.setEditable(false);
-		
+
 		JLabel lblAt = new JLabel("at");
-		lblAt.setBounds(285, 11, 22, 14);
-		this.add(lblAt);
-		
+		lblAt.setPreferredSize(new Dimension(40, 20));
+		lblAt.setMinimumSize(new Dimension(40, 20));
+		lblAt.setMaximumSize(new Dimension(40, 20));
+		lblAt.setAlignmentX(Component.RIGHT_ALIGNMENT);
+		GridBagConstraints gbc_lblAt = new GridBagConstraints();
+		gbc_lblAt.anchor = GridBagConstraints.EAST;
+		gbc_lblAt.fill = GridBagConstraints.VERTICAL;
+		gbc_lblAt.insets = new Insets(0, 0, 0, 5);
+		gbc_lblAt.gridx = 2;
+		gbc_lblAt.gridy = 0;
+		pnlLastValues.add(lblAt, gbc_lblAt);
+
 		txtLastTime = new JTextField();
-		txtLastTime.setBounds(314, 9, 124, 20);
-		this.add(txtLastTime);
+		txtLastTime.setPreferredSize(new Dimension(100, 20));
+		txtLastTime.setMinimumSize(new Dimension(100, 20));
+		txtLastTime.setMaximumSize(new Dimension(100, 20));
+		GridBagConstraints gbc_txtLastTime = new GridBagConstraints();
+		gbc_txtLastTime.fill = GridBagConstraints.BOTH;
+		gbc_txtLastTime.gridx = 3;
+		gbc_txtLastTime.gridy = 0;
+		pnlLastValues.add(txtLastTime, gbc_txtLastTime);
 		txtLastTime.setColumns(10);
 		txtLastTime.setEditable(false);
-		
+
+		// panel results
+		final JTextArea txtResults = new JTextArea();
+		txtResults.setPreferredSize(new Dimension(120, 400));
+		txtResults.setMinimumSize(new Dimension(120, 400));
+		txtResults.setMaximumSize(new Dimension(120, 600));
+		// txtResults.setMaximumSize(new Dimension(32767, 32767));
+		// txtResults.setMinimumSize(new Dimension(23, 23));
+
+		// txtResults.setBounds(47, 58, 601, 400);
+		JScrollPane sp = new JScrollPane(txtResults);
+		sp.setSize(new Dimension(120, 400));
+		sp.setPreferredSize(new Dimension(120, 400));
+		sp.setMinimumSize(new Dimension(120, 400));
+		sp.setMaximumSize(new Dimension(120, 600));
+		sp.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+		sp.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		GridBagConstraints gbc_sp = new GridBagConstraints();
+		gbc_sp.fill = GridBagConstraints.BOTH;
+		gbc_sp.insets = new Insets(0, 0, 0, 5);
+		gbc_sp.gridheight = 2;
+		gbc_sp.gridx = 1;
+		gbc_sp.gridy = 1;
+		this.add(sp, gbc_sp);
+		txtResults.setColumns(1);
+		txtResults.setRows(10);
+
+		final ChartPanel pnlChart = new ChartPanel(null);
+		GridBagConstraints gbc_pnlChart = new GridBagConstraints();
+		gbc_pnlChart.anchor = GridBagConstraints.EAST;
+		gbc_pnlChart.fill = GridBagConstraints.VERTICAL;
+		gbc_pnlChart.insets = new Insets(0, 0, 5, 5);
+		gbc_pnlChart.gridx = 3;
+		gbc_pnlChart.gridy = 1;
+		add(pnlChart, gbc_pnlChart);
+
+		// criteria panel
+		JPanel pnlCriteria = new JPanel();
+		pnlCriteria.setSize(new Dimension(500, 85));
+		pnlCriteria.setMinimumSize(new Dimension(500, 85));
+		pnlCriteria.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
+		pnlCriteria.setAlignmentY(Component.BOTTOM_ALIGNMENT);
+		pnlCriteria.setAlignmentX(Component.RIGHT_ALIGNMENT);
+		GridBagConstraints gbc_pnlCriteria = new GridBagConstraints();
+		gbc_pnlCriteria.insets = new Insets(0, 0, 0, 5);
+		gbc_pnlCriteria.anchor = GridBagConstraints.SOUTHEAST;
+		gbc_pnlCriteria.gridx = 3;
+		gbc_pnlCriteria.gridy = 2;
+		add(pnlCriteria, gbc_pnlCriteria);
+		pnlCriteria.setLayout(new FormLayout(
+				new ColumnSpec[] { FormFactory.UNRELATED_GAP_COLSPEC,
+						ColumnSpec.decode("60px"),
+						FormFactory.UNRELATED_GAP_COLSPEC,
+						ColumnSpec.decode("112px"),
+						FormFactory.UNRELATED_GAP_COLSPEC,
+						ColumnSpec.decode("112px"),
+						FormFactory.RELATED_GAP_COLSPEC,
+						FormFactory.DEFAULT_COLSPEC, }, new RowSpec[] {
+						FormFactory.UNRELATED_GAP_ROWSPEC,
+						RowSpec.decode("26px"),
+						FormFactory.UNRELATED_GAP_ROWSPEC,
+						RowSpec.decode("26px"),
+						FormFactory.UNRELATED_GAP_ROWSPEC, }));
+
 		JLabel lblDateFrom = new JLabel("From");
-		lblDateFrom.setBounds(504, 556, 46, 14);
-		this.add(lblDateFrom);
-		
-		JLabel lblDateTo = new JLabel("To");
-		lblDateTo.setBounds(504, 582, 46, 14);
-		this.add(lblDateTo);
-		
-		
-		final JComboBox cmbMonthTo = new JComboBox();
-		cmbMonthTo.setBounds(568, 579, 72, 20);
-		for(int i=0; i<availableMonths.length; i++)
-			cmbMonthTo.addItem(availableMonths[i]);
-		this.add(cmbMonthTo);
-		
-		final JComboBox cmbYearTo = new JComboBox();
-		cmbYearTo.setBounds(652, 579, 73, 20);
-		for(int i=0; i< availableYears.length; i++)
-			cmbYearTo.addItem(availableYears[i]);
-		this.add(cmbYearTo);
-		
+		pnlCriteria.add(lblDateFrom, "2, 2, fill, fill");
 		final JComboBox cmbMonthFrom = new JComboBox();
+		pnlCriteria.add(cmbMonthFrom, "4, 2, fill, fill");
+		JLabel lblDateTo = new JLabel("To");
+		pnlCriteria.add(lblDateTo, "2, 4, fill, fill");
+		final JComboBox cmbMonthTo = new JComboBox();
+		pnlCriteria.add(cmbMonthTo, "4, 4, fill, fill");
+		final JComboBox cmbYearTo = new JComboBox();
+		pnlCriteria.add(cmbYearTo, "6, 4, fill, fill");
+
+		JButton btnGet = new JButton("Get Information");
+		pnlCriteria.add(btnGet, "8, 4, fill, fill");
+
+		// handlers
 		cmbMonthFrom.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent arg0) {
-				cmbMonthTo.setSelectedIndex(cmbMonthFrom.getSelectedIndex());				
+				cmbMonthTo.setSelectedIndex(cmbMonthFrom.getSelectedIndex());
 			}
 		});
-		cmbMonthFrom.setBounds(569, 547, 71, 20);
-		for(int i=0; i<availableMonths.length; i++)
-			cmbMonthFrom.addItem(availableMonths[i]);
-		this.add(cmbMonthFrom);
-		
 		final JComboBox cmbYearFrom = new JComboBox();
+		pnlCriteria.add(cmbYearFrom, "6, 2, fill, fill");
+
 		cmbYearFrom.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
 				cmbYearTo.setSelectedIndex(cmbYearFrom.getSelectedIndex());
 			}
 		});
-		cmbYearFrom.setBounds(652, 547, 73, 20);
-		for(int i=0; i< availableYears.length; i++)
-			cmbYearFrom.addItem(availableYears[i]);
-		this.add(cmbYearFrom);
-				
+
 		
-		final ChartPanel pnlChart = new ChartPanel(null);
-		add(pnlChart);
-						
+
 		btnGet.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				Calendar from = Calendar.getInstance();
-				from.set(Calendar.MONTH, cmbMonthFrom.getSelectedIndex()+1);
+				from.set(Calendar.MONTH, cmbMonthFrom.getSelectedIndex() + 1);
 				from.set(Calendar.DAY_OF_MONTH, 1);
-				from.set(Calendar.YEAR, Integer.parseInt((String)cmbYearFrom.getSelectedItem()));
-				
+				from.set(Calendar.YEAR, Integer.parseInt((String) cmbYearFrom
+						.getSelectedItem()));
+
 				Calendar to = Calendar.getInstance();
-				to.set(Calendar.MONTH, cmbMonthTo.getSelectedIndex()+1);
+				to.set(Calendar.MONTH, cmbMonthTo.getSelectedIndex() + 1);
 				to.set(Calendar.DAY_OF_MONTH, 1);
-				to.set(Calendar.YEAR, Integer.parseInt((String)cmbYearTo.getSelectedItem()));
-				
-				if(from.getTime().getTime() > to.getTime().getTime()){
-					JOptionPane.showMessageDialog(frame, "The \"From\" date is after the \"To\" one", "Warning", JOptionPane.ERROR_MESSAGE);
-				}
-				else{
+				to.set(Calendar.YEAR,
+						Integer.parseInt((String) cmbYearTo.getSelectedItem()));
+
+				if (from.getTime().getTime() > to.getTime().getTime()) {
+					JOptionPane.showMessageDialog(frame,
+							"The \"From\" date is after the \"To\" one",
+							"Warning", JOptionPane.ERROR_MESSAGE);
+				} else {
 					ArrayList<Meauserement> measurements = null;
 					try {
-						measurements = Server.GetMeasurements(from, to, pin, cntx);
-						if(measurements == null || measurements.size() == 0)
-							JOptionPane.showMessageDialog(frame, "Measurements not available yet", "Warning", JOptionPane.WARNING_MESSAGE);
-						else{
-							if(cntx.isDebugMode()){
-							for(int i=0; i<measurements.size(); i++)
-								txtResults.setText(txtResults.getText() + "\n" +
-													df.format(new Date(measurements.get(i).getMoment())) + "|" + 
-													measurements.get(i).getPot() + "|" +
-													measurements.get(i).getValue());
-							}
+						measurements = Server.GetMeasurements(from, to, pin,
+								cntx);
+						if (measurements == null || measurements.size() == 0)
+							JOptionPane.showMessageDialog(frame,
+									"Measurements not available yet",
+									"Warning", JOptionPane.WARNING_MESSAGE);
+						else {
+
+							for (int i = 0; i < measurements.size(); i++)
+								txtResults.setText(txtResults.getText()
+										+ "\n"
+										+ df.format(new Date(measurements
+												.get(i).getMoment())) + "|"
+										+ measurements.get(i).getPot() + "|"
+										+ measurements.get(i).getValue());
+
 							Calendar c = Calendar.getInstance();
-							c.setTimeInMillis((long)measurements.get(measurements.size()-1).getMoment());
-							
+							c.setTimeInMillis((long) measurements.get(
+									measurements.size() - 1).getMoment());
+
 							txtLastTime.setText(df.format(c.getTime()));
-							
-							txtLastValue.setText(String.valueOf(measurements.get(measurements.size()-1).getValue()));
-							
-							JFreeChart fc = ChartCreator.createChart(measurements);
-							//pnlChart = new ChartPanel(fc, false);
+
+							txtLastValue.setText(String.valueOf(measurements
+									.get(measurements.size() - 1).getValue()));
+
+							JFreeChart fc = ChartCreator
+									.createChart(measurements);
+							// pnlChart = new ChartPanel(fc, false);
 							pnlChart.setChart(fc);
-							pnlChart.setBounds(263, 70, 620, 460);
+							// pnlChart.setBounds(263, 70, 620, 460);
 							pnlChart.setVisible(true);
-							
-							
+
 						}
 					} catch (Exception e1) {
-						JOptionPane.showMessageDialog(frame, e1.getMessage(), "Warning", JOptionPane.ERROR_MESSAGE);
+						JOptionPane.showMessageDialog(frame, e1.getMessage(),
+								"Warning", JOptionPane.ERROR_MESSAGE);
 					}
-					
+
 				}
-				
+
 			}
 		});
-		
+
+		// filling data
+		for (int i = 0; i < availableMonths.length; i++)
+			cmbMonthTo.addItem(availableMonths[i]);
+		for (int i = 0; i < availableYears.length; i++)
+			cmbYearTo.addItem(availableYears[i]);
+		for (int i = 0; i < availableMonths.length; i++)
+			cmbMonthFrom.addItem(availableMonths[i]);
+		for (int i = 0; i < availableYears.length; i++)
+			cmbYearFrom.addItem(availableYears[i]);
+
 	}
-	
-	
+
 }
