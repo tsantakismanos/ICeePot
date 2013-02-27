@@ -42,6 +42,7 @@ import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import javax.swing.border.LineBorder;
 import java.awt.Color;
+import java.awt.FlowLayout;
 
 /**
  * @author tsantakis A tab where information and inputs per pot is displayed.
@@ -74,10 +75,9 @@ public class PotPanel extends JPanel {
 		cntx = Context.getInstance();
 		this.setToolTipText("");
 		GridBagLayout gridBagLayout = new GridBagLayout();
-		gridBagLayout.columnWidths = new int[] { 47, 186, 30, 620, 0 };
+		gridBagLayout.columnWidths = new int[] { 47, 186, 30, 620 };
 		gridBagLayout.rowHeights = new int[] {29, 450, 85, 0};
-		gridBagLayout.columnWeights = new double[] { 0.0, 0.0, 0.0, 1.0,
-				Double.MIN_VALUE };
+		gridBagLayout.columnWeights = new double[] { 0.0, 0.0, 0.0, 1.0 };
 		gridBagLayout.rowWeights = new double[] { 0.0, 1.0, 0.0,
 				Double.MIN_VALUE };
 		setLayout(gridBagLayout);
@@ -95,13 +95,13 @@ public class PotPanel extends JPanel {
 		gbc_pnlLastValues.insets = new Insets(0, 0, 5, 0);
 		gbc_pnlLastValues.ipady = 5;
 		gbc_pnlLastValues.ipadx = 5;
-		gbc_pnlLastValues.gridwidth = 4;
+		gbc_pnlLastValues.gridwidth = 3;
 		gbc_pnlLastValues.anchor = GridBagConstraints.NORTHWEST;
 		gbc_pnlLastValues.gridx = 1;
 		gbc_pnlLastValues.gridy = 0;
 		add(pnlLastValues, gbc_pnlLastValues);
 		GridBagLayout gbl_pnlLastValues = new GridBagLayout();
-		gbl_pnlLastValues.columnWidths = new int[] { 150, 90, 40, 100 };
+		gbl_pnlLastValues.columnWidths = new int[] { 150, 90, 40, 120 };
 		gbl_pnlLastValues.rowHeights = new int[] { 20 };
 		gbl_pnlLastValues.columnWeights = new double[] { 0.0, 0.0, 0.0, 0.0 };
 		gbl_pnlLastValues.rowWeights = new double[] { 0.0 };
@@ -122,13 +122,12 @@ public class PotPanel extends JPanel {
 		pnlLastValues.add(lblLastMeasruement, gbc_lblLastMeasruement);
 
 		txtLastValue = new JTextField();
+		txtLastValue.setColumns(10);
 		txtLastValue.setPreferredSize(new Dimension(90, 20));
-		txtLastValue.setMargin(new Insets(10, 10, 10, 10));
 		txtLastValue.setMinimumSize(new Dimension(90, 20));
 		txtLastValue.setMaximumSize(new Dimension(90, 20));
 		GridBagConstraints gbc_txtLastValue = new GridBagConstraints();
 		gbc_txtLastValue.fill = GridBagConstraints.BOTH;
-		gbc_txtLastValue.insets = new Insets(0, 0, 0, 5);
 		gbc_txtLastValue.gridx = 1;
 		gbc_txtLastValue.gridy = 0;
 		pnlLastValues.add(txtLastValue, gbc_txtLastValue);
@@ -142,15 +141,16 @@ public class PotPanel extends JPanel {
 		GridBagConstraints gbc_lblAt = new GridBagConstraints();
 		gbc_lblAt.anchor = GridBagConstraints.EAST;
 		gbc_lblAt.fill = GridBagConstraints.VERTICAL;
-		gbc_lblAt.insets = new Insets(0, 0, 0, 5);
+		gbc_lblAt.insets = new Insets(0, 5, 0, 5);
 		gbc_lblAt.gridx = 2;
 		gbc_lblAt.gridy = 0;
 		pnlLastValues.add(lblAt, gbc_lblAt);
 
 		txtLastTime = new JTextField();
-		txtLastTime.setPreferredSize(new Dimension(100, 20));
-		txtLastTime.setMinimumSize(new Dimension(100, 20));
-		txtLastTime.setMaximumSize(new Dimension(100, 20));
+		txtLastTime.setSize(new Dimension(120, 20));
+		txtLastTime.setPreferredSize(new Dimension(120, 20));
+		txtLastTime.setMinimumSize(new Dimension(120, 20));
+		txtLastTime.setMaximumSize(new Dimension(120, 20));
 		GridBagConstraints gbc_txtLastTime = new GridBagConstraints();
 		gbc_txtLastTime.fill = GridBagConstraints.BOTH;
 		gbc_txtLastTime.gridx = 3;
@@ -161,24 +161,25 @@ public class PotPanel extends JPanel {
 
 		// panel results
 		final JTextArea txtResults = new JTextArea();
-		txtResults.setPreferredSize(new Dimension(120, 400));
-		txtResults.setMinimumSize(new Dimension(120, 400));
+		txtResults.setEditable(false);
+		txtResults.setTabSize(3);
+		txtResults.setPreferredSize(new Dimension(120, 600));
+		txtResults.setMinimumSize(new Dimension(120, 600));
 		txtResults.setMaximumSize(new Dimension(120, 600));
 		// txtResults.setMaximumSize(new Dimension(32767, 32767));
 		// txtResults.setMinimumSize(new Dimension(23, 23));
 
 		// txtResults.setBounds(47, 58, 601, 400);
 		JScrollPane sp = new JScrollPane(txtResults);
-		sp.setSize(new Dimension(120, 400));
-		sp.setPreferredSize(new Dimension(120, 400));
-		sp.setMinimumSize(new Dimension(120, 400));
+		sp.setPreferredSize(new Dimension(120, 600));
+		sp.setMinimumSize(new Dimension(120, 600));
 		sp.setMaximumSize(new Dimension(120, 600));
-		sp.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+		sp.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		sp.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		GridBagConstraints gbc_sp = new GridBagConstraints();
-		gbc_sp.fill = GridBagConstraints.BOTH;
-		gbc_sp.insets = new Insets(0, 0, 0, 5);
-		gbc_sp.gridheight = 2;
+		gbc_sp.anchor = GridBagConstraints.NORTH;
+		gbc_sp.fill = GridBagConstraints.HORIZONTAL;
+		gbc_sp.insets = new Insets(0, 0, 5, 5);
 		gbc_sp.gridx = 1;
 		gbc_sp.gridy = 1;
 		this.add(sp, gbc_sp);
@@ -186,10 +187,15 @@ public class PotPanel extends JPanel {
 		txtResults.setRows(10);
 
 		final ChartPanel pnlChart = new ChartPanel(null);
+		pnlChart.setMaximumDrawWidth(2048);
+		pnlChart.setMinimumDrawWidth(620);
+		pnlChart.setMinimumSize(new Dimension(620, 450));
+		pnlChart.setPreferredSize(new Dimension(620, 450));
+		FlowLayout flowLayout = (FlowLayout) pnlChart.getLayout();
+		flowLayout.setAlignment(FlowLayout.LEFT);
 		GridBagConstraints gbc_pnlChart = new GridBagConstraints();
-		gbc_pnlChart.anchor = GridBagConstraints.EAST;
-		gbc_pnlChart.fill = GridBagConstraints.VERTICAL;
-		gbc_pnlChart.insets = new Insets(0, 0, 5, 5);
+		gbc_pnlChart.anchor = GridBagConstraints.NORTHWEST;
+		gbc_pnlChart.insets = new Insets(0, 0, 5, 0);
 		gbc_pnlChart.gridx = 3;
 		gbc_pnlChart.gridy = 1;
 		add(pnlChart, gbc_pnlChart);
@@ -202,25 +208,27 @@ public class PotPanel extends JPanel {
 		pnlCriteria.setAlignmentY(Component.BOTTOM_ALIGNMENT);
 		pnlCriteria.setAlignmentX(Component.RIGHT_ALIGNMENT);
 		GridBagConstraints gbc_pnlCriteria = new GridBagConstraints();
-		gbc_pnlCriteria.insets = new Insets(0, 0, 0, 5);
-		gbc_pnlCriteria.anchor = GridBagConstraints.SOUTHEAST;
+		gbc_pnlCriteria.insets = new Insets(0, 5, 0, 0);
+		gbc_pnlCriteria.anchor = GridBagConstraints.SOUTHWEST;
 		gbc_pnlCriteria.gridx = 3;
 		gbc_pnlCriteria.gridy = 2;
 		add(pnlCriteria, gbc_pnlCriteria);
-		pnlCriteria.setLayout(new FormLayout(
-				new ColumnSpec[] { FormFactory.UNRELATED_GAP_COLSPEC,
-						ColumnSpec.decode("60px"),
-						FormFactory.UNRELATED_GAP_COLSPEC,
-						ColumnSpec.decode("112px"),
-						FormFactory.UNRELATED_GAP_COLSPEC,
-						ColumnSpec.decode("112px"),
-						FormFactory.RELATED_GAP_COLSPEC,
-						FormFactory.DEFAULT_COLSPEC, }, new RowSpec[] {
-						FormFactory.UNRELATED_GAP_ROWSPEC,
-						RowSpec.decode("26px"),
-						FormFactory.UNRELATED_GAP_ROWSPEC,
-						RowSpec.decode("26px"),
-						FormFactory.UNRELATED_GAP_ROWSPEC, }));
+		pnlCriteria.setLayout(new FormLayout(new ColumnSpec[] {
+				FormFactory.UNRELATED_GAP_COLSPEC,
+				ColumnSpec.decode("60px"),
+				FormFactory.UNRELATED_GAP_COLSPEC,
+				ColumnSpec.decode("112px"),
+				FormFactory.UNRELATED_GAP_COLSPEC,
+				ColumnSpec.decode("112px"),
+				FormFactory.RELATED_GAP_COLSPEC,
+				FormFactory.DEFAULT_COLSPEC,
+				FormFactory.UNRELATED_GAP_COLSPEC,},
+			new RowSpec[] {
+				FormFactory.UNRELATED_GAP_ROWSPEC,
+				RowSpec.decode("26px"),
+				FormFactory.UNRELATED_GAP_ROWSPEC,
+				RowSpec.decode("26px"),
+				FormFactory.UNRELATED_GAP_ROWSPEC,}));
 
 		JLabel lblDateFrom = new JLabel("From");
 		pnlCriteria.add(lblDateFrom, "2, 2, fill, fill");
@@ -286,8 +294,7 @@ public class PotPanel extends JPanel {
 								txtResults.setText(txtResults.getText()
 										+ "\n"
 										+ df.format(new Date(measurements
-												.get(i).getMoment())) + "|"
-										+ measurements.get(i).getPot() + "|"
+												.get(i).getMoment())) + "\t"
 										+ measurements.get(i).getValue());
 
 							Calendar c = Calendar.getInstance();
