@@ -12,5 +12,6 @@ folders:
   - notes: about tools used,code explanations etc 
   - diagrams: flows, schematics, class diagrams etc
 - software: the project's code organized in the following way:
-   - arduino_server: the code to be uploaded & executed on the arduino acting as a server
-   - <whatever_technology_based>_client: any implementation that acts as a client and gets and manages information sent   by the server (e.g: swing_client, js_client, etc)
+   - ICeePotServer: the sketch to be uploaded & executed on the arduino acting as a server
+   - ICeePotPC: java swing project which implements the client sending time requests and showing results returned in a graphic way
+- hardware: schematic files, projects related to the hardware used for this solution
