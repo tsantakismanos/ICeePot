@@ -27,6 +27,9 @@ import org.jfree.chart.JFreeChart;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
+
 import java.awt.event.ItemListener;
 import java.awt.event.ItemEvent;
 import java.awt.Component;
@@ -42,7 +45,7 @@ import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import javax.swing.border.LineBorder;
 import java.awt.Color;
-import java.awt.FlowLayout;
+
 
 /**
  * @author tsantakis A tab where information and inputs per pot is displayed.
@@ -65,6 +68,8 @@ public class PotPanel extends JPanel {
 	Context cntx;
 
 	DateFormat df = new SimpleDateFormat();
+	
+	ArrayList<Meauserement> measurements = null;
 
 	/**
 	 * Create the panel.
@@ -162,9 +167,9 @@ public class PotPanel extends JPanel {
 		// panel results
 		final JTextArea txtResults = new JTextArea();
 		txtResults.setEditable(false);
-		txtResults.setTabSize(3);
-		txtResults.setPreferredSize(new Dimension(120, 1000));
-		txtResults.setMinimumSize(new Dimension(120, 1000));
+		txtResults.setTabSize(2);
+		txtResults.setPreferredSize(new Dimension(120, 4000));
+		txtResults.setMinimumSize(new Dimension(120, 4000));
 		txtResults.setMaximumSize(new Dimension(120, 4000));
 		// txtResults.setMaximumSize(new Dimension(32767, 32767));
 		// txtResults.setMinimumSize(new Dimension(23, 23));
@@ -190,11 +195,9 @@ public class PotPanel extends JPanel {
 		pnlChart.setMinimumDrawWidth(620);
 		pnlChart.setMinimumSize(new Dimension(620, 450));
 		pnlChart.setPreferredSize(new Dimension(620, 450));
-		FlowLayout flowLayout = (FlowLayout) pnlChart.getLayout();
-		flowLayout.setAlignment(FlowLayout.LEFT);
+		//FlowLayout flowLayout = (FlowLayout) pnlChart.getLayout();
 		GridBagConstraints gbc_pnlChart = new GridBagConstraints();
-		gbc_pnlChart.fill = GridBagConstraints.VERTICAL;
-		gbc_pnlChart.anchor = GridBagConstraints.WEST;
+		gbc_pnlChart.fill = GridBagConstraints.BOTH;
 		gbc_pnlChart.insets = new Insets(0, 0, 5, 0);
 		gbc_pnlChart.gridx = 3;
 		gbc_pnlChart.gridy = 1;
@@ -209,7 +212,7 @@ public class PotPanel extends JPanel {
 		pnlCriteria.setAlignmentX(Component.RIGHT_ALIGNMENT);
 		GridBagConstraints gbc_pnlCriteria = new GridBagConstraints();
 		gbc_pnlCriteria.insets = new Insets(0, 5, 0, 0);
-		gbc_pnlCriteria.anchor = GridBagConstraints.SOUTHWEST;
+		gbc_pnlCriteria.anchor = GridBagConstraints.SOUTHEAST;
 		gbc_pnlCriteria.gridx = 3;
 		gbc_pnlCriteria.gridy = 2;
 		add(pnlCriteria, gbc_pnlCriteria);
@@ -245,6 +248,41 @@ public class PotPanel extends JPanel {
 		pnlCriteria.add(btnGet, "8, 4, fill, fill");
 
 		// handlers
+		
+		this.addComponentListener(new ComponentListener() {
+			
+			@Override
+			public void componentShown(ComponentEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void componentResized(ComponentEvent e) {
+				if(measurements!= null){
+				JFreeChart fc = ChartCreator
+						.createChart(measurements);
+				// pnlChart = new ChartPanel(fc, false);
+				pnlChart.setChart(fc);
+				// pnlChart.setBounds(263, 70, 620, 460);
+				pnlChart.setVisible(true);
+				}
+				
+			}
+			
+			@Override
+			public void componentMoved(ComponentEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void componentHidden(ComponentEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
+		
 		cmbMonthFrom.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent arg0) {
 				cmbMonthTo.setSelectedIndex(cmbMonthFrom.getSelectedIndex());
@@ -280,7 +318,7 @@ public class PotPanel extends JPanel {
 							"The \"From\" date is after the \"To\" one",
 							"Warning", JOptionPane.ERROR_MESSAGE);
 				} else {
-					ArrayList<Meauserement> measurements = null;
+					measurements = null;
 					try {
 						measurements = Server.GetMeasurements(from, to, pin,
 								cntx);

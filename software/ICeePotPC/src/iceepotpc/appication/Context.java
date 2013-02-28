@@ -143,7 +143,7 @@ public class Context{
 		try {
 			DocumentBuilder db = dbf.newDocumentBuilder();
 			
-			dom = db.parse("Settings.xml");
+			dom = db.parse("settings.xml");
 			
 			//get the root element
 			NodeList nRoot = dom.getElementsByTagName("settings");
@@ -185,7 +185,7 @@ public class Context{
 		try {
 			DocumentBuilder db = dbf.newDocumentBuilder();
 			
-			dom = db.parse("Settings.xml");
+			dom = db.parse("settings.xml");
 			
 			
 			//set the server name
@@ -222,7 +222,7 @@ public class Context{
 		try {
 			DocumentBuilder db = dbf.newDocumentBuilder();
 			
-			dom = db.parse("Settings.xml");
+			dom = db.parse("settings.xml");
 			
 			
 			//get the server name
