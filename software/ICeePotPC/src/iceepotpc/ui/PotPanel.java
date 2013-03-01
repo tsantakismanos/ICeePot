@@ -301,6 +301,7 @@ public class PotPanel extends JPanel {
 
 		btnGet.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				txtResults.setText("");
 				Calendar from = Calendar.getInstance();
 				from.set(Calendar.MONTH, cmbMonthFrom.getSelectedIndex() + 1);
 				from.set(Calendar.DAY_OF_MONTH, 1);
