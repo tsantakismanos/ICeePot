@@ -37,6 +37,7 @@ short anl_pins[anl_pins_counter];
 
 //variable for periodic measurement
 time_t last_measur_time = 0;
+//TODO: boolean isSynchronized = false;
 
 byte mac[] = { 0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED };
 
@@ -56,11 +57,14 @@ void setup() {
     Serial.begin(9600);
   #endif
   
+  //TODO: isSynchronized = false;
+  
   //set to now
   //setTime(23,30,00,4,2,2013);
   unsigned long now_in_seconds = synchronize_time(ntp_server_ip);
   if(now_in_seconds != 0){
     setTime(now_in_seconds);
+    //TODO: isSynchronized = true;
     #ifdef debug_mode
       Serial.println("Time synchronized: "+now_in_seconds);
       Serial.flush();
@@ -101,6 +105,20 @@ void setup() {
 
 //forever
 void loop() {
+  
+  //recheck for time synchronization
+  /*TODO:
+  if(isSynchronized == false){
+    unsigned long now_in_seconds = synchronize_time(ntp_server_ip);
+    if(now_in_seconds != 0){
+      setTime(now_in_seconds);
+      isSynchronized = true;
+      #ifdef debug_mode
+        Serial.println("Time synchronized: "+now_in_seconds);
+        Serial.flush();
+      #endif
+    }
+  }*/
   
   get_measurements();
   
@@ -145,6 +163,8 @@ void loop() {
     // close the connection:
     client.stop();
   }
+  
+  //TODO: delay(5000);
 }
 
 
@@ -196,8 +216,8 @@ void store_row_to_sd(String row, time_t now_in_secs){
   short bytes_written = 0;
      
   //construct the appropriate filename
-  byte now_month = month(now_in_secs);
-  int now_year = year(now_in_secs);
+  byte now_month = month(now_in_secs); //TODO: add 7200 seconds
+  int now_year = year(now_in_secs);  //TODO: add 7200 seconds
   String filename_str = String(now_month) + String(now_year) + ".txt";
   
   #ifdef debug_mode
