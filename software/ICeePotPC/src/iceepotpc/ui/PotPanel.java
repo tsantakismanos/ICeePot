@@ -45,6 +45,7 @@ import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import javax.swing.border.LineBorder;
 import java.awt.Color;
+import javax.swing.JProgressBar;
 
 
 /**
@@ -60,24 +61,38 @@ public class PotPanel extends JPanel {
 
 	private String[] availableMonths = { "Jan", "Feb", "Mar", "Apr", "May",
 			"Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };
-	private String[] availableYears = { "2011", "2012", "2013", "2014" };
+	private String[] availableYears = {"2013", "2014" };
 
 	private JTextField txtLastValue;
 	private JTextField txtLastTime;
-
-	Context cntx;
+	private JTextArea txtResults;
+	private JButton btnGet;
+	private JProgressBar prgBarGetting;
+	
+	private ChartPanel pnlChart;
+	private JScrollPane pnlResults;
 
 	DateFormat df = new SimpleDateFormat();
 	
+	private Calendar from;
+	private Calendar to;
+	
 	ArrayList<Meauserement> measurements = null;
+	
+	private int pot;
+	private JFrame frame;
 
 	/**
 	 * Create the panel.
 	 */
-	public PotPanel(final int pin, final JFrame frame) {
+	public PotPanel(int pin, final JFrame frame) {
+		
+		Context ctx = Context.getInstance();
+		pot = pin;
+		this.frame = frame;
+		
 		setSize(new Dimension(900, 780));
 		setMinimumSize(new Dimension(900, 780));
-		cntx = Context.getInstance();
 		this.setToolTipText("");
 		GridBagLayout gridBagLayout = new GridBagLayout();
 		gridBagLayout.columnWidths = new int[] { 47, 186, 30, 620 };
@@ -165,37 +180,31 @@ public class PotPanel extends JPanel {
 		txtLastTime.setEditable(false);
 
 		// panel results
-		final JTextArea txtResults = new JTextArea();
+		txtResults = new JTextArea();
 		txtResults.setEditable(false);
 		txtResults.setTabSize(2);
-		txtResults.setPreferredSize(new Dimension(120, 4000));
-		txtResults.setMinimumSize(new Dimension(120, 4000));
-		txtResults.setMaximumSize(new Dimension(120, 4000));
-		// txtResults.setMaximumSize(new Dimension(32767, 32767));
-		// txtResults.setMinimumSize(new Dimension(23, 23));
+		
 
-		// txtResults.setBounds(47, 58, 601, 400);
-		JScrollPane sp = new JScrollPane(txtResults);
-		sp.setPreferredSize(new Dimension(120, 450));
-		sp.setMinimumSize(new Dimension(120, 450));
-		sp.setMaximumSize(new Dimension(120, 450));
-		sp.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-		sp.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-		GridBagConstraints gbc_sp = new GridBagConstraints();
-		gbc_sp.fill = GridBagConstraints.BOTH;
-		gbc_sp.insets = new Insets(0, 0, 5, 5);
-		gbc_sp.gridx = 1;
-		gbc_sp.gridy = 1;
-		this.add(sp, gbc_sp);
+		pnlResults = new JScrollPane(txtResults);
+		pnlResults.setPreferredSize(new Dimension(120, 450));
+		pnlResults.setMinimumSize(new Dimension(120, 450));
+		pnlResults.setMaximumSize(new Dimension(120, 450));
+		pnlResults.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+		pnlResults.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		GridBagConstraints gbc_pnlResults = new GridBagConstraints();
+		gbc_pnlResults.fill = GridBagConstraints.BOTH;
+		gbc_pnlResults.insets = new Insets(0, 0, 5, 5);
+		gbc_pnlResults.gridx = 1;
+		gbc_pnlResults.gridy = 1;
+		this.add(pnlResults, gbc_pnlResults);
 		txtResults.setColumns(1);
 		txtResults.setRows(30);
 
-		final ChartPanel pnlChart = new ChartPanel(null);
+		pnlChart = new ChartPanel(null);
 		pnlChart.setMaximumDrawWidth(2048);
 		pnlChart.setMinimumDrawWidth(620);
 		pnlChart.setMinimumSize(new Dimension(620, 450));
 		pnlChart.setPreferredSize(new Dimension(620, 450));
-		//FlowLayout flowLayout = (FlowLayout) pnlChart.getLayout();
 		GridBagConstraints gbc_pnlChart = new GridBagConstraints();
 		gbc_pnlChart.fill = GridBagConstraints.BOTH;
 		gbc_pnlChart.insets = new Insets(0, 0, 5, 0);
@@ -237,6 +246,14 @@ public class PotPanel extends JPanel {
 		pnlCriteria.add(lblDateFrom, "2, 2, fill, fill");
 		final JComboBox cmbMonthFrom = new JComboBox();
 		pnlCriteria.add(cmbMonthFrom, "4, 2, fill, fill");
+		
+		prgBarGetting = new JProgressBar();
+		prgBarGetting.setMaximumSize(new Dimension(109, 23));
+		prgBarGetting.setMinimumSize(new Dimension(109, 23));
+		prgBarGetting.setMaximum(ctx.getServerTimeout()/1000);
+		prgBarGetting.setMinimum(0);
+		prgBarGetting.setVisible(false);
+		pnlCriteria.add(prgBarGetting, "8, 4, fill, center");
 		JLabel lblDateTo = new JLabel("To");
 		pnlCriteria.add(lblDateTo, "2, 4, fill, fill");
 		final JComboBox cmbMonthTo = new JComboBox();
@@ -244,16 +261,15 @@ public class PotPanel extends JPanel {
 		final JComboBox cmbYearTo = new JComboBox();
 		pnlCriteria.add(cmbYearTo, "6, 4, fill, fill");
 
-		JButton btnGet = new JButton("Get Information");
-		pnlCriteria.add(btnGet, "8, 4, fill, fill");
+		btnGet = new JButton("Get Information");
+		pnlCriteria.add(btnGet, "8, 2, fill, fill");
 
 		// handlers
-		
 		this.addComponentListener(new ComponentListener() {
 			
 			@Override
 			public void componentShown(ComponentEvent e) {
-				// TODO Auto-generated method stub
+				
 				
 			}
 			
@@ -262,9 +278,7 @@ public class PotPanel extends JPanel {
 				if(measurements!= null){
 				JFreeChart fc = ChartCreator
 						.createChart(measurements);
-				// pnlChart = new ChartPanel(fc, false);
 				pnlChart.setChart(fc);
-				// pnlChart.setBounds(263, 70, 620, 460);
 				pnlChart.setVisible(true);
 				}
 				
@@ -272,17 +286,19 @@ public class PotPanel extends JPanel {
 			
 			@Override
 			public void componentMoved(ComponentEvent e) {
-				// TODO Auto-generated method stub
+				
 				
 			}
 			
 			@Override
 			public void componentHidden(ComponentEvent e) {
-				// TODO Auto-generated method stub
+				
 				
 			}
 		});
 		
+		
+		//month-from dropdown handler
 		cmbMonthFrom.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent arg0) {
 				cmbMonthTo.setSelectedIndex(cmbMonthFrom.getSelectedIndex());
@@ -298,17 +314,17 @@ public class PotPanel extends JPanel {
 		});
 
 		
-
+		//Get information button
 		btnGet.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				txtResults.setText("");
-				Calendar from = Calendar.getInstance();
+				
+				from = Calendar.getInstance();
 				from.set(Calendar.MONTH, cmbMonthFrom.getSelectedIndex() + 1);
 				from.set(Calendar.DAY_OF_MONTH, 1);
 				from.set(Calendar.YEAR, Integer.parseInt((String) cmbYearFrom
 						.getSelectedItem()));
 
-				Calendar to = Calendar.getInstance();
+				to = Calendar.getInstance();
 				to.set(Calendar.MONTH, cmbMonthTo.getSelectedIndex() + 1);
 				to.set(Calendar.DAY_OF_MONTH, 1);
 				to.set(Calendar.YEAR,
@@ -319,47 +335,10 @@ public class PotPanel extends JPanel {
 							"The \"From\" date is after the \"To\" one",
 							"Warning", JOptionPane.ERROR_MESSAGE);
 				} else {
-					measurements = null;
-					try {
-						measurements = Server.GetMeasurements(from, to, pin,
-								cntx);
-						if (measurements == null || measurements.size() == 0)
-							JOptionPane.showMessageDialog(frame,
-									"Measurements not available yet",
-									"Warning", JOptionPane.WARNING_MESSAGE);
-						else {
-
-							for (int i = 0; i < measurements.size(); i++)
-								txtResults.setText(txtResults.getText()
-										+ "\n"
-										+ df.format(new Date(measurements
-												.get(i).getMoment())) + "\t"
-										+ measurements.get(i).getValue());
-
-							Calendar c = Calendar.getInstance();
-							c.setTimeInMillis((long) measurements.get(
-									measurements.size() - 1).getMoment());
-
-							txtLastTime.setText(df.format(c.getTime()));
-
-							txtLastValue.setText(String.valueOf(measurements
-									.get(measurements.size() - 1).getValue()));
-
-							JFreeChart fc = ChartCreator
-									.createChart(measurements);
-							// pnlChart = new ChartPanel(fc, false);
-							pnlChart.setChart(fc);
-							// pnlChart.setBounds(263, 70, 620, 460);
-							pnlChart.setVisible(true);
-
-						}
-					} catch (Exception e1) {
-						JOptionPane.showMessageDialog(frame, e1.getMessage(),
-								"Warning", JOptionPane.ERROR_MESSAGE);
-					}
-
+					ProgressBarThread pbt = new ProgressBarThread();
+					Thread t = new Thread(pbt, "getInfoThrd");
+					t.start();
 				}
-
 			}
 		});
 
@@ -372,7 +351,125 @@ public class PotPanel extends JPanel {
 			cmbMonthFrom.addItem(availableMonths[i]);
 		for (int i = 0; i < availableYears.length; i++)
 			cmbYearFrom.addItem(availableYears[i]);
+		
+			
 
+	}
+	
+	/**
+	 * @author tsantakis
+	 * private internal class which models the separate (from UI) thread
+	 * to be responsible for:
+	 * - create and execute a separate "server" thread to make the actual request 
+	 * - the handling of UI elements during  that request (progress bar , buttons etc)
+	 * - fill the UI elements after each succesful request
+	 */
+	private class ProgressBarThread implements Runnable{
+		
+				@Override
+		public void run() {
+			
+			SetUIBeforeRequest();
+			//create and run the server thread
+			ServerThread st = new ServerThread();
+			Thread t = new Thread(st, "serverThrd");
+			t.start();
+			
+			int count = 0;
+						
+			while(true){
+				
+				if(!t.isAlive())
+					break;
+				
+				
+				if(count==100)
+					count = 0;
+				prgBarGetting.setValue(count);
+				count++;
+				
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {
+					continue;
+				}
+			}
+			
+			//request has finished, now fill the UI
+			if (measurements == null || measurements.size() == 0)
+				JOptionPane.showMessageDialog(frame,
+						"Measurements not available yet",
+						"Warning", JOptionPane.WARNING_MESSAGE);
+			else
+			{
+				for (int i = 0; i < measurements.size(); i++){
+					txtResults.setText(txtResults.getText()
+							+ "\n"
+							+ df.format(new Date(measurements
+									.get(i).getMoment())) + "\t"
+							+ measurements.get(i).getValue());
+					Dimension d = txtResults.getPreferredSize();
+					pnlResults.setPreferredSize(d);
+				}
+				Calendar c = Calendar.getInstance();
+				c.setTimeInMillis((long) measurements.get(
+						measurements.size() - 1).getMoment());
+
+				txtLastTime.setText(df.format(c.getTime()));
+
+				txtLastValue.setText(String.valueOf(measurements
+						.get(measurements.size() - 1).getValue()));
+
+				JFreeChart fc = ChartCreator
+						.createChart(measurements);
+				pnlChart.setChart(fc);
+				pnlChart.setVisible(true);
+			}
+			SetUIAfterRequest();
+				
+		}
+				
+		private void SetUIBeforeRequest(){
+			txtResults.setText("");
+			txtLastValue.setText("");
+			txtLastTime.setText("");
+			pnlChart.setVisible(false);
+			btnGet.setEnabled(false);
+			prgBarGetting.setVisible(true);
+			prgBarGetting.setValue(prgBarGetting.getMinimum());
+		}
+		private void SetUIAfterRequest(){
+			prgBarGetting.setValue(prgBarGetting.getMaximum());
+			prgBarGetting.setVisible(false);
+			btnGet.setEnabled(true);
+		}
+		
+	}
+	
+	/**
+	 * @author tsantakis
+	 * private itnernal class implementing the asynchrnonous 
+	 * callings to the staticr functions defined 
+	 * in Server class
+	 */
+	private class ServerThread implements Runnable{
+
+		@Override
+		public void run() {
+			
+			measurements = null;
+			try {
+				measurements = Server.GetMeasurements(from, to, pot);
+			} catch (Exception e1) {
+				JOptionPane.showMessageDialog(frame, e1.getMessage(),
+						"Warning", JOptionPane.ERROR_MESSAGE);
+			} finally{
+				
+			}
+			
+			
+		}
+		
 	}
 
 }

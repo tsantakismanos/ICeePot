@@ -46,9 +46,7 @@ public class Context{
 	 */
 	private String serverHost = "homeplants.dyndns.org";
 	private int serverPort = 3629;
-	
-	private boolean debugMode = true;
-	
+	private int serverTimeout = 15000;
 	
 
 	private ArrayList<Observer> uiElements = null; 
@@ -87,10 +85,6 @@ public class Context{
 		return potDescrs;
 	}
 
-	public boolean isDebugMode() {
-		return debugMode;
-	}
-	
 	
 
 	public String getServerHost() {
@@ -99,6 +93,11 @@ public class Context{
 
 	public int getServerPort() {
 		return serverPort;
+	}
+	
+
+	public int getServerTimeout() {
+		return serverTimeout;
 	}
 
 	/**

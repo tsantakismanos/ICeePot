@@ -30,16 +30,23 @@ public class ChartCreator
 		
 		TimeSeries ts = new TimeSeries("Moisture Level");
 		
+		TimeSeries tsWarningHigh = new TimeSeries("Too much level");
+		TimeSeries tsWarningLow = new TimeSeries("Too low level");
+		
 		for(int i=0; i< measurements.size(); i++){
 			Date d = new Date(measurements.get(i).getMoment());
 			ts.add(new TimeSeriesDataItem(new Second(d), measurements.get(i).getValue()));
+			tsWarningHigh.add(new TimeSeriesDataItem(new Second(d), 675));
+			tsWarningLow.add(new TimeSeriesDataItem(new Second(d), 350));
 		}
 		
+		
+		dataset.addSeries(tsWarningHigh);
 		dataset.addSeries(ts);
-			
+		dataset.addSeries(tsWarningLow);
+		
 		JFreeChart fchart = ChartFactory.createTimeSeriesChart("", "Time", "Moisture level", dataset, false, true, false);
 		
-		//ChartPanel cp = new ChartPanel(fchart);
 		
 		return fchart;
 		
