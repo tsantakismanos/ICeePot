@@ -15,9 +15,6 @@ package iceepotpc.ui;
 
 import iceepotpc.appication.Context;
 
-import java.awt.Window;
-
-
 import javax.swing.JFrame;
 import java.awt.BorderLayout;
 
@@ -35,7 +32,6 @@ import javax.swing.JDialog;
 import javax.swing.JMenuBar;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
-import javax.swing.JWindow;
 import java.awt.Dimension;
 
 
@@ -102,7 +98,7 @@ public class MainWindow implements Observer{
 
 			@Override
 			public void mousePressed(MouseEvent e) {
-				NewPotDialog dialog = new NewPotDialog(cntx);
+				NewPotDialog dialog = new NewPotDialog();
 				dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 				dialog.setVisible(true);
 				dialog.pack();
@@ -116,10 +112,7 @@ public class MainWindow implements Observer{
 			
 			@Override
 			public void mousePressed(MouseEvent e) {
-				Window[] w = JWindow.getWindows();
-				for(int i=0; i<w.length; i++)
-					if(w[i].isVisible())
-						w[i].dispose();
+				frame.dispose();
 			}
 		});
 		mnFile.add(mntmClose);

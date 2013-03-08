@@ -1,6 +1,6 @@
 package iceepotpc.ui;
 
-import iceepotpc.appication.Context;
+
 import iceepotpc.charteng.ChartCreator;
 import iceepotpc.servergw.Meauserement;
 import iceepotpc.servergw.Server;
@@ -87,7 +87,6 @@ public class PotPanel extends JPanel {
 	 */
 	public PotPanel(int pin, final JFrame frame) {
 		
-		Context ctx = Context.getInstance();
 		pot = pin;
 		this.frame = frame;
 		
@@ -250,7 +249,6 @@ public class PotPanel extends JPanel {
 		prgBarGetting = new JProgressBar();
 		prgBarGetting.setMaximumSize(new Dimension(109, 23));
 		prgBarGetting.setMinimumSize(new Dimension(109, 23));
-		prgBarGetting.setMaximum(ctx.getServerTimeout()/1000);
 		prgBarGetting.setMinimum(0);
 		prgBarGetting.setVisible(false);
 		pnlCriteria.add(prgBarGetting, "8, 4, fill, center");
@@ -352,48 +350,46 @@ public class PotPanel extends JPanel {
 		for (int i = 0; i < availableYears.length; i++)
 			cmbYearFrom.addItem(availableYears[i]);
 		
-			
-
 	}
+	
+	
+	
 	
 	/**
 	 * @author tsantakis
 	 * private internal class which models the separate (from UI) thread
 	 * to be responsible for:
-	 * - create and execute a separate "server" thread to make the actual request 
+	 * - make the actual request with the use of Server static methods 
 	 * - the handling of UI elements during  that request (progress bar , buttons etc)
-	 * - fill the UI elements after each succesful request
+	 * - fill the UI elements after each successful request
 	 */
 	private class ProgressBarThread implements Runnable{
 		
-				@Override
+		@Override
 		public void run() {
 			
 			SetUIBeforeRequest();
-			//create and run the server thread
-			ServerThread st = new ServerThread();
-			Thread t = new Thread(st, "serverThrd");
-			t.start();
 			
-			int count = 0;
-						
-			while(true){
+			measurements = null;
+			try {
+				measurements = new ArrayList<Meauserement>();
 				
-				if(!t.isAlive())
-					break;
-				
-				
-				if(count==100)
-					count = 0;
-				prgBarGetting.setValue(count);
-				count++;
-				
-				try {
-					Thread.sleep(1000);
-				} catch (InterruptedException e) {
-					continue;
+				//for all months in range
+				while((from.get(Calendar.MONTH) != to.get(Calendar.MONTH)) 
+						|| (from.get(Calendar.YEAR) != to.get(Calendar.YEAR))){
+					measurements.addAll(Server.GetMeasurements(from, pot));
+					from.add(Calendar.MONTH, 1);
+					prgBarGetting.setValue(prgBarGetting.getValue()+1);
 				}
-			}
+				
+				measurements.addAll(Server.GetMeasurements(to, pot));
+				prgBarGetting.setValue(prgBarGetting.getValue()+1);
+				
+				//measurements = Server.GetMeasurements(from, to, pot);
+			} catch (Exception e1) {
+				JOptionPane.showMessageDialog(frame, e1.getMessage(),
+						"Warning", JOptionPane.ERROR_MESSAGE);
+			} 
 			
 			//request has finished, now fill the UI
 			if (measurements == null || measurements.size() == 0)
@@ -435,6 +431,7 @@ public class PotPanel extends JPanel {
 			txtLastTime.setText("");
 			pnlChart.setVisible(false);
 			btnGet.setEnabled(false);
+			prgBarGetting.setMaximum(MontsToGet(to, from));
 			prgBarGetting.setVisible(true);
 			prgBarGetting.setValue(prgBarGetting.getMinimum());
 		}
@@ -444,15 +441,28 @@ public class PotPanel extends JPanel {
 			btnGet.setEnabled(true);
 		}
 		
+		//  to-from in months
+		private int MontsToGet(Calendar to, Calendar from){
+			
+			int res = 0;
+			double millisPerMonth = 2628000000d;
+			
+			res = (int) Math.ceil((to.getTimeInMillis() - from.getTimeInMillis())/millisPerMonth);
+			
+			return res+1;
+			
+		}
+		
+		
 	}
 	
 	/**
 	 * @author tsantakis
-	 * private itnernal class implementing the asynchrnonous 
-	 * callings to the staticr functions defined 
+	 * private internal class implementing the asynchronous 
+	 * calling to the static functions defined 
 	 * in Server class
 	 */
-	private class ServerThread implements Runnable{
+	/*private class ServerThread implements Runnable{
 
 		@Override
 		public void run() {
@@ -470,6 +480,6 @@ public class PotPanel extends JPanel {
 			
 		}
 		
-	}
+	}*/
 
 }

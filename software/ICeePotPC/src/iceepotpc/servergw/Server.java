@@ -105,7 +105,7 @@ public class Server {
 	 * @return the results in an arraylist form
 	 * @throws Exception 
 	 */
-	public static ArrayList<Meauserement> GetMeasurements(Calendar cFrom, Calendar cTo, int pot) throws Exception{
+	/*public static ArrayList<Meauserement> GetMeasurements(Calendar cFrom, Calendar cTo, int pot) throws Exception{
 		
 		ArrayList<Meauserement> measurements = new ArrayList<Meauserement>();
 		
@@ -120,7 +120,7 @@ public class Server {
 		
 		return measurements;
 		
-	}
+	}*/
 	
 	/**
 	 * @param s: a row of the form: seconds|pin|value
