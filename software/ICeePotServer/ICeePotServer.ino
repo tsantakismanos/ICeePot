@@ -37,7 +37,7 @@ short anl_pins[anl_pins_counter];
 
 //variable for periodic measurement
 time_t last_measur_time = 0;
-//TODO: boolean isSynchronized = false;
+boolean isSynchronized = false;
 
 byte mac[] = { 0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED };
 
@@ -57,14 +57,14 @@ void setup() {
     Serial.begin(9600);
   #endif
   
-  //TODO: isSynchronized = false;
+  isSynchronized = false;
   
   //set to now
   //setTime(23,30,00,4,2,2013);
   unsigned long now_in_seconds = synchronize_time(ntp_server_ip);
   if(now_in_seconds != 0){
     setTime(now_in_seconds);
-    //TODO: isSynchronized = true;
+    isSynchronized = true;
     #ifdef debug_mode
       Serial.println("Time synchronized: "+now_in_seconds);
       Serial.flush();
@@ -107,7 +107,6 @@ void setup() {
 void loop() {
   
   //recheck for time synchronization
-  /*TODO:
   if(isSynchronized == false){
     unsigned long now_in_seconds = synchronize_time(ntp_server_ip);
     if(now_in_seconds != 0){
@@ -118,7 +117,7 @@ void loop() {
         Serial.flush();
       #endif
     }
-  }*/
+  }
   
   get_measurements();
   
@@ -164,7 +163,6 @@ void loop() {
     client.stop();
   }
   
-  //TODO: delay(5000);
 }
 
 
