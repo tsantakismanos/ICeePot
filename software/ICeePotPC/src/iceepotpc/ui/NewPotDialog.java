@@ -6,13 +6,11 @@ import iceepotpc.appication.Pot;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.FlowLayout;
-import java.awt.Window;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JWindow;
 import javax.swing.border.EmptyBorder;
 import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.ColumnSpec;
@@ -33,28 +31,15 @@ public class NewPotDialog extends JDialog {
 	private final JPanel contentPanel = new JPanel();
 	private JTextField txtPotDescr;
 	private JTextField txtPotPin;
+	private Context cntx;
+	private JDialog me = null;
 	
-	Context cntx;
-
-	/**
-	 * Launch the application.
-	 *//*
-	public static void main(String[] args) {
-		try {
-			NewPotDialog dialog = new NewPotDialog();
-			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-			dialog.setVisible(true);
-			dialog.pack();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}*/
-
-	/**
+		/**
 	 * Create the dialog.
 	 */
-	public NewPotDialog(Context c) {
-		cntx = c;
+	public NewPotDialog() {
+		me = this;
+		cntx = Context.getInstance();
 		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 		setIconImage(Toolkit.getDefaultToolkit().getImage(NewPotDialog.class.getResource("/icons/ICeePot_logo_new.png")));
 		setTitle("Add New Pot");
@@ -117,10 +102,7 @@ public class NewPotDialog extends JDialog {
 							} catch (Exception e1) {
 								JOptionPane.showMessageDialog((Component) e.getSource(), "Problem in adding port: "+e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 							}finally{
-								Window[] w = JWindow.getWindows();
-								for(int i=0; i<w.length; i++)
-									if(w[i].isVisible() && w[i].getClass() == NewPotDialog.class)
-										w[i].dispose();
+								me.dispose();
 							}
 						}
 						
@@ -134,10 +116,7 @@ public class NewPotDialog extends JDialog {
 				JButton cancelButton = new JButton("Cancel");
 				cancelButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
-						Window[] w = JWindow.getWindows();
-						for(int i=0; i<w.length; i++)
-							if(w[i].isVisible() && w[i].getClass() == NewPotDialog.class)
-								w[i].dispose();
+						me.dispose();
 					}
 				});
 				cancelButton.setActionCommand("Cancel");

@@ -35,11 +35,13 @@ public class SettingsDialog extends JDialog {
 	private JTextField txtServerPort;
 
 	Context cntx;
+	private JDialog me = null;
 	
 	/**
 	 * Create the dialog.
 	 */
 	public SettingsDialog() {
+		me = this;
 		cntx = Context.getInstance();
 		setResizable(false);
 		setIconImage(Toolkit.getDefaultToolkit().getImage(SettingsDialog.class.getResource("/icons/ICeePot_logo_new.png")));
@@ -108,10 +110,7 @@ public class SettingsDialog extends JDialog {
 							} catch (Exception e) {
 								JOptionPane.showMessageDialog((Component) ae.getSource(), "Error in Updating server settings: "+e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 							}finally{
-								Window[] w = JWindow.getWindows();
-								for(int i=0; i<w.length; i++)
-									if(w[i].isVisible() && w[i].getClass() == SettingsDialog.class)
-										w[i].dispose();
+								me.dispose();
 							}
 						}
 					}
@@ -126,8 +125,7 @@ public class SettingsDialog extends JDialog {
 					public void actionPerformed(ActionEvent e) {
 						Window[] w = JWindow.getWindows();
 						for(int i=0; i<w.length; i++)
-							if(w[i].isVisible() && w[i].getClass() == SettingsDialog.class)
-								w[i].dispose();
+							me.dispose();
 					}
 				});
 				cancelButton.setActionCommand("Cancel");

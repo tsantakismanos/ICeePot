@@ -44,14 +44,13 @@ public class Server {
 		Socket s = null;
 		try {
 			
-			//byte[] request = { '2', '2', '0', '1', '3', '.', 't', 'x', 't','\0' };
 			request_str = request_str.concat("\0");
 			byte[] request = request_str.getBytes();
 			
 			int response = 0;
 			String response_str = "";
 			s = new Socket(cntx.getServerHost(), cntx.getServerPort());
-
+			s.setSoTimeout(cntx.getServerTimeout());
 			os = s.getOutputStream();
 
 			// send request
@@ -106,12 +105,13 @@ public class Server {
 	 * @return the results in an arraylist form
 	 * @throws Exception 
 	 */
-	public static ArrayList<Meauserement> GetMeasurements(Calendar cFrom, Calendar cTo, int pot, Context cntx) throws Exception{
+	/*public static ArrayList<Meauserement> GetMeasurements(Calendar cFrom, Calendar cTo, int pot) throws Exception{
 		
 		ArrayList<Meauserement> measurements = new ArrayList<Meauserement>();
 		
 		//for all months in range
-		while(cFrom.get(Calendar.MONTH) != cTo.get(Calendar.MONTH)){
+		while((cFrom.get(Calendar.MONTH) != cTo.get(Calendar.MONTH)) 
+				|| (cFrom.get(Calendar.YEAR) != cTo.get(Calendar.YEAR))){
 			measurements.addAll(GetMeasurements(cFrom, pot));
 			cFrom.add(Calendar.MONTH, 1);
 		}
@@ -120,7 +120,7 @@ public class Server {
 		
 		return measurements;
 		
-	}
+	}*/
 	
 	/**
 	 * @param s: a row of the form: seconds|pin|value
