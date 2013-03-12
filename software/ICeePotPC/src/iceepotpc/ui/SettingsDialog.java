@@ -112,9 +112,8 @@ public class SettingsDialog extends JDialog {
 				JButton okButton = new JButton("OK");
 				okButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent ae) {
-						if(ValidateHostName() &&
-								ValidatePort() &&
-								ValidateTimeOut())
+						if(ValidatePort() &&
+							ValidateTimeOut())
 						{
 							try {
 								cntx.updateServer(txtServerHostName.getText(), Integer.parseInt(txtServerPort.getText()), Integer.parseInt(txtServerTimeOut.getText()));
@@ -143,17 +142,6 @@ public class SettingsDialog extends JDialog {
 				buttonPane.add(cancelButton);
 			}
 		}
-	}
-	
-	private boolean ValidateHostName(){
-		if(txtServerHostName.getText().equals("")){
-			JOptionPane.showMessageDialog(
-					me,
-					"Server host name cannot be empty", "Error",
-					JOptionPane.ERROR_MESSAGE);
-			return false;
-		}else
-			return true;
 	}
 	
 	private boolean ValidatePort(){

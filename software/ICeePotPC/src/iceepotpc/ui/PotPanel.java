@@ -219,6 +219,7 @@ public class PotPanel extends JPanel{
 		
 		JPanel pnlMoistLimits = new JPanel();
 		GridBagConstraints gbc_pnlMoistLimits = new GridBagConstraints();
+		gbc_pnlMoistLimits.ipadx = 5;
 		gbc_pnlMoistLimits.anchor = GridBagConstraints.SOUTH;
 		gbc_pnlMoistLimits.fill = GridBagConstraints.HORIZONTAL;
 		gbc_pnlMoistLimits.insets = new Insets(0, 5, 5, 5);
@@ -251,6 +252,7 @@ public class PotPanel extends JPanel{
 		txtMinMoistDispl.setColumns(10);
 		
 		final JSlider sldMinMoist = new JSlider();
+		sldMinMoist.setPreferredSize(new Dimension(180, 23));
 		sldMinMoist.setMinimum(0);
 		sldMinMoist.setMaximum(950);
 		sldMinMoist.setValue((int)pot.getMinMoistVal());
@@ -267,7 +269,7 @@ public class PotPanel extends JPanel{
 				}
 			}
 		});
-		pnlMoistLimits.add(sldMinMoist, "2, 4, 3, 1, left, default");
+		pnlMoistLimits.add(sldMinMoist, "2, 4, 3, 1, center, default");
 		
 		
 		JLabel lblMaxMoistureLevel = new JLabel("Max Moisture Level");
@@ -280,6 +282,7 @@ public class PotPanel extends JPanel{
 		txtMaxMoistDispl.setColumns(10);
 		
 		final JSlider sldMaxMoist = new JSlider();
+		sldMaxMoist.setPreferredSize(new Dimension(180, 23));
 		sldMaxMoist.setMinimum(0);
 		sldMaxMoist.setMaximum(950);
 		sldMaxMoist.setValue((int)pot.getMaxMoistVal());
@@ -304,7 +307,7 @@ public class PotPanel extends JPanel{
 			}
 		});
 		
-		pnlMoistLimits.add(sldMaxMoist, "2, 8, 3, 1, left, default");
+		pnlMoistLimits.add(sldMaxMoist, "2, 8, 3, 1, center, default");
 
 		// criteria panel
 		JPanel pnlCriteria = new JPanel();
