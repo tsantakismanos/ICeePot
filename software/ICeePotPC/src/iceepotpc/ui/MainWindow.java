@@ -145,8 +145,16 @@ public class MainWindow implements Observer{
 	 *  to create a Tab which represents a pot (input / output)
 	 */
 	public void createTab(JTabbedPane tabbedPane, Pot p){
-		PotPanel pnlPot = new PotPanel(p, frame);
-		tabbedPane.addTab(p.getDescr(), null, pnlPot, null);
+		PotPanel pnlPot;
+		try {
+			pnlPot = new PotPanel(p, frame);
+			tabbedPane.addTab(p.getDescr(), null, pnlPot, null);
+		} catch (Exception e) {
+			JOptionPane.showMessageDialog(frame,
+					e.getMessage(),
+					"Error", JOptionPane.ERROR_MESSAGE);
+		}
+		
 	}
 
 	/* (non-Javadoc)

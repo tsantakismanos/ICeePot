@@ -1,6 +1,7 @@
 package iceepotpc.ui;
 
 
+import iceepotpc.appication.Context;
 import iceepotpc.appication.Pot;
 import iceepotpc.charteng.ChartCreator;
 import iceepotpc.servergw.Meauserement;
@@ -90,12 +91,14 @@ public class PotPanel extends JPanel{
 
 	/**
 	 * Create the panel.
+	 * @throws Exception 
 	 */
-	public PotPanel(Pot p, final JFrame frame) {
+	public PotPanel(Pot p, final JFrame frame) throws Exception {
 		
 		this.frame = frame;
 		pot = p;
 		
+		final Context c = Context.getInstance();
 		setSize(new Dimension(900, 780));
 		setMinimumSize(new Dimension(900, 780));
 		this.setToolTipText("");
@@ -255,6 +258,13 @@ public class PotPanel extends JPanel{
 			public void stateChanged(ChangeEvent arg0) {
 				txtMinMoistDispl.setText(String.valueOf(sldMinMoist.getValue()));
 				pot.setMinMoistVal(sldMinMoist.getValue());
+				try {
+					c.updateMoistLimits(pot.getPin(), pot.getMinMoistVal(), pot.getMaxMoistVal());
+				} catch (Exception e) {
+					JOptionPane.showMessageDialog(frame,
+							e.getMessage(),
+							"Warning", JOptionPane.WARNING_MESSAGE);
+				}
 			}
 		});
 		pnlMoistLimits.add(sldMinMoist, "2, 4, 3, 1, left, default");
@@ -284,6 +294,13 @@ public class PotPanel extends JPanel{
 				
 				txtMaxMoistDispl.setText(String.valueOf(sldMaxMoist.getValue()));
 				pot.setMaxMoistVal(sldMaxMoist.getValue());
+				try {
+					c.updateMoistLimits(pot.getPin(), pot.getMinMoistVal(), pot.getMaxMoistVal());
+				} catch (Exception e) {
+					JOptionPane.showMessageDialog(frame,
+							e.getMessage(),
+							"Warning", JOptionPane.WARNING_MESSAGE);
+				}
 			}
 		});
 		
