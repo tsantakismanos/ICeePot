@@ -22,7 +22,7 @@ import org.jfree.data.time.TimeSeriesDataItem;
 public class ChartCreator 
 {
 	
-	public static JFreeChart createChart(ArrayList<Meauserement> measurements){
+	public static JFreeChart createChart(ArrayList<Meauserement> measurements, double minMoist, double maxMoist){
 		
 		
 		
@@ -36,8 +36,8 @@ public class ChartCreator
 		for(int i=0; i< measurements.size(); i++){
 			Date d = new Date(measurements.get(i).getMoment());
 			ts.add(new TimeSeriesDataItem(new Second(d), measurements.get(i).getValue()));
-			tsWarningHigh.add(new TimeSeriesDataItem(new Second(d), 675));
-			tsWarningLow.add(new TimeSeriesDataItem(new Second(d), 350));
+			tsWarningHigh.add(new TimeSeriesDataItem(new Second(d), maxMoist));
+			tsWarningLow.add(new TimeSeriesDataItem(new Second(d), minMoist));
 		}
 		
 		

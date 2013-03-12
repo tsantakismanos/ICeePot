@@ -11,13 +11,17 @@ public class Pot {
 	
 	private String descr;
 	private int pin;
+	private double minMoistVal;
+	private double maxMoistVal;
 	
 	
 	
-	public Pot(String descr, int pin) {
+	public Pot(String descr, int pin, double min, double max) {
 		super();
 		this.descr = descr;
 		this.pin = pin;
+		this.minMoistVal = min;
+		this.maxMoistVal = max;
 	}
 	public String getDescr() {
 		return descr;
@@ -30,6 +34,18 @@ public class Pot {
 	}
 	public void setPin(int pin) {
 		this.pin = pin;
+	}
+	public double getMinMoistVal() {
+		return minMoistVal;
+	}
+	public void setMinMoistVal(double minMoistVal) {
+		this.minMoistVal = minMoistVal;
+	}
+	public double getMaxMoistVal() {
+		return maxMoistVal;
+	}
+	public void setMaxMoistVal(double maxMoistVal) {
+		this.maxMoistVal = maxMoistVal;
 	}
 
 }

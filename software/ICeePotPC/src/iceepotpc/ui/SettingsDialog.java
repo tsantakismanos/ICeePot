@@ -24,6 +24,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
 
+
 public class SettingsDialog extends JDialog {
 
 	/**
@@ -36,13 +37,20 @@ public class SettingsDialog extends JDialog {
 
 	Context cntx;
 	private JDialog me = null;
+	private JTextField txtServerTimeOut;
 	
 	/**
 	 * Create the dialog.
 	 */
 	public SettingsDialog() {
 		me = this;
-		cntx = Context.getInstance();
+		try {
+			cntx = Context.getInstance();
+		} catch (Exception e1) {
+			JOptionPane.showMessageDialog(me,
+					e1.getMessage(),
+					"Error", JOptionPane.ERROR_MESSAGE);
+		}
 		setResizable(false);
 		setIconImage(Toolkit.getDefaultToolkit().getImage(SettingsDialog.class.getResource("/icons/ICeePot_logo_new.png")));
 		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
@@ -55,15 +63,9 @@ public class SettingsDialog extends JDialog {
 				FormFactory.RELATED_GAP_COLSPEC,
 				FormFactory.DEFAULT_COLSPEC,
 				FormFactory.RELATED_GAP_COLSPEC,
-				FormFactory.DEFAULT_COLSPEC,
+				ColumnSpec.decode("30dlu:grow"),
 				FormFactory.RELATED_GAP_COLSPEC,
-				FormFactory.DEFAULT_COLSPEC,
-				FormFactory.RELATED_GAP_COLSPEC,
-				FormFactory.DEFAULT_COLSPEC,
-				FormFactory.RELATED_GAP_COLSPEC,
-				FormFactory.DEFAULT_COLSPEC,
-				FormFactory.DEFAULT_COLSPEC,
-				FormFactory.RELATED_GAP_COLSPEC,},
+				ColumnSpec.decode("80dlu"),},
 			new RowSpec[] {
 				FormFactory.RELATED_GAP_ROWSPEC,
 				FormFactory.DEFAULT_ROWSPEC,
@@ -71,27 +73,36 @@ public class SettingsDialog extends JDialog {
 				FormFactory.DEFAULT_ROWSPEC,
 				FormFactory.RELATED_GAP_ROWSPEC,
 				FormFactory.DEFAULT_ROWSPEC,
-				FormFactory.RELATED_GAP_ROWSPEC,
-				FormFactory.DEFAULT_ROWSPEC,}));
+				FormFactory.RELATED_GAP_ROWSPEC,}));
 		{
 			JLabel lblServerHostName = new JLabel("Server host name (or IP)");
-			contentPanel.add(lblServerHostName, "2, 4");
+			contentPanel.add(lblServerHostName, "2, 2");
 		}
 		{
 			txtServerHostName = new JTextField();
-			contentPanel.add(txtServerHostName, "4, 4, 8, 1");
+			contentPanel.add(txtServerHostName, "4, 2, 3, 1");
 			txtServerHostName.setColumns(10);
 			txtServerHostName.setText(cntx.getServerHost());
 		}
 		{
 			JLabel lblServerPort = new JLabel("Server Port");
-			contentPanel.add(lblServerPort, "2, 8");
+			contentPanel.add(lblServerPort, "2, 4");
 		}
 		{
 			txtServerPort = new JTextField();
-			contentPanel.add(txtServerPort, "4, 8, fill, default");
+			contentPanel.add(txtServerPort, "4, 4");
 			txtServerPort.setColumns(10);
 			txtServerPort.setText(String.valueOf(cntx.getServerPort()));
+		}
+		{
+			JLabel lblServerTimeoutin = new JLabel("Server Timeout (in sec)");
+			contentPanel.add(lblServerTimeoutin, "2, 6");
+		}
+		{
+			txtServerTimeOut = new JTextField();
+			contentPanel.add(txtServerTimeOut, "4, 6, fill, default");
+			txtServerTimeOut.setColumns(10);
+			txtServerTimeOut.setText(String.valueOf(cntx.getServerTimeout()));
 		}
 		{
 			JPanel buttonPane = new JPanel();
@@ -101,12 +112,12 @@ public class SettingsDialog extends JDialog {
 				JButton okButton = new JButton("OK");
 				okButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent ae) {
-						if(txtServerHostName.getText().equals("") || txtServerPort.getText().equals(""))
-							JOptionPane.showMessageDialog((Component) ae.getSource(), "Please fill all fields", "Error", JOptionPane.ERROR_MESSAGE);
-						else
+						if(ValidateHostName() &&
+								ValidatePort() &&
+								ValidateTimeOut())
 						{
 							try {
-								cntx.updateServer(txtServerHostName.getText(), Integer.parseInt(txtServerPort.getText()));
+								cntx.updateServer(txtServerHostName.getText(), Integer.parseInt(txtServerPort.getText()), Integer.parseInt(txtServerTimeOut.getText()));
 							} catch (Exception e) {
 								JOptionPane.showMessageDialog((Component) ae.getSource(), "Error in Updating server settings: "+e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 							}finally{
@@ -131,6 +142,43 @@ public class SettingsDialog extends JDialog {
 				cancelButton.setActionCommand("Cancel");
 				buttonPane.add(cancelButton);
 			}
+		}
+	}
+	
+	private boolean ValidateHostName(){
+		if(txtServerHostName.getText().equals("")){
+			JOptionPane.showMessageDialog(
+					me,
+					"Server host name cannot be empty", "Error",
+					JOptionPane.ERROR_MESSAGE);
+			return false;
+		}else
+			return true;
+	}
+	
+	private boolean ValidatePort(){
+		try{
+			Integer.parseInt(txtServerPort.getText());
+			return true;
+		}catch(NumberFormatException nfe){
+			JOptionPane.showMessageDialog(
+					me,
+					"Server port should be in number format", "Error",
+					JOptionPane.ERROR_MESSAGE);
+			return false;
+		}
+	}
+	
+	private boolean ValidateTimeOut(){
+		try{
+			Integer.parseInt(txtServerTimeOut.getText());
+			return true;
+		}catch(NumberFormatException nfe){
+			JOptionPane.showMessageDialog(
+					me,
+					"Server timeout should be in number format", "Error",
+					JOptionPane.ERROR_MESSAGE);
+			return false;
 		}
 	}
 

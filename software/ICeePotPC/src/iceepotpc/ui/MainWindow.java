@@ -14,6 +14,7 @@
 package iceepotpc.ui;
 
 import iceepotpc.appication.Context;
+import iceepotpc.appication.Pot;
 
 import javax.swing.JFrame;
 import java.awt.BorderLayout;
@@ -32,6 +33,8 @@ import javax.swing.JDialog;
 import javax.swing.JMenuBar;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+
 import java.awt.Dimension;
 
 
@@ -53,7 +56,14 @@ public class MainWindow implements Observer{
 	 * Create the application's main window.
 	 */
 	public MainWindow() {
-		cntx = Context.getInstance();
+		try {
+			cntx = Context.getInstance();
+		} catch (Exception e) {
+			
+			JOptionPane.showMessageDialog(frame,
+					e.getMessage(),
+					"Error", JOptionPane.ERROR_MESSAGE);
+		}
 		initialize();
 		this.frame.setVisible(true);
 	}
@@ -124,7 +134,7 @@ public class MainWindow implements Observer{
 		
 		if(cntx.getPotDescrs() != null)
 			for(int i=0; i<cntx.getPotDescrs().size(); i++)
-				createTab(tabbedPane, cntx.getPotDescrs().get(i).getDescr(), cntx.getPotDescrs().get(i).getPin());
+				createTab(tabbedPane, cntx.getPotDescrs().get(i));
 		
 		
 	}
@@ -134,9 +144,9 @@ public class MainWindow implements Observer{
 	 *  helper method that is called when it is required
 	 *  to create a Tab which represents a pot (input / output)
 	 */
-	public void createTab(JTabbedPane tabbedPane, String descr, final int pin){
-		PotPanel pnlPot = new PotPanel(pin, frame);
-		tabbedPane.addTab(descr, null, pnlPot, null);
+	public void createTab(JTabbedPane tabbedPane, Pot p){
+		PotPanel pnlPot = new PotPanel(p, frame);
+		tabbedPane.addTab(p.getDescr(), null, pnlPot, null);
 	}
 
 	/* (non-Javadoc)
@@ -147,7 +157,7 @@ public class MainWindow implements Observer{
 		
 		int position = Integer.parseInt(arg.toString());
 
-		createTab(tabbedPane, cntx.getPotDescrs().get(position).getDescr(), cntx.getPotDescrs().get(position).getPin());
+		createTab(tabbedPane, cntx.getPotDescrs().get(position));
 	}
 
 	

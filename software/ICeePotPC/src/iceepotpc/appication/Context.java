@@ -11,10 +11,9 @@ import java.util.Observer;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
+
 import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerConfigurationException;
-import javax.xml.transform.TransformerException;
+
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
@@ -44,15 +43,14 @@ public class Context{
 	/**
 	 * server configuration (for opening the connection) 
 	 */
-	private String serverHost = "homeplants.dyndns.org";
-	private int serverPort = 3629;
+	private String serverHost = "";
+	private int serverPort = -1;
 	private int serverTimeout = 15000;
 	
 
-	private ArrayList<Observer> uiElements = null; 
+	private ArrayList<Observer> ObserversForNewPots = null;
 	
-	
-	public static Context getInstance(){
+	public static Context getInstance() throws Exception{
 		if(instance == null){
 			instance = new Context();
 			return instance;
@@ -64,18 +62,13 @@ public class Context{
 	/**
 	 * constructor which reads the settings xml file and applies the
 	 * configuration to Context variables
+	 * @throws IOException 
 	 */
-	private Context() {
+	private Context() throws Exception {
 		
 		File f = new File("settings.xml");
 		if(!f.exists())
-			try {
-				createSettings();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		
+			createSettings();
 		
 		fetchSettings();
 	}
@@ -110,9 +103,50 @@ public class Context{
 		addPotToSettings(p);
 		
 		//notify the observers
-		if(uiElements != null)
-			for(int i=0; i<uiElements.size(); i++)
-				uiElements.get(i).update(null, potDescrs.size()-1);
+		if(ObserversForNewPots != null)
+			for(int i=0; i<ObserversForNewPots.size(); i++)
+				ObserversForNewPots.get(i).update(null, potDescrs.size()-1);
+	}
+	
+	/**Helper method to be called from UI when the minimum
+	 * moisture value for a pot has changed	 * 
+	 * @param isMinimum: the same method is to be used for min and max values
+	 * @param pin: the pin of the pot whose minimum value has changed
+	 * @param newValue: of the moisture level
+	 * @throws Exception 
+	 */
+	public void modifyMinMoistValue(boolean isMinimum, int pin, double newValue) throws Exception{
+		Document dom;
+		
+		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+		
+		try {
+			DocumentBuilder db = dbf.newDocumentBuilder();
+			
+			dom = db.parse("settings.xml");
+			
+			
+			//set the value
+			if(isMinimum){
+				NodeList nlstServer = dom.getElementsByTagName("minMoist");
+				nlstServer.item(0).setTextContent(String.valueOf(newValue));
+			}else{
+				NodeList nlstServer = dom.getElementsByTagName("maxMoist");
+				nlstServer.item(0).setTextContent(String.valueOf(newValue));
+			}
+								
+		
+			TransformerFactory transformerFactory = TransformerFactory.newInstance();
+			Transformer transformer = transformerFactory.newTransformer();
+			DOMSource source = new DOMSource(dom);
+			StreamResult result = new StreamResult(new File("settings.xml"));
+			transformer.transform(source, result);
+			
+			
+			
+		} catch (Exception e){
+			throw e;
+		}
 	}
 	
 	/** helper method to be called when UI wants to update the server
@@ -121,10 +155,16 @@ public class Context{
 	 * @param port
 	 * @throws Exception 
 	 */
-	public void updateServer(String hostName, int port) throws Exception{
+	/**
+	 * @param hostName
+	 * @param port
+	 * @throws Exception
+	 */
+	public void updateServer(String hostName, int port, int timeOut) throws Exception{
 		
 		serverHost = hostName;
 		serverPort = port;
+		serverTimeout = timeOut;
 		
 		updateServerSettings();
 	}
@@ -153,10 +193,18 @@ public class Context{
 			Element elPin = dom.createElement("pin");
 			elPin.setTextContent(String.valueOf(p.getPin()));
 			
+			Element elMinMoist = dom.createElement("minMoist");
+			elMinMoist.setTextContent(String.valueOf(p.getMinMoistVal()));
+			
+			Element elMaxMoist = dom.createElement("maxMoist");
+			elMaxMoist.setTextContent(String.valueOf(p.getMaxMoistVal()));
+			
 			Node elPot = dom.createElement("pot");
 			
 			elPot.appendChild(elDescr);
 			elPot.appendChild(elPin);
+			elPot.appendChild(elMinMoist);
+			elPot.appendChild(elMaxMoist);
 			
 			nRoot.item(0).appendChild(elPot);
 			
@@ -196,6 +244,10 @@ public class Context{
 			nlstServer = dom.getElementsByTagName("server_port");
 			nlstServer.item(0).setTextContent(String.valueOf(serverPort));
 			
+			//set the server timeout
+			nlstServer = dom.getElementsByTagName("server_timeout");
+			nlstServer.item(0).setTextContent(String.valueOf(serverTimeout));
+			
 			TransformerFactory transformerFactory = TransformerFactory.newInstance();
 			Transformer transformer = transformerFactory.newTransformer();
 			DOMSource source = new DOMSource(dom);
@@ -212,8 +264,8 @@ public class Context{
 	 * settings from settings.xml file & store it to the context variables
 	 */
 	private void fetchSettings(){
-		uiElements = new ArrayList<Observer>();
-		
+		ObserversForNewPots = new ArrayList<Observer>();
+				
 		Document dom;
 		
 		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
@@ -241,6 +293,14 @@ public class Context{
 				serverPort = -1;
 			}
 			
+			//get the server timeout
+			try{
+				NodeList nlstTO = dom.getElementsByTagName("server_timeout");
+				serverTimeout = Integer.parseInt(nlstTO.item(0).getTextContent());
+			}catch(Exception e){
+				serverTimeout = 15000;
+			}
+			
 			try {
 				//get the list of pots
 				NodeList nlstPots = dom.getElementsByTagName("pot");
@@ -248,12 +308,12 @@ public class Context{
 				//getting each pot's details
 				for(int i=0; i<nlstPots.getLength(); i++){
 					
-					//NodeList nlstPotDetails = nlstPots.item(i).getChildNodes();
-					
 					String s = (((Element)nlstPots.item(i)).getElementsByTagName("descr")).item(0).getTextContent();
 					int j = Integer.parseInt((((Element)nlstPots.item(i)).getElementsByTagName("pin")).item(0).getTextContent());
+					double minMoistVal = Double.parseDouble((((Element)nlstPots.item(i)).getElementsByTagName("minMoist")).item(0).getTextContent());
+					double maxMoistVal = Double.parseDouble((((Element)nlstPots.item(i)).getElementsByTagName("maxMoist")).item(0).getTextContent());
 					
-					Pot p = new Pot(s,j);
+					Pot p = new Pot(s,j, minMoistVal, maxMoistVal);
 					
 					potDescrs.add(p);
 				}
@@ -273,13 +333,13 @@ public class Context{
 	 * helper method that creates the settings.xml file
 	 * @throws IOException 
 	 */
-	private void createSettings() throws IOException{
+	private void createSettings() throws Exception{
 		
 		Document dom;
 		
 		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 				
-		try {
+		
 			DocumentBuilder db = dbf.newDocumentBuilder();
 			
 			dom = db.newDocument();
@@ -295,6 +355,10 @@ public class Context{
 			srvPortElement.appendChild(dom.createTextNode(""));
 			rootElement.appendChild(srvPortElement);
 			
+			Element srvTOElement = dom.createElement("server_timeout");
+			srvTOElement.appendChild(dom.createTextNode(String.valueOf(serverTimeout)));
+			rootElement.appendChild(srvTOElement);
+			
 			
 			TransformerFactory transformerFactory = TransformerFactory.newInstance();
 			Transformer transformer = transformerFactory.newTransformer();
@@ -303,22 +367,12 @@ public class Context{
 			transformer.transform(source, result);
 			
 			
-		} catch (ParserConfigurationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}  catch (TransformerConfigurationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (TransformerException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		
 	
 	}
 	
-	public void registerObserver(Observer obs){
-		uiElements.add(obs);
+	public void registerObserverForNewPots(Observer obs){
+		ObserversForNewPots.add(obs);
 	}
-
 
 }

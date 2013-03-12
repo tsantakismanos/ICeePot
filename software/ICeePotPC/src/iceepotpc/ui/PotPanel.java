@@ -1,6 +1,7 @@
 package iceepotpc.ui;
 
 
+import iceepotpc.appication.Pot;
 import iceepotpc.charteng.ChartCreator;
 import iceepotpc.servergw.Meauserement;
 import iceepotpc.servergw.Server;
@@ -44,15 +45,18 @@ import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import javax.swing.border.LineBorder;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+
 import java.awt.Color;
 import javax.swing.JProgressBar;
-
+import javax.swing.JSlider;
 
 /**
  * @author tsantakis A tab where information and inputs per pot is displayed.
  * 
  */
-public class PotPanel extends JPanel {
+public class PotPanel extends JPanel{
 
 	/**
 	 * 
@@ -79,25 +83,27 @@ public class PotPanel extends JPanel {
 	
 	ArrayList<Meauserement> measurements = null;
 	
-	private int pot;
+	private Pot pot;
 	private JFrame frame;
+	private JTextField txtMinMoistDispl;
+	private JTextField txtMaxMoistDispl;
 
 	/**
 	 * Create the panel.
 	 */
-	public PotPanel(int pin, final JFrame frame) {
+	public PotPanel(Pot p, final JFrame frame) {
 		
-		pot = pin;
 		this.frame = frame;
+		pot = p;
 		
 		setSize(new Dimension(900, 780));
 		setMinimumSize(new Dimension(900, 780));
 		this.setToolTipText("");
 		GridBagLayout gridBagLayout = new GridBagLayout();
-		gridBagLayout.columnWidths = new int[] { 47, 186, 30, 620 };
+		gridBagLayout.columnWidths = new int[] { 200, 620 };
 		gridBagLayout.rowHeights = new int[] {29, 450, 85, 0};
-		gridBagLayout.columnWeights = new double[] { 0.0, 0.0, 0.0, 1.0 };
-		gridBagLayout.rowWeights = new double[] { 0.0, 1.0, 0.0,
+		gridBagLayout.columnWeights = new double[] { 0.0, 1.0 };
+		gridBagLayout.rowWeights = new double[] { 0.0, 1.0, 1.0,
 				Double.MIN_VALUE };
 		setLayout(gridBagLayout);
 
@@ -111,12 +117,12 @@ public class PotPanel extends JPanel {
 		pnlLastValues.setAlignmentY(Component.TOP_ALIGNMENT);
 		pnlLastValues.setAlignmentX(Component.LEFT_ALIGNMENT);
 		GridBagConstraints gbc_pnlLastValues = new GridBagConstraints();
-		gbc_pnlLastValues.insets = new Insets(0, 0, 5, 0);
+		gbc_pnlLastValues.gridwidth = 2;
+		gbc_pnlLastValues.insets = new Insets(0, 0, 5, 5);
 		gbc_pnlLastValues.ipady = 5;
 		gbc_pnlLastValues.ipadx = 5;
-		gbc_pnlLastValues.gridwidth = 3;
 		gbc_pnlLastValues.anchor = GridBagConstraints.NORTHWEST;
-		gbc_pnlLastValues.gridx = 1;
+		gbc_pnlLastValues.gridx = 0;
 		gbc_pnlLastValues.gridy = 0;
 		add(pnlLastValues, gbc_pnlLastValues);
 		GridBagLayout gbl_pnlLastValues = new GridBagLayout();
@@ -185,15 +191,12 @@ public class PotPanel extends JPanel {
 		
 
 		pnlResults = new JScrollPane(txtResults);
-		pnlResults.setPreferredSize(new Dimension(120, 450));
-		pnlResults.setMinimumSize(new Dimension(120, 450));
-		pnlResults.setMaximumSize(new Dimension(120, 450));
 		pnlResults.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		pnlResults.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		GridBagConstraints gbc_pnlResults = new GridBagConstraints();
 		gbc_pnlResults.fill = GridBagConstraints.BOTH;
-		gbc_pnlResults.insets = new Insets(0, 0, 5, 5);
-		gbc_pnlResults.gridx = 1;
+		gbc_pnlResults.insets = new Insets(5, 5, 5, 5);
+		gbc_pnlResults.gridx = 0;
 		gbc_pnlResults.gridy = 1;
 		this.add(pnlResults, gbc_pnlResults);
 		txtResults.setColumns(1);
@@ -207,9 +210,84 @@ public class PotPanel extends JPanel {
 		GridBagConstraints gbc_pnlChart = new GridBagConstraints();
 		gbc_pnlChart.fill = GridBagConstraints.BOTH;
 		gbc_pnlChart.insets = new Insets(0, 0, 5, 0);
-		gbc_pnlChart.gridx = 3;
+		gbc_pnlChart.gridx = 1;
 		gbc_pnlChart.gridy = 1;
 		add(pnlChart, gbc_pnlChart);
+		
+		JPanel pnlMoistLimits = new JPanel();
+		GridBagConstraints gbc_pnlMoistLimits = new GridBagConstraints();
+		gbc_pnlMoistLimits.anchor = GridBagConstraints.SOUTH;
+		gbc_pnlMoistLimits.fill = GridBagConstraints.HORIZONTAL;
+		gbc_pnlMoistLimits.insets = new Insets(0, 5, 5, 5);
+		gbc_pnlMoistLimits.gridx = 0;
+		gbc_pnlMoistLimits.gridy = 2;
+		add(pnlMoistLimits, gbc_pnlMoistLimits);
+		pnlMoistLimits.setLayout(new FormLayout(new ColumnSpec[] {
+				FormFactory.RELATED_GAP_COLSPEC,
+				FormFactory.DEFAULT_COLSPEC,
+				FormFactory.RELATED_GAP_COLSPEC,
+				FormFactory.DEFAULT_COLSPEC,
+				FormFactory.RELATED_GAP_COLSPEC,},
+			new RowSpec[] {
+				FormFactory.RELATED_GAP_ROWSPEC,
+				FormFactory.DEFAULT_ROWSPEC,
+				FormFactory.RELATED_GAP_ROWSPEC,
+				FormFactory.DEFAULT_ROWSPEC,
+				FormFactory.RELATED_GAP_ROWSPEC,
+				FormFactory.DEFAULT_ROWSPEC,
+				FormFactory.RELATED_GAP_ROWSPEC,
+				FormFactory.DEFAULT_ROWSPEC,}));
+		
+		JLabel lblMiniMoistureLevel = new JLabel("Min Moisture Level");
+		pnlMoistLimits.add(lblMiniMoistureLevel, "2, 2, left, default");
+		
+		txtMinMoistDispl = new JTextField();
+		txtMinMoistDispl.setEditable(false);
+		txtMinMoistDispl.setText(String.valueOf(pot.getMinMoistVal()));
+		pnlMoistLimits.add(txtMinMoistDispl, "4, 2, fill, default");
+		txtMinMoistDispl.setColumns(10);
+		
+		final JSlider sldMinMoist = new JSlider();
+		sldMinMoist.setMinimum(0);
+		sldMinMoist.setMaximum(950);
+		sldMinMoist.setValue((int)pot.getMinMoistVal());
+		sldMinMoist.addChangeListener(new ChangeListener() {
+			public void stateChanged(ChangeEvent arg0) {
+				txtMinMoistDispl.setText(String.valueOf(sldMinMoist.getValue()));
+				pot.setMinMoistVal(sldMinMoist.getValue());
+			}
+		});
+		pnlMoistLimits.add(sldMinMoist, "2, 4, 3, 1, left, default");
+		
+		
+		JLabel lblMaxMoistureLevel = new JLabel("Max Moisture Level");
+		pnlMoistLimits.add(lblMaxMoistureLevel, "2, 6, left, default");
+		
+		txtMaxMoistDispl = new JTextField();
+		txtMaxMoistDispl.setEditable(false);
+		txtMaxMoistDispl.setText(String.valueOf(pot.getMaxMoistVal()));
+		pnlMoistLimits.add(txtMaxMoistDispl, "4, 6, fill, default");
+		txtMaxMoistDispl.setColumns(10);
+		
+		final JSlider sldMaxMoist = new JSlider();
+		sldMaxMoist.setMinimum(0);
+		sldMaxMoist.setMaximum(950);
+		sldMaxMoist.setValue((int)pot.getMaxMoistVal());
+		sldMaxMoist.addChangeListener(new ChangeListener() {
+			public void stateChanged(ChangeEvent arg0) {
+
+				
+				if(sldMaxMoist.getValue()<sldMinMoist.getValue()){
+					sldMaxMoist.setValue(sldMinMoist.getValue());
+					sldMaxMoist.updateUI();
+				}
+				
+				txtMaxMoistDispl.setText(String.valueOf(sldMaxMoist.getValue()));
+				pot.setMaxMoistVal(sldMaxMoist.getValue());
+			}
+		});
+		
+		pnlMoistLimits.add(sldMaxMoist, "2, 8, 3, 1, left, default");
 
 		// criteria panel
 		JPanel pnlCriteria = new JPanel();
@@ -221,7 +299,7 @@ public class PotPanel extends JPanel {
 		GridBagConstraints gbc_pnlCriteria = new GridBagConstraints();
 		gbc_pnlCriteria.insets = new Insets(0, 5, 0, 0);
 		gbc_pnlCriteria.anchor = GridBagConstraints.SOUTHEAST;
-		gbc_pnlCriteria.gridx = 3;
+		gbc_pnlCriteria.gridx = 1;
 		gbc_pnlCriteria.gridy = 2;
 		add(pnlCriteria, gbc_pnlCriteria);
 		pnlCriteria.setLayout(new FormLayout(new ColumnSpec[] {
@@ -275,7 +353,7 @@ public class PotPanel extends JPanel {
 			public void componentResized(ComponentEvent e) {
 				if(measurements!= null){
 				JFreeChart fc = ChartCreator
-						.createChart(measurements);
+						.createChart(measurements, pot.getMinMoistVal(), pot.getMaxMoistVal());
 				pnlChart.setChart(fc);
 				pnlChart.setVisible(true);
 				}
@@ -377,12 +455,12 @@ public class PotPanel extends JPanel {
 				//for all months in range
 				while((from.get(Calendar.MONTH) != to.get(Calendar.MONTH)) 
 						|| (from.get(Calendar.YEAR) != to.get(Calendar.YEAR))){
-					measurements.addAll(Server.GetMeasurements(from, pot));
+					measurements.addAll(Server.GetMeasurements(from, pot.getPin()));
 					from.add(Calendar.MONTH, 1);
 					prgBarGetting.setValue(prgBarGetting.getValue()+1);
 				}
 				
-				measurements.addAll(Server.GetMeasurements(to, pot));
+				measurements.addAll(Server.GetMeasurements(to, pot.getPin()));
 				prgBarGetting.setValue(prgBarGetting.getValue()+1);
 				
 				//measurements = Server.GetMeasurements(from, to, pot);
@@ -417,7 +495,7 @@ public class PotPanel extends JPanel {
 						.get(measurements.size() - 1).getValue()));
 
 				JFreeChart fc = ChartCreator
-						.createChart(measurements);
+						.createChart(measurements, pot.getMinMoistVal(), pot.getMaxMoistVal());
 				pnlChart.setChart(fc);
 				pnlChart.setVisible(true);
 			}
@@ -455,7 +533,10 @@ public class PotPanel extends JPanel {
 		
 		
 	}
-	
+
+
+
+
 	/**
 	 * @author tsantakis
 	 * private internal class implementing the asynchronous 
