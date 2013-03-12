@@ -1,11 +1,12 @@
 package iceepotpc.ui;
 
 
+import iceepotpc.appication.Callable;
 import iceepotpc.appication.Context;
 import iceepotpc.appication.Pot;
 import iceepotpc.charteng.ChartCreator;
 import iceepotpc.servergw.Meauserement;
-import iceepotpc.servergw.Server;
+import iceepotpc.servergw.ServerService;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -256,19 +257,7 @@ public class PotPanel extends JPanel{
 		sldMinMoist.setMinimum(0);
 		sldMinMoist.setMaximum(950);
 		sldMinMoist.setValue((int)pot.getMinMoistVal());
-		sldMinMoist.addChangeListener(new ChangeListener() {
-			public void stateChanged(ChangeEvent arg0) {
-				txtMinMoistDispl.setText(String.valueOf(sldMinMoist.getValue()));
-				pot.setMinMoistVal(sldMinMoist.getValue());
-				try {
-					c.updateMoistLimits(pot.getPin(), pot.getMinMoistVal(), pot.getMaxMoistVal());
-				} catch (Exception e) {
-					JOptionPane.showMessageDialog(frame,
-							e.getMessage(),
-							"Warning", JOptionPane.WARNING_MESSAGE);
-				}
-			}
-		});
+		
 		pnlMoistLimits.add(sldMinMoist, "2, 4, 3, 1, center, default");
 		
 		
@@ -286,26 +275,7 @@ public class PotPanel extends JPanel{
 		sldMaxMoist.setMinimum(0);
 		sldMaxMoist.setMaximum(950);
 		sldMaxMoist.setValue((int)pot.getMaxMoistVal());
-		sldMaxMoist.addChangeListener(new ChangeListener() {
-			public void stateChanged(ChangeEvent arg0) {
-
-				
-				if(sldMaxMoist.getValue()<sldMinMoist.getValue()){
-					sldMaxMoist.setValue(sldMinMoist.getValue());
-					sldMaxMoist.updateUI();
-				}
-				
-				txtMaxMoistDispl.setText(String.valueOf(sldMaxMoist.getValue()));
-				pot.setMaxMoistVal(sldMaxMoist.getValue());
-				try {
-					c.updateMoistLimits(pot.getPin(), pot.getMinMoistVal(), pot.getMaxMoistVal());
-				} catch (Exception e) {
-					JOptionPane.showMessageDialog(frame,
-							e.getMessage(),
-							"Warning", JOptionPane.WARNING_MESSAGE);
-				}
-			}
-		});
+		
 		
 		pnlMoistLimits.add(sldMaxMoist, "2, 8, 3, 1, center, default");
 
@@ -437,6 +407,46 @@ public class PotPanel extends JPanel{
 				}
 			}
 		});
+		
+		sldMinMoist.addChangeListener(new ChangeListener() {
+			public void stateChanged(ChangeEvent arg0) {
+				
+				if(sldMinMoist.getValue() > sldMaxMoist.getValue()){
+					sldMinMoist.setValue(sldMaxMoist.getValue());
+					sldMinMoist.updateUI();
+				}
+				
+				txtMinMoistDispl.setText(String.valueOf(sldMinMoist.getValue()));
+				pot.setMinMoistVal(sldMinMoist.getValue());
+				try {
+					c.updateMoistLimits(pot.getPin(), pot.getMinMoistVal(), pot.getMaxMoistVal());
+				} catch (Exception e) {
+					JOptionPane.showMessageDialog(frame,
+							e.getMessage(),
+							"Warning", JOptionPane.WARNING_MESSAGE);
+				}
+			}
+		});
+		sldMaxMoist.addChangeListener(new ChangeListener() {
+			public void stateChanged(ChangeEvent arg0) {
+
+				
+				if(sldMaxMoist.getValue()<sldMinMoist.getValue()){
+					sldMaxMoist.setValue(sldMinMoist.getValue());
+					sldMaxMoist.updateUI();
+				}
+				
+				txtMaxMoistDispl.setText(String.valueOf(sldMaxMoist.getValue()));
+				pot.setMaxMoistVal(sldMaxMoist.getValue());
+				try {
+					c.updateMoistLimits(pot.getPin(), pot.getMinMoistVal(), pot.getMaxMoistVal());
+				} catch (Exception e) {
+					JOptionPane.showMessageDialog(frame,
+							e.getMessage(),
+							"Warning", JOptionPane.WARNING_MESSAGE);
+				}
+			}
+		});
 
 		// filling data
 		for (int i = 0; i < availableMonths.length; i++)
@@ -461,66 +471,16 @@ public class PotPanel extends JPanel{
 	 * - the handling of UI elements during  that request (progress bar , buttons etc)
 	 * - fill the UI elements after each successful request
 	 */
-	private class ProgressBarThread implements Runnable{
+	private class ProgressBarThread implements Runnable, Callable{
 		
 		@Override
 		public void run() {
 			
 			SetUIBeforeRequest();
 			
-			measurements = null;
-			try {
-				measurements = new ArrayList<Meauserement>();
-				
-				//for all months in range
-				while((from.get(Calendar.MONTH) != to.get(Calendar.MONTH)) 
-						|| (from.get(Calendar.YEAR) != to.get(Calendar.YEAR))){
-					measurements.addAll(Server.GetMeasurements(from, pot.getPin()));
-					from.add(Calendar.MONTH, 1);
-					prgBarGetting.setValue(prgBarGetting.getValue()+1);
-				}
-				
-				measurements.addAll(Server.GetMeasurements(to, pot.getPin()));
-				prgBarGetting.setValue(prgBarGetting.getValue()+1);
-				
-				//measurements = Server.GetMeasurements(from, to, pot);
-			} catch (Exception e1) {
-				JOptionPane.showMessageDialog(frame, e1.getMessage(),
-						"Warning", JOptionPane.ERROR_MESSAGE);
-			} 
-			
-			//request has finished, now fill the UI
-			if (measurements == null || measurements.size() == 0)
-				JOptionPane.showMessageDialog(frame,
-						"Measurements not available yet",
-						"Warning", JOptionPane.WARNING_MESSAGE);
-			else
-			{
-				for (int i = 0; i < measurements.size(); i++){
-					txtResults.setText(txtResults.getText()
-							+ "\n"
-							+ df.format(new Date(measurements
-									.get(i).getMoment())) + "\t"
-							+ measurements.get(i).getValue());
-					Dimension d = txtResults.getPreferredSize();
-					pnlResults.setPreferredSize(d);
-				}
-				Calendar c = Calendar.getInstance();
-				c.setTimeInMillis((long) measurements.get(
-						measurements.size() - 1).getMoment());
-
-				txtLastTime.setText(df.format(c.getTime()));
-
-				txtLastValue.setText(String.valueOf(measurements
-						.get(measurements.size() - 1).getValue()));
-
-				JFreeChart fc = ChartCreator
-						.createChart(measurements, pot.getMinMoistVal(), pot.getMaxMoistVal());
-				pnlChart.setChart(fc);
-				pnlChart.setVisible(true);
-			}
-			SetUIAfterRequest();
-				
+			ServerService s = new ServerService(this, from, to, pot.getPin());
+			Thread t = new Thread(s);
+			t.start();
 		}
 				
 		private void SetUIBeforeRequest(){
@@ -550,37 +510,51 @@ public class PotPanel extends JPanel{
 			return res+1;
 			
 		}
-		
-		
-	}
-
-
-
-
-	/**
-	 * @author tsantakis
-	 * private internal class implementing the asynchronous 
-	 * calling to the static functions defined 
-	 * in Server class
-	 */
-	/*private class ServerThread implements Runnable{
 
 		@Override
-		public void run() {
-			
+		public void updateProgressBar() {
+			prgBarGetting.setValue(prgBarGetting.getValue()+1);
+		}
+
+		@Override
+		public void updateMeasurementData(ArrayList<Meauserement> measurementsFromServer) {
 			measurements = null;
-			try {
-				measurements = Server.GetMeasurements(from, to, pot);
-			} catch (Exception e1) {
-				JOptionPane.showMessageDialog(frame, e1.getMessage(),
-						"Warning", JOptionPane.ERROR_MESSAGE);
-			} finally{
-				
-			}
+			measurements = new ArrayList<Meauserement>();
+			measurements = measurementsFromServer;
 			
+			//request has finished, now fill the UI
+			if (measurements == null || measurements.size() == 0)
+				JOptionPane.showMessageDialog(frame,
+						"Measurements not available for time given",
+						"Warning", JOptionPane.WARNING_MESSAGE);
+			else
+			{
+				for (int i = 0; i < measurements.size(); i++){
+					txtResults.setText(txtResults.getText()
+							+ "\n"
+							+ df.format(new Date(measurements
+									.get(i).getMoment())) + "\t"
+							+ measurements.get(i).getValue());
+					Dimension d = txtResults.getPreferredSize();
+					pnlResults.setPreferredSize(d);
+				}
+				Calendar c = Calendar.getInstance();
+				c.setTimeInMillis((long) measurements.get(
+						measurements.size() - 1).getMoment());
+
+				txtLastTime.setText(df.format(c.getTime()));
+
+				txtLastValue.setText(String.valueOf(measurements
+						.get(measurements.size() - 1).getValue()));
+
+				JFreeChart fc = ChartCreator
+						.createChart(measurements, pot.getMinMoistVal(), pot.getMaxMoistVal());
+				pnlChart.setChart(fc);
+				pnlChart.setVisible(true);
+			}
+			SetUIAfterRequest();
 			
 		}
-		
-	}*/
+	}
 
 }

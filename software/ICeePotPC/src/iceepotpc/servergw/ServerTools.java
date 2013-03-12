@@ -1,5 +1,6 @@
 package iceepotpc.servergw;
 
+
 import iceepotpc.appication.Context;
 
 import java.io.IOException;
@@ -17,8 +18,9 @@ import java.util.Calendar;
  *      arduino server. The time unit of measurements requested is a month
  * 
  */
-public class Server {
-
+public class ServerTools{
+	
+	
 	/**
 	 * @param date
 	 *            : a String representing the month for which the measurements
@@ -28,7 +30,7 @@ public class Server {
 	 * @return: an arraylist of measurements (pot-moment-value)
 	 * @throws Exception 
 	 */
-	public static ArrayList<Meauserement> GetMeasurements(Calendar c, int pot) throws Exception {
+	public synchronized static ArrayList<Meauserement> GetMeasurements(Calendar c, int pot) throws Exception {
 
 		Context cntx = Context.getInstance();
 		
@@ -98,29 +100,6 @@ public class Server {
 		return measurements;
 	}
 	
-	/**
-	 * @param cFrom : the month from which the measurements will be fetched
-	 * @param cTo: the month to....
-	 * @param pot: the desired pot
-	 * @return the results in an arraylist form
-	 * @throws Exception 
-	 */
-	/*public static ArrayList<Meauserement> GetMeasurements(Calendar cFrom, Calendar cTo, int pot) throws Exception{
-		
-		ArrayList<Meauserement> measurements = new ArrayList<Meauserement>();
-		
-		//for all months in range
-		while((cFrom.get(Calendar.MONTH) != cTo.get(Calendar.MONTH)) 
-				|| (cFrom.get(Calendar.YEAR) != cTo.get(Calendar.YEAR))){
-			measurements.addAll(GetMeasurements(cFrom, pot));
-			cFrom.add(Calendar.MONTH, 1);
-		}
-		
-		measurements.addAll(GetMeasurements(cTo, pot));
-		
-		return measurements;
-		
-	}*/
 	
 	/**
 	 * @param s: a row of the form: seconds|pin|value
@@ -134,5 +113,6 @@ public class Server {
 		
 		return m;
 	}
+
 
 }

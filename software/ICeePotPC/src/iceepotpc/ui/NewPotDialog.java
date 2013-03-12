@@ -119,11 +119,7 @@ public class NewPotDialog extends JDialog {
 			contentPanel.add(txtMinMoistDispl, "4, 6, fill, default");
 			txtMinMoistDispl.setColumns(10);
 		}
-		sldMinMoist.addChangeListener(new ChangeListener() {
-			public void stateChanged(ChangeEvent arg0) {
-				txtMinMoistDispl.setText(String.valueOf(sldMinMoist.getValue()));
-			}
-		});
+		
 		{
 			JLabel lblMaximumMoistureValue = new JLabel(
 					"Maximum Moisture Value");
@@ -143,6 +139,16 @@ public class NewPotDialog extends JDialog {
 			contentPanel.add(txtMaxMoistDispl, "4, 8, fill, default");
 			txtMaxMoistDispl.setColumns(10);
 		}
+		
+		sldMinMoist.addChangeListener(new ChangeListener() {
+			public void stateChanged(ChangeEvent arg0) {
+				if(sldMinMoist.getValue() > sldMaxMoist.getValue()){
+					sldMinMoist.setValue(sldMaxMoist.getValue());
+					sldMinMoist.updateUI();
+				}
+				txtMinMoistDispl.setText(String.valueOf(sldMinMoist.getValue()));
+			}
+		});
 		sldMaxMoist.addChangeListener(new ChangeListener() {
 			public void stateChanged(ChangeEvent arg0) {
 				if(sldMaxMoist.getValue()<sldMinMoist.getValue()){
@@ -152,6 +158,7 @@ public class NewPotDialog extends JDialog {
 				txtMaxMoistDispl.setText(String.valueOf(sldMaxMoist.getValue()));
 			}
 		});
+		
 		{
 			JPanel buttonPane = new JPanel();
 			buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
