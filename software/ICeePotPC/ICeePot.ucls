@@ -1,15 +1,15 @@
 <class-diagram version="1.0.10" icons="true" automaticImage="JPEG" always-add-relationships="true" 
   generalizations="true" realizations="true" associations="true" dependencies="true" nesting-relationships="true">  
-  <class id="1" corner="BOTTOM_RIGHT" language="java" name="iceepotpc.appication.ICeePotPC" project="ICeePotPC" 
-    file="/ICeePotPC/src/iceepotpc/appication/ICeePotPC.java" binary="false">    
+  <class id="1" corner="BOTTOM_RIGHT" language="java" name="iceepotpc.application.ICeePotPC" project="ICeePotPC" 
+    file="/ICeePotPC/src/iceepotpc/application/ICeePotPC.java" binary="false">    
     <position height="-1" width="-1" x="1285" y="-67"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" visibility="true">      
       <attributes public="true" package="true" protected="true" private="true"/>      
       <operations public="true" package="true" protected="true" private="true"/>    
     </display>  
   </class>  
-  <class id="2" corner="BOTTOM_RIGHT" language="java" name="iceepotpc.appication.Context" project="ICeePotPC" 
-    file="/ICeePotPC/src/iceepotpc/appication/Context.java" binary="false">    
+  <class id="2" corner="BOTTOM_RIGHT" language="java" name="iceepotpc.application.Context" project="ICeePotPC" 
+    file="/ICeePotPC/src/iceepotpc/application/Context.java" binary="false">    
     <position height="-1" width="-1" x="134" y="195"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" visibility="true">      
       <attributes public="true" package="true" protected="true" private="true"/>      

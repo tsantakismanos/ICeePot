@@ -1,7 +1,7 @@
 package iceepotpc.servergw;
 
 
-import iceepotpc.appication.Context;
+import iceepotpc.application.Context;
 
 import java.io.IOException;
 import java.io.InputStream;

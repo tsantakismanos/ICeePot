@@ -1,4 +1,4 @@
-package iceepotpc.appication;
+package iceepotpc.application;
 
 import iceepotpc.servergw.Meauserement;
 

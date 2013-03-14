@@ -1,9 +1,9 @@
 package iceepotpc.ui;
 
 
-import iceepotpc.appication.Callable;
-import iceepotpc.appication.Context;
-import iceepotpc.appication.Pot;
+import iceepotpc.application.Callable;
+import iceepotpc.application.Context;
+import iceepotpc.application.Pot;
 import iceepotpc.charteng.ChartCreator;
 import iceepotpc.servergw.Meauserement;
 import iceepotpc.servergw.ServerService;

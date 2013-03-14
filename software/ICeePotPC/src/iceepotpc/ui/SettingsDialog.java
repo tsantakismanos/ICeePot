@@ -1,6 +1,6 @@
 package iceepotpc.ui;
 
-import iceepotpc.appication.Context;
+import iceepotpc.application.Context;
 
 import java.awt.BorderLayout;
 import java.awt.Component;

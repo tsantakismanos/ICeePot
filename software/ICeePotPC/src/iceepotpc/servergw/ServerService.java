@@ -3,7 +3,7 @@ package iceepotpc.servergw;
 import java.util.ArrayList;
 import java.util.Calendar;
 
-import iceepotpc.appication.Callable;
+import iceepotpc.application.Callable;
 
 /** Runnable class to perform the async task of sending
  * time requests to the server using the ServerTools methods

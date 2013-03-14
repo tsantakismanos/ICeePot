@@ -13,8 +13,8 @@
  */
 package iceepotpc.ui;
 
-import iceepotpc.appication.Context;
-import iceepotpc.appication.Pot;
+import iceepotpc.application.Context;
+import iceepotpc.application.Pot;
 
 import javax.swing.JFrame;
 import java.awt.BorderLayout;
