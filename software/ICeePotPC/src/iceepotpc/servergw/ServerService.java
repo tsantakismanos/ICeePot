@@ -19,6 +19,7 @@ public class ServerService implements Runnable {
 	private ArrayList<Meauserement> measurements;
 	private Calendar from,to;
 	private int pin;
+	private Exception exception;
 	
 	
 	public ServerService(Callable caller, Calendar from, Calendar to, int pin) {
@@ -48,10 +49,10 @@ public class ServerService implements Runnable {
 			measurements.addAll(ServerTools.GetMeasurements(to, pin));
 			caller.updateProgressBar();
 			
-			caller.updateMeasurementData(measurements);
+			caller.updateMeasurementData(measurements, null);
 		}catch(Exception e){
-			measurements = null;
-			caller.updateMeasurementData(measurements);
+			this.exception = new Exception(e.getMessage());
+			caller.updateMeasurementData(measurements, this.exception);
 		}
 	}
 

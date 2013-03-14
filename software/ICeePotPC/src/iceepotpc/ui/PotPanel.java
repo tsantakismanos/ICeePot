@@ -1,6 +1,5 @@
 package iceepotpc.ui;
 
-
 import iceepotpc.application.Callable;
 import iceepotpc.application.Context;
 import iceepotpc.application.Pot;
@@ -58,7 +57,7 @@ import javax.swing.JSlider;
  * @author tsantakis A tab where information and inputs per pot is displayed.
  * 
  */
-public class PotPanel extends JPanel{
+public class PotPanel extends JPanel {
 
 	/**
 	 * 
@@ -67,22 +66,22 @@ public class PotPanel extends JPanel{
 
 	private String[] availableMonths = { "Jan", "Feb", "Mar", "Apr", "May",
 			"Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };
-	private String[] availableYears = {"2013", "2014" };
+	private String[] availableYears = { "2013", "2014" };
 
 	private JTextField txtLastValue;
 	private JTextField txtLastTime;
 	private JTextArea txtResults;
 	private JButton btnGet;
 	private JProgressBar prgBarGetting;
-	
+
 	private ChartPanel pnlChart;
 	private JScrollPane pnlResults;
 
 	DateFormat df = new SimpleDateFormat();
-	
+
 	private Calendar from;
 	private Calendar to;
-	
+
 	ArrayList<Meauserement> measurements = null;
 	
 	private Pot pot;
@@ -92,20 +91,21 @@ public class PotPanel extends JPanel{
 
 	/**
 	 * Create the panel.
-	 * @throws Exception 
+	 * 
+	 * @throws Exception
 	 */
 	public PotPanel(Pot p, final JFrame frame) throws Exception {
-		
+
 		this.frame = frame;
 		pot = p;
-		
+
 		final Context c = Context.getInstance();
 		setSize(new Dimension(900, 780));
 		setMinimumSize(new Dimension(900, 780));
 		this.setToolTipText("");
 		GridBagLayout gridBagLayout = new GridBagLayout();
 		gridBagLayout.columnWidths = new int[] { 200, 620 };
-		gridBagLayout.rowHeights = new int[] {29, 450, 85, 0};
+		gridBagLayout.rowHeights = new int[] { 29, 450, 85, 0 };
 		gridBagLayout.columnWeights = new double[] { 0.0, 1.0 };
 		gridBagLayout.rowWeights = new double[] { 0.0, 1.0, 1.0,
 				Double.MIN_VALUE };
@@ -192,11 +192,12 @@ public class PotPanel extends JPanel{
 		txtResults = new JTextArea();
 		txtResults.setEditable(false);
 		txtResults.setTabSize(2);
-		
 
 		pnlResults = new JScrollPane(txtResults);
-		pnlResults.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-		pnlResults.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		pnlResults
+				.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+		pnlResults
+				.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		GridBagConstraints gbc_pnlResults = new GridBagConstraints();
 		gbc_pnlResults.fill = GridBagConstraints.BOTH;
 		gbc_pnlResults.insets = new Insets(5, 5, 5, 5);
@@ -217,7 +218,7 @@ public class PotPanel extends JPanel{
 		gbc_pnlChart.gridx = 1;
 		gbc_pnlChart.gridy = 1;
 		add(pnlChart, gbc_pnlChart);
-		
+
 		JPanel pnlMoistLimits = new JPanel();
 		GridBagConstraints gbc_pnlMoistLimits = new GridBagConstraints();
 		gbc_pnlMoistLimits.ipadx = 5;
@@ -227,56 +228,54 @@ public class PotPanel extends JPanel{
 		gbc_pnlMoistLimits.gridx = 0;
 		gbc_pnlMoistLimits.gridy = 2;
 		add(pnlMoistLimits, gbc_pnlMoistLimits);
-		pnlMoistLimits.setLayout(new FormLayout(new ColumnSpec[] {
-				FormFactory.RELATED_GAP_COLSPEC,
-				FormFactory.DEFAULT_COLSPEC,
-				FormFactory.RELATED_GAP_COLSPEC,
-				FormFactory.DEFAULT_COLSPEC,
-				FormFactory.RELATED_GAP_COLSPEC,},
-			new RowSpec[] {
-				FormFactory.RELATED_GAP_ROWSPEC,
-				FormFactory.DEFAULT_ROWSPEC,
-				FormFactory.RELATED_GAP_ROWSPEC,
-				FormFactory.DEFAULT_ROWSPEC,
-				FormFactory.RELATED_GAP_ROWSPEC,
-				FormFactory.DEFAULT_ROWSPEC,
-				FormFactory.RELATED_GAP_ROWSPEC,
-				FormFactory.DEFAULT_ROWSPEC,}));
-		
+		pnlMoistLimits
+				.setLayout(new FormLayout(new ColumnSpec[] {
+						FormFactory.RELATED_GAP_COLSPEC,
+						FormFactory.DEFAULT_COLSPEC,
+						FormFactory.RELATED_GAP_COLSPEC,
+						FormFactory.DEFAULT_COLSPEC,
+						FormFactory.RELATED_GAP_COLSPEC, }, new RowSpec[] {
+						FormFactory.RELATED_GAP_ROWSPEC,
+						FormFactory.DEFAULT_ROWSPEC,
+						FormFactory.RELATED_GAP_ROWSPEC,
+						FormFactory.DEFAULT_ROWSPEC,
+						FormFactory.RELATED_GAP_ROWSPEC,
+						FormFactory.DEFAULT_ROWSPEC,
+						FormFactory.RELATED_GAP_ROWSPEC,
+						FormFactory.DEFAULT_ROWSPEC, }));
+
 		JLabel lblMiniMoistureLevel = new JLabel("Min Moisture Level");
 		pnlMoistLimits.add(lblMiniMoistureLevel, "2, 2, left, default");
-		
+
 		txtMinMoistDispl = new JTextField();
 		txtMinMoistDispl.setEditable(false);
 		txtMinMoistDispl.setText(String.valueOf(pot.getMinMoistVal()));
 		pnlMoistLimits.add(txtMinMoistDispl, "4, 2, fill, default");
 		txtMinMoistDispl.setColumns(10);
-		
+
 		final JSlider sldMinMoist = new JSlider();
 		sldMinMoist.setPreferredSize(new Dimension(180, 23));
 		sldMinMoist.setMinimum(0);
 		sldMinMoist.setMaximum(950);
-		sldMinMoist.setValue((int)pot.getMinMoistVal());
-		
+		sldMinMoist.setValue((int) pot.getMinMoistVal());
+
 		pnlMoistLimits.add(sldMinMoist, "2, 4, 3, 1, center, default");
-		
-		
+
 		JLabel lblMaxMoistureLevel = new JLabel("Max Moisture Level");
 		pnlMoistLimits.add(lblMaxMoistureLevel, "2, 6, left, default");
-		
+
 		txtMaxMoistDispl = new JTextField();
 		txtMaxMoistDispl.setEditable(false);
 		txtMaxMoistDispl.setText(String.valueOf(pot.getMaxMoistVal()));
 		pnlMoistLimits.add(txtMaxMoistDispl, "4, 6, fill, default");
 		txtMaxMoistDispl.setColumns(10);
-		
+
 		final JSlider sldMaxMoist = new JSlider();
 		sldMaxMoist.setPreferredSize(new Dimension(180, 23));
 		sldMaxMoist.setMinimum(0);
 		sldMaxMoist.setMaximum(950);
-		sldMaxMoist.setValue((int)pot.getMaxMoistVal());
-		
-		
+		sldMaxMoist.setValue((int) pot.getMaxMoistVal());
+
 		pnlMoistLimits.add(sldMaxMoist, "2, 8, 3, 1, center, default");
 
 		// criteria panel
@@ -293,27 +292,20 @@ public class PotPanel extends JPanel{
 		gbc_pnlCriteria.gridy = 2;
 		add(pnlCriteria, gbc_pnlCriteria);
 		pnlCriteria.setLayout(new FormLayout(new ColumnSpec[] {
-				FormFactory.UNRELATED_GAP_COLSPEC,
-				ColumnSpec.decode("60px"),
-				FormFactory.UNRELATED_GAP_COLSPEC,
-				ColumnSpec.decode("112px"),
-				FormFactory.UNRELATED_GAP_COLSPEC,
-				ColumnSpec.decode("112px"),
-				FormFactory.RELATED_GAP_COLSPEC,
-				FormFactory.DEFAULT_COLSPEC,
-				FormFactory.UNRELATED_GAP_COLSPEC,},
-			new RowSpec[] {
-				FormFactory.UNRELATED_GAP_ROWSPEC,
-				RowSpec.decode("26px"),
-				FormFactory.UNRELATED_GAP_ROWSPEC,
-				RowSpec.decode("26px"),
-				FormFactory.UNRELATED_GAP_ROWSPEC,}));
+				FormFactory.UNRELATED_GAP_COLSPEC, ColumnSpec.decode("60px"),
+				FormFactory.UNRELATED_GAP_COLSPEC, ColumnSpec.decode("112px"),
+				FormFactory.UNRELATED_GAP_COLSPEC, ColumnSpec.decode("112px"),
+				FormFactory.RELATED_GAP_COLSPEC, FormFactory.DEFAULT_COLSPEC,
+				FormFactory.UNRELATED_GAP_COLSPEC, }, new RowSpec[] {
+				FormFactory.UNRELATED_GAP_ROWSPEC, RowSpec.decode("26px"),
+				FormFactory.UNRELATED_GAP_ROWSPEC, RowSpec.decode("26px"),
+				FormFactory.UNRELATED_GAP_ROWSPEC, }));
 
 		JLabel lblDateFrom = new JLabel("From");
 		pnlCriteria.add(lblDateFrom, "2, 2, fill, fill");
 		final JComboBox cmbMonthFrom = new JComboBox();
 		pnlCriteria.add(cmbMonthFrom, "4, 2, fill, fill");
-		
+
 		prgBarGetting = new JProgressBar();
 		prgBarGetting.setMaximumSize(new Dimension(109, 23));
 		prgBarGetting.setMinimumSize(new Dimension(109, 23));
@@ -332,39 +324,35 @@ public class PotPanel extends JPanel{
 
 		// handlers
 		this.addComponentListener(new ComponentListener() {
-			
+
 			@Override
 			public void componentShown(ComponentEvent e) {
-				
-				
+
 			}
-			
+
 			@Override
 			public void componentResized(ComponentEvent e) {
-				if(measurements!= null){
-				JFreeChart fc = ChartCreator
-						.createChart(measurements, pot.getMinMoistVal(), pot.getMaxMoistVal());
-				pnlChart.setChart(fc);
-				pnlChart.setVisible(true);
+				if (measurements != null) {
+					JFreeChart fc = ChartCreator.createChart(measurements,
+							pot.getMinMoistVal(), pot.getMaxMoistVal());
+					pnlChart.setChart(fc);
+					pnlChart.setVisible(true);
 				}
-				
+
 			}
-			
+
 			@Override
 			public void componentMoved(ComponentEvent e) {
-				
-				
+
 			}
-			
+
 			@Override
 			public void componentHidden(ComponentEvent e) {
-				
-				
+
 			}
 		});
-		
-		
-		//month-from dropdown handler
+
+		// month-from dropdown handler
 		cmbMonthFrom.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent arg0) {
 				cmbMonthTo.setSelectedIndex(cmbMonthFrom.getSelectedIndex());
@@ -379,11 +367,10 @@ public class PotPanel extends JPanel{
 			}
 		});
 
-		
-		//Get information button
+		// Get information button
 		btnGet.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				
+
 				from = Calendar.getInstance();
 				from.set(Calendar.MONTH, cmbMonthFrom.getSelectedIndex() + 1);
 				from.set(Calendar.DAY_OF_MONTH, 1);
@@ -407,22 +394,22 @@ public class PotPanel extends JPanel{
 				}
 			}
 		});
-		
+
 		sldMinMoist.addChangeListener(new ChangeListener() {
 			public void stateChanged(ChangeEvent arg0) {
-				
-				if(sldMinMoist.getValue() > sldMaxMoist.getValue()){
+
+				if (sldMinMoist.getValue() > sldMaxMoist.getValue()) {
 					sldMinMoist.setValue(sldMaxMoist.getValue());
 					sldMinMoist.updateUI();
 				}
-				
+
 				txtMinMoistDispl.setText(String.valueOf(sldMinMoist.getValue()));
 				pot.setMinMoistVal(sldMinMoist.getValue());
 				try {
-					c.updateMoistLimits(pot.getPin(), pot.getMinMoistVal(), pot.getMaxMoistVal());
+					c.updateMoistLimits(pot.getPin(), pot.getMinMoistVal(),
+							pot.getMaxMoistVal());
 				} catch (Exception e) {
-					JOptionPane.showMessageDialog(frame,
-							e.getMessage(),
+					JOptionPane.showMessageDialog(frame, e.getMessage(),
 							"Warning", JOptionPane.WARNING_MESSAGE);
 				}
 			}
@@ -430,19 +417,18 @@ public class PotPanel extends JPanel{
 		sldMaxMoist.addChangeListener(new ChangeListener() {
 			public void stateChanged(ChangeEvent arg0) {
 
-				
-				if(sldMaxMoist.getValue()<sldMinMoist.getValue()){
+				if (sldMaxMoist.getValue() < sldMinMoist.getValue()) {
 					sldMaxMoist.setValue(sldMinMoist.getValue());
 					sldMaxMoist.updateUI();
 				}
-				
+
 				txtMaxMoistDispl.setText(String.valueOf(sldMaxMoist.getValue()));
 				pot.setMaxMoistVal(sldMaxMoist.getValue());
 				try {
-					c.updateMoistLimits(pot.getPin(), pot.getMinMoistVal(), pot.getMaxMoistVal());
+					c.updateMoistLimits(pot.getPin(), pot.getMinMoistVal(),
+							pot.getMaxMoistVal());
 				} catch (Exception e) {
-					JOptionPane.showMessageDialog(frame,
-							e.getMessage(),
+					JOptionPane.showMessageDialog(frame, e.getMessage(),
 							"Warning", JOptionPane.WARNING_MESSAGE);
 				}
 			}
@@ -457,33 +443,29 @@ public class PotPanel extends JPanel{
 			cmbMonthFrom.addItem(availableMonths[i]);
 		for (int i = 0; i < availableYears.length; i++)
 			cmbYearFrom.addItem(availableYears[i]);
-		
+
 	}
-	
-	
-	
-	
+
 	/**
-	 * @author tsantakis
-	 * private internal class which models the separate (from UI) thread
-	 * to be responsible for:
-	 * - make the actual request with the use of Server static methods 
-	 * - the handling of UI elements during  that request (progress bar , buttons etc)
-	 * - fill the UI elements after each successful request
+	 * @author tsantakis private internal class which models the separate (from
+	 *         UI) thread to be responsible for: - make the actual request with
+	 *         the use of Server static methods - the handling of UI elements
+	 *         during that request (progress bar , buttons etc) - fill the UI
+	 *         elements after each successful request
 	 */
-	private class ProgressBarThread implements Runnable, Callable{
-		
+	private class ProgressBarThread implements Runnable, Callable {
+
 		@Override
 		public void run() {
-			
+
 			SetUIBeforeRequest();
-			
+
 			ServerService s = new ServerService(this, from, to, pot.getPin());
 			Thread t = new Thread(s);
 			t.start();
 		}
-				
-		private void SetUIBeforeRequest(){
+
+		private void SetUIBeforeRequest() {
 			txtResults.setText("");
 			txtLastValue.setText("");
 			txtLastTime.setText("");
@@ -493,67 +475,76 @@ public class PotPanel extends JPanel{
 			prgBarGetting.setVisible(true);
 			prgBarGetting.setValue(prgBarGetting.getMinimum());
 		}
-		private void SetUIAfterRequest(){
+
+		private void SetUIAfterRequest() {
 			prgBarGetting.setValue(prgBarGetting.getMaximum());
 			prgBarGetting.setVisible(false);
 			btnGet.setEnabled(true);
 		}
-		
-		//  to-from in months
-		private int MontsToGet(Calendar to, Calendar from){
-			
+
+		// to-from in months
+		private int MontsToGet(Calendar to, Calendar from) {
+
 			int res = 0;
 			double millisPerMonth = 2628000000d;
-			
-			res = (int) Math.ceil((to.getTimeInMillis() - from.getTimeInMillis())/millisPerMonth);
-			
-			return res+1;
-			
+
+			res = (int) Math.ceil((to.getTimeInMillis() - from
+					.getTimeInMillis()) / millisPerMonth);
+
+			return res + 1;
+
 		}
 
 		@Override
 		public void updateProgressBar() {
-			prgBarGetting.setValue(prgBarGetting.getValue()+1);
+			prgBarGetting.setValue(prgBarGetting.getValue() + 1);
 		}
 
 		@Override
-		public void updateMeasurementData(ArrayList<Meauserement> measurementsFromServer) {
+		public void updateMeasurementData(
+				ArrayList<Meauserement> measurementsFromServer,
+				Exception exceptionFromServer) {
 			measurements = null;
-			measurements = new ArrayList<Meauserement>();
-			measurements = measurementsFromServer;
 			
-			//request has finished, now fill the UI
-			if (measurements == null || measurements.size() == 0)
+			if (exceptionFromServer != null) {
 				JOptionPane.showMessageDialog(frame,
-						"Measurements not available for time given",
-						"Warning", JOptionPane.WARNING_MESSAGE);
-			else
-			{
-				for (int i = 0; i < measurements.size(); i++){
-					txtResults.setText(txtResults.getText()
-							+ "\n"
-							+ df.format(new Date(measurements
-									.get(i).getMoment())) + "\t"
-							+ measurements.get(i).getValue());
-					Dimension d = txtResults.getPreferredSize();
-					pnlResults.setPreferredSize(d);
+						exceptionFromServer.getMessage(), "Error",
+						JOptionPane.ERROR_MESSAGE);
+			} else {
+				measurements = measurementsFromServer;
+
+				// request has finished, now fill the UI
+				if (measurements == null || measurements.size() == 0)
+					JOptionPane.showMessageDialog(frame,
+							"Measurements not available for time given",
+							"Warning", JOptionPane.WARNING_MESSAGE);
+				else {
+					for (int i = 0; i < measurements.size(); i++) {
+						txtResults.setText(txtResults.getText()
+								+ "\n"
+								+ df.format(new Date(measurements.get(i)
+										.getMoment())) + "\t"
+								+ measurements.get(i).getValue());
+						Dimension d = txtResults.getPreferredSize();
+						pnlResults.setPreferredSize(d);
+					}
+					Calendar c = Calendar.getInstance();
+					c.setTimeInMillis((long) measurements.get(
+							measurements.size() - 1).getMoment());
+
+					txtLastTime.setText(df.format(c.getTime()));
+
+					txtLastValue.setText(String.valueOf(measurements.get(
+							measurements.size() - 1).getValue()));
+
+					JFreeChart fc = ChartCreator.createChart(measurements,
+							pot.getMinMoistVal(), pot.getMaxMoistVal());
+					pnlChart.setChart(fc);
+					pnlChart.setVisible(true);
 				}
-				Calendar c = Calendar.getInstance();
-				c.setTimeInMillis((long) measurements.get(
-						measurements.size() - 1).getMoment());
-
-				txtLastTime.setText(df.format(c.getTime()));
-
-				txtLastValue.setText(String.valueOf(measurements
-						.get(measurements.size() - 1).getValue()));
-
-				JFreeChart fc = ChartCreator
-						.createChart(measurements, pot.getMinMoistVal(), pot.getMaxMoistVal());
-				pnlChart.setChart(fc);
-				pnlChart.setVisible(true);
 			}
 			SetUIAfterRequest();
-			
+
 		}
 	}
 
