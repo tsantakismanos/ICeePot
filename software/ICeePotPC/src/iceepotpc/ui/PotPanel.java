@@ -307,8 +307,6 @@ public class PotPanel extends JPanel {
 		pnlCriteria.add(cmbMonthFrom, "4, 2, fill, fill");
 
 		prgBarGetting = new JProgressBar();
-		prgBarGetting.setMaximumSize(new Dimension(109, 23));
-		prgBarGetting.setMinimumSize(new Dimension(109, 23));
 		prgBarGetting.setMinimum(0);
 		prgBarGetting.setVisible(false);
 		pnlCriteria.add(prgBarGetting, "8, 4, fill, center");
@@ -332,12 +330,12 @@ public class PotPanel extends JPanel {
 
 			@Override
 			public void componentResized(ComponentEvent e) {
-				if (measurements != null) {
+				/*if (measurements != null) {
 					JFreeChart fc = ChartCreator.createChart(measurements,
 							pot.getMinMoistVal(), pot.getMaxMoistVal());
 					pnlChart.setChart(fc);
 					pnlChart.setVisible(true);
-				}
+				}*/
 
 			}
 
