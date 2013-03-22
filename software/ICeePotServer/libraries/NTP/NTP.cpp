@@ -42,9 +42,9 @@ unsigned long synchronize_time(IPAddress ntp_server_ip)
   unsigned long epoch = 0;
 
   // start Ethernet and UDP
-  if (Ethernet.begin(mac) == 0) {
+  /*if (Ethernet.begin(mac) == 0) {
     return epoch;
-  }
+  }*/
   Udp.begin(localPort);
 
   sendNTPpacket(ntp_server_ip); // send an NTP packet to a time server

@@ -42,7 +42,7 @@ boolean isSynchronized = false;
 byte mac[] = { 0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED };
 
 //this server's IP
-byte ip[] = { 192, 168, 1, 20 };
+byte ip[] = { 192, 168, 1, 20 };    //the inner IP of the server
 
 IPAddress ntp_server_ip(64, 90, 182, 55); // time.nist.gov NTP server
 
@@ -56,6 +56,10 @@ void setup() {
   #ifdef debug_mode
     Serial.begin(9600);
   #endif
+  
+  //network & ICeePot server initialization
+  Ethernet.begin(mac, ip);
+  server.begin();
   
   isSynchronized = false;
   
@@ -78,10 +82,6 @@ void setup() {
   }
 
   cfg_pins_array();
-  
-  //network & ICeePot server initialization
-  Ethernet.begin(mac, ip);
-  server.begin();
   
   #ifdef debug_mode
     Serial.println("Ethernet and server set");
