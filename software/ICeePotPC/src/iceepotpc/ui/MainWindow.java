@@ -8,7 +8,7 @@
  * The window application implemented below is the 
  * client which makes requests to the arduino server
  * and accepts a series of moisture values as well as
- * time & analog pin for each value 
+ * time & identification for each value 
  *
  */
 package iceepotpc.ui;

@@ -22,7 +22,7 @@ import org.xml.sax.SAXException;
 /** Class that models the settings of the application
  *  which includes:
  *  --server settings (name, port, timeout)
- *  --pots settings (descr, pin, min-max value for each one)
+ *  --pots settings (descr, id, min-max value for each one)
  * @author tsantakis
  *
  */
@@ -114,7 +114,7 @@ public class Settings {
 				for(int i=0; i<nlstPots.getLength(); i++){
 					
 					String s = (((Element)nlstPots.item(i)).getElementsByTagName("descr")).item(0).getTextContent();
-					int j = Integer.parseInt((((Element)nlstPots.item(i)).getElementsByTagName("pin")).item(0).getTextContent());
+					int j = Integer.parseInt((((Element)nlstPots.item(i)).getElementsByTagName("id")).item(0).getTextContent());
 					double minMoistVal = Double.parseDouble((((Element)nlstPots.item(i)).getElementsByTagName("minMoist")).item(0).getTextContent());
 					double maxMoistVal = Double.parseDouble((((Element)nlstPots.item(i)).getElementsByTagName("maxMoist")).item(0).getTextContent());
 					
@@ -146,8 +146,8 @@ public class Settings {
 			Element elDescr = dom.createElement("descr");
 			elDescr.setTextContent(p.getDescr());
 			
-			Element elPin = dom.createElement("pin");
-			elPin.setTextContent(String.valueOf(p.getPin()));
+			Element elId = dom.createElement("id");
+			elId.setTextContent(String.valueOf(p.getId()));
 			
 			Element elMinMoist = dom.createElement("minMoist");
 			elMinMoist.setTextContent(String.valueOf(p.getMinMoistVal()));
@@ -158,7 +158,7 @@ public class Settings {
 			Node elPot = dom.createElement("pot");
 			
 			elPot.appendChild(elDescr);
-			elPot.appendChild(elPin);
+			elPot.appendChild(elId);
 			elPot.appendChild(elMinMoist);
 			elPot.appendChild(elMaxMoist);
 			
@@ -210,12 +210,12 @@ public class Settings {
 	
 	/**Helper method to be called from UI when the minimum
 	 * moisture value for a pot has changed	 * 
-	 * @param pin: the pin of the pot whose minimum value has changed
+	 * @param id: the id of the pot whose minimum value has changed
 	 * @param newMinValue: of the moisture level
 	 * @param newMaxValue: of the moisture level
 	 * @throws Exception 
 	 */
-	public static void modifyMinMoistValue(int pin, double newMinValue, double newMaxValue) throws Exception{
+	public static void modifyMinMoistValue(int id, double newMinValue, double newMaxValue) throws Exception{
 		Document dom;
 		
 		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
@@ -225,11 +225,19 @@ public class Settings {
 			
 			dom = db.parse("settings.xml");
 			
-			NodeList nlstServer = dom.getElementsByTagName("minMoist");
-			nlstServer.item(0).setTextContent(String.valueOf(newMinValue));
+			//get the list of pots
+			NodeList nlstPots = dom.getElementsByTagName("pot");
 			
-			nlstServer = dom.getElementsByTagName("maxMoist");
-			nlstServer.item(0).setTextContent(String.valueOf(newMaxValue));
+			//getting each pot's details
+			for(int i=0; i<nlstPots.getLength(); i++){
+				
+				int idx = Integer.parseInt((((Element)nlstPots.item(i)).getElementsByTagName("id")).item(0).getTextContent());
+				if(idx == id){
+					(((Element)nlstPots.item(i)).getElementsByTagName("minMoist")).item(0).setTextContent(String.valueOf(newMinValue));
+					(((Element)nlstPots.item(i)).getElementsByTagName("maxMoist")).item(0).setTextContent(String.valueOf(newMaxValue));
+				}
+				
+			}
 			
 			TransformerFactory transformerFactory = TransformerFactory.newInstance();
 			Transformer transformer = transformerFactory.newTransformer();

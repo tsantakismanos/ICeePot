@@ -3,49 +3,61 @@ package iceepotpc.application;
 /**
  * @author tsantakis
  * Class that models the pot which is identified by a 
- * descrtiption and a number which represents the analog pin in which the 
+ * descrtiption and a number which represents the pot in which the 
  * sensor is connected on the server (0,1,2,3,4,...) 
  *
  */
 public class Pot {
 	
 	private String descr;
-	private int pin;
+	private int id;
 	private double minMoistVal;
 	private double maxMoistVal;
 	
 	
 	
-	public Pot(String descr, int pin, double min, double max) {
+	/**Class constructor creating the Pot 
+	 * @param descr: like Mint, Basil, ...
+	 * @param id: identification of the pot 
+	 * @param min: the minimum value of the moisture
+	 * @param max: the maximum value of the moisture
+	 */
+	public Pot(String descr, int id, double min, double max) {
 		super();
 		this.descr = descr;
-		this.pin = pin;
+		this.id = id;
 		this.minMoistVal = min;
 		this.maxMoistVal = max;
 	}
+	
+	//getters
 	public String getDescr() {
 		return descr;
 	}
-	public void setDescr(String descr) {
-		this.descr = descr;
-	}
-	public int getPin() {
-		return pin;
-	}
-	public void setPin(int pin) {
-		this.pin = pin;
+	public int getId() {
+		return id;
 	}
 	public double getMinMoistVal() {
 		return minMoistVal;
 	}
-	public void setMinMoistVal(double minMoistVal) {
-		this.minMoistVal = minMoistVal;
-	}
 	public double getMaxMoistVal() {
 		return maxMoistVal;
 	}
-	public void setMaxMoistVal(double maxMoistVal) {
+	
+	//setters
+	public void setDescr(String descr) {
+		this.descr = descr;
+	}
+	public void setId(int id) {
+		this.id = id;
+	}
+	public void setMinMoistVal(Context c, double minMoistVal) throws Exception {
+		this.minMoistVal = minMoistVal;
+		c.updateMoistLimits(id, this.minMoistVal, this.maxMoistVal);
+	}
+	public void setMaxMoistVal(Context c, double maxMoistVal) throws Exception {
 		this.maxMoistVal = maxMoistVal;
+		c.updateMoistLimits(id, this.minMoistVal, this.maxMoistVal);
 	}
 
 }

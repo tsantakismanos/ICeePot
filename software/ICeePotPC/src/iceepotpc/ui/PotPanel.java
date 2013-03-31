@@ -402,10 +402,9 @@ public class PotPanel extends JPanel {
 				}
 
 				txtMinMoistDispl.setText(String.valueOf(sldMinMoist.getValue()));
-				pot.setMinMoistVal(sldMinMoist.getValue());
+				
 				try {
-					c.updateMoistLimits(pot.getPin(), pot.getMinMoistVal(),
-							pot.getMaxMoistVal());
+					pot.setMinMoistVal(c, sldMinMoist.getValue());
 				} catch (Exception e) {
 					JOptionPane.showMessageDialog(frame, e.getMessage(),
 							"Warning", JOptionPane.WARNING_MESSAGE);
@@ -421,10 +420,9 @@ public class PotPanel extends JPanel {
 				}
 
 				txtMaxMoistDispl.setText(String.valueOf(sldMaxMoist.getValue()));
-				pot.setMaxMoistVal(sldMaxMoist.getValue());
+				
 				try {
-					c.updateMoistLimits(pot.getPin(), pot.getMinMoistVal(),
-							pot.getMaxMoistVal());
+					pot.setMaxMoistVal(c, sldMaxMoist.getValue());
 				} catch (Exception e) {
 					JOptionPane.showMessageDialog(frame, e.getMessage(),
 							"Warning", JOptionPane.WARNING_MESSAGE);
@@ -458,7 +456,7 @@ public class PotPanel extends JPanel {
 
 			SetUIBeforeRequest();
 
-			ServerService s = new ServerService(this, from, to, pot.getPin());
+			ServerService s = new ServerService(this, from, to, pot.getId());
 			Thread t = new Thread(s);
 			t.start();
 		}

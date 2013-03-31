@@ -102,7 +102,7 @@ public class ServerTools{
 	
 	
 	/**
-	 * @param s: a row of the form: seconds|pin|value
+	 * @param s: a row of the form: seconds|id|value
 	 * @return a measurement object with the above values after parsing that row
 	 */
 	private static Meauserement ParseMeasurementRow(String s){

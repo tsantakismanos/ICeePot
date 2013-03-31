@@ -35,7 +35,7 @@ public class NewPotDialog extends JDialog {
 	private static final long serialVersionUID = 1L;
 	private final JPanel contentPanel = new JPanel();
 	private JTextField txtPotDescr;
-	private JTextField txtPotPin;
+	private JTextField txtPotId;
 	private JSlider sldMinMoist;
 	private JSlider sldMaxMoist;
 
@@ -91,13 +91,13 @@ public class NewPotDialog extends JDialog {
 			txtPotDescr.setColumns(10);
 		}
 		{
-			JLabel lblPotPin = new JLabel("Pin Connected to (0..5)");
-			contentPanel.add(lblPotPin, "2, 4");
+			JLabel lblPotId = new JLabel("Id of the Pot");
+			contentPanel.add(lblPotId, "2, 4");
 		}
 		{
-			txtPotPin = new JTextField();
-			contentPanel.add(txtPotPin, "4, 4, fill, default");
-			txtPotPin.setColumns(10);
+			txtPotId = new JTextField();
+			contentPanel.add(txtPotId, "4, 4, fill, default");
+			txtPotId.setColumns(10);
 		}
 		{
 			JLabel lblMinimumMoistureValue = new JLabel(
@@ -168,10 +168,10 @@ public class NewPotDialog extends JDialog {
 				okButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						if(ValidateDescr() && 
-								ValidatePin()) {
+								ValidateId()) {
 
 							Pot p = new Pot(txtPotDescr.getText(), Integer
-									.parseInt(txtPotPin.getText()), sldMinMoist
+									.parseInt(txtPotId.getText()), sldMinMoist
 									.getValue(), sldMaxMoist.getValue());
 
 							try {
@@ -223,16 +223,16 @@ public class NewPotDialog extends JDialog {
 	}
 	
 	/**
-	 * validation to see if pin is number between 0 and 5
+	 * Id validation
 	 */
-	private boolean ValidatePin(){
+	private boolean ValidateId(){
 		
 		try{
-			int i = Integer.parseInt(txtPotPin.getText());
+			int i = Integer.parseInt(txtPotId.getText());
 			if(i<0 || i>5){
 				JOptionPane.showMessageDialog(
 						me,
-						"Pin should be between 0 and 5", "Error",
+						"Id should be between 0 and 5", "Error",
 						JOptionPane.ERROR_MESSAGE);
 				return false;
 			}else{
@@ -242,7 +242,7 @@ public class NewPotDialog extends JDialog {
 		}catch (NumberFormatException nfe) {
 			JOptionPane.showMessageDialog(
 					me,
-					"Pin should be in number format", "Error",
+					"Id should be in number format", "Error",
 					JOptionPane.ERROR_MESSAGE);
 			return false;
 		}
