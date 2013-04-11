@@ -1,7 +1,7 @@
 package iceepotpc.ui;
 
 import iceepotpc.application.Callable;
-import iceepotpc.application.Context;
+
 import iceepotpc.application.Pot;
 import iceepotpc.charteng.ChartCreator;
 import iceepotpc.servergw.Meauserement;
@@ -99,7 +99,6 @@ public class PotPanel extends JPanel {
 		this.frame = frame;
 		pot = p;
 
-		final Context c = Context.getInstance();
 		setSize(new Dimension(900, 780));
 		setMinimumSize(new Dimension(900, 780));
 		this.setToolTipText("");
@@ -404,7 +403,7 @@ public class PotPanel extends JPanel {
 				txtMinMoistDispl.setText(String.valueOf(sldMinMoist.getValue()));
 				
 				try {
-					pot.setMinMoistVal(c, sldMinMoist.getValue());
+					pot.setMinMoistVal(sldMinMoist.getValue());
 				} catch (Exception e) {
 					JOptionPane.showMessageDialog(frame, e.getMessage(),
 							"Warning", JOptionPane.WARNING_MESSAGE);
@@ -422,7 +421,7 @@ public class PotPanel extends JPanel {
 				txtMaxMoistDispl.setText(String.valueOf(sldMaxMoist.getValue()));
 				
 				try {
-					pot.setMaxMoistVal(c, sldMaxMoist.getValue());
+					pot.setMaxMoistVal(sldMaxMoist.getValue());
 				} catch (Exception e) {
 					JOptionPane.showMessageDialog(frame, e.getMessage(),
 							"Warning", JOptionPane.WARNING_MESSAGE);
