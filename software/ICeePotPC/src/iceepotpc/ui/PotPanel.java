@@ -1,8 +1,8 @@
 package iceepotpc.ui;
 
 import iceepotpc.application.Callable;
+import iceepotpc.application.Context;
 
-import iceepotpc.application.Pot;
 import iceepotpc.charteng.ChartCreator;
 import iceepotpc.servergw.Meauserement;
 import iceepotpc.servergw.ServerService;
@@ -84,7 +84,7 @@ public class PotPanel extends JPanel {
 
 	ArrayList<Meauserement> measurements = null;
 	
-	private Pot pot;
+	protected int potId;
 	private JFrame frame;
 	private JTextField txtMinMoistDispl;
 	private JTextField txtMaxMoistDispl;
@@ -94,10 +94,10 @@ public class PotPanel extends JPanel {
 	 * 
 	 * @throws Exception
 	 */
-	public PotPanel(Pot p, final JFrame frame) throws Exception {
+	public PotPanel(int potId, final JFrame frame) throws Exception {
 
 		this.frame = frame;
-		pot = p;
+		this.potId = potId;
 
 		setSize(new Dimension(900, 780));
 		setMinimumSize(new Dimension(900, 780));
@@ -248,7 +248,7 @@ public class PotPanel extends JPanel {
 
 		txtMinMoistDispl = new JTextField();
 		txtMinMoistDispl.setEditable(false);
-		txtMinMoistDispl.setText(String.valueOf(pot.getMinMoistVal()));
+		txtMinMoistDispl.setText(String.valueOf(Context.getInstance().getPotById(potId).getMinMoistVal()));
 		pnlMoistLimits.add(txtMinMoistDispl, "4, 2, fill, default");
 		txtMinMoistDispl.setColumns(10);
 
@@ -256,7 +256,7 @@ public class PotPanel extends JPanel {
 		sldMinMoist.setPreferredSize(new Dimension(180, 23));
 		sldMinMoist.setMinimum(0);
 		sldMinMoist.setMaximum(950);
-		sldMinMoist.setValue((int) pot.getMinMoistVal());
+		sldMinMoist.setValue((int) Context.getInstance().getPotById(potId).getMinMoistVal());
 
 		pnlMoistLimits.add(sldMinMoist, "2, 4, 3, 1, center, default");
 
@@ -265,7 +265,7 @@ public class PotPanel extends JPanel {
 
 		txtMaxMoistDispl = new JTextField();
 		txtMaxMoistDispl.setEditable(false);
-		txtMaxMoistDispl.setText(String.valueOf(pot.getMaxMoistVal()));
+		txtMaxMoistDispl.setText(String.valueOf(Context.getInstance().getPotById(potId).getMaxMoistVal()));
 		pnlMoistLimits.add(txtMaxMoistDispl, "4, 6, fill, default");
 		txtMaxMoistDispl.setColumns(10);
 
@@ -273,7 +273,7 @@ public class PotPanel extends JPanel {
 		sldMaxMoist.setPreferredSize(new Dimension(180, 23));
 		sldMaxMoist.setMinimum(0);
 		sldMaxMoist.setMaximum(950);
-		sldMaxMoist.setValue((int) pot.getMaxMoistVal());
+		sldMaxMoist.setValue((int) Context.getInstance().getPotById(potId).getMaxMoistVal());
 
 		pnlMoistLimits.add(sldMaxMoist, "2, 8, 3, 1, center, default");
 
@@ -403,7 +403,7 @@ public class PotPanel extends JPanel {
 				txtMinMoistDispl.setText(String.valueOf(sldMinMoist.getValue()));
 				
 				try {
-					pot.setMinMoistVal(sldMinMoist.getValue());
+					Context.getInstance().getPotById(PotPanel.this.potId).setMinMoistVal(sldMinMoist.getValue());
 				} catch (Exception e) {
 					JOptionPane.showMessageDialog(frame, e.getMessage(),
 							"Warning", JOptionPane.WARNING_MESSAGE);
@@ -421,7 +421,7 @@ public class PotPanel extends JPanel {
 				txtMaxMoistDispl.setText(String.valueOf(sldMaxMoist.getValue()));
 				
 				try {
-					pot.setMaxMoistVal(sldMaxMoist.getValue());
+					Context.getInstance().getPotById(PotPanel.this.potId).setMaxMoistVal(sldMaxMoist.getValue());
 				} catch (Exception e) {
 					JOptionPane.showMessageDialog(frame, e.getMessage(),
 							"Warning", JOptionPane.WARNING_MESSAGE);
@@ -455,7 +455,7 @@ public class PotPanel extends JPanel {
 
 			SetUIBeforeRequest();
 
-			ServerService s = new ServerService(this, from, to, pot.getId());
+			ServerService s = new ServerService(this, from, to, potId);
 			Thread t = new Thread(s);
 			t.start();
 		}
@@ -532,10 +532,18 @@ public class PotPanel extends JPanel {
 					txtLastValue.setText(String.valueOf(measurements.get(
 							measurements.size() - 1).getValue()));
 
-					JFreeChart fc = ChartCreator.createChart(measurements,
-							pot.getMinMoistVal(), pot.getMaxMoistVal());
-					pnlChart.setChart(fc);
-					pnlChart.setVisible(true);
+					JFreeChart fc;
+					try {
+						fc = ChartCreator.createChart(measurements,
+								Context.getInstance().getPotById(potId).getMinMoistVal(), Context.getInstance().getPotById(potId).getMaxMoistVal());
+						pnlChart.setChart(fc);
+						pnlChart.setVisible(true);
+					} catch (Exception e) {
+						JOptionPane.showMessageDialog(frame,
+								"Error in Drawing",
+								"Warning", JOptionPane.WARNING_MESSAGE);
+					}
+					
 				}
 			}
 			SetUIAfterRequest();

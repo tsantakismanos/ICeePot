@@ -14,7 +14,6 @@
 package iceepotpc.ui;
 
 import iceepotpc.application.Context;
-import iceepotpc.application.Pot;
 
 import javax.swing.JFrame;
 import java.awt.BorderLayout;
@@ -132,9 +131,9 @@ public class MainWindow implements Observer{
 		tabbedPane.setPreferredSize(new Dimension(900, 780));
 		frame.getContentPane().add(tabbedPane, BorderLayout.CENTER);
 		
-		if(cntx.getPotDescrs() != null)
-			for(int i=0; i<cntx.getPotDescrs().size(); i++)
-				createTab(tabbedPane, cntx.getPotDescrs().get(i));
+		if(cntx.getPots() != null)
+			for(int i=0; i<cntx.getPots().size(); i++)
+				createTab(tabbedPane, cntx.getPots().get(i).getId());
 		
 		
 	}
@@ -144,11 +143,11 @@ public class MainWindow implements Observer{
 	 *  helper method that is called when it is required
 	 *  to create a Tab which represents a pot (input / output)
 	 */
-	public void createTab(JTabbedPane tabbedPane, Pot p){
+	public void createTab(JTabbedPane tabbedPane, int potId){
 		PotPanel pnlPot;
 		try {
-			pnlPot = new PotPanel(p, frame);
-			tabbedPane.addTab(p.getDescr(), null, pnlPot, null);
+			pnlPot = new PotPanel(potId, frame);
+			tabbedPane.addTab(Context.getInstance().getPotById(potId).getDescr(), null, pnlPot, null);
 		} catch (Exception e) {
 			JOptionPane.showMessageDialog(frame,
 					e.getMessage(),
@@ -163,9 +162,9 @@ public class MainWindow implements Observer{
 	@Override
 	public void update(Observable o, Object arg) {
 		
-		int position = Integer.parseInt(arg.toString());
+		int potId = Integer.parseInt(arg.toString());
 
-		createTab(tabbedPane, cntx.getPotDescrs().get(position));
+		createTab(tabbedPane, potId);
 	}
 
 	

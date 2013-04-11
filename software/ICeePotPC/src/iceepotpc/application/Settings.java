@@ -120,7 +120,7 @@ public class Settings {
 					
 					Pot p = new Pot(s,j, minMoistVal, maxMoistVal);
 					
-					c.getPotDescrs().add(p);
+					c.getPots().add(p);
 				}
 	}
 	
