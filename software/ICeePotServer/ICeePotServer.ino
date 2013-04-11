@@ -12,7 +12,7 @@
  - writing this information to the SD card in files of type: <month><year>.txt 
  - responding to a client's month requests  to the given port & IP 
  & sending the contents of the appropriate SD file
- in rows of the form: <time>|<analog_pin>|value     
+ in packets of the form: <time><type><pot id><value>
  */
 
 #include <SD.h>
@@ -25,15 +25,17 @@
 
 #define interval_in_min 60 //time interval (in minutes) between measurementσ
 //#define debug_mode 
-//#define wireless_enabled
+#define wireless_enabled
 #define wired_enabled
 #define server_mode
 
 //helper functions declaration
 void get_wired_values(short wired_pin);
 void get_wireless_values();
-void store_row_to_sd(String row, time_t now_in_secs);
+void save_values(time_t time, uint8_t *type_id_valye);
+void save_values(time_t time, uint8_t type, uint16_t id, uint16_t value);
 void send_file_rows_to_client(EthernetClient client, char* date);
+//void store_row_to_sd(String row, time_t now_in_secs);
 
 //variable for periodic measurement
 time_t last_measur_time = 0;
@@ -192,7 +194,7 @@ void get_wired_values(short wired_pin){
   time_t now_in_secs = now();
 
   String row;
-  int anl_value = 0;
+  short anl_value = 0;
 
   if((now_in_secs - last_measur_time) > (60 * interval_in_min)){
 
@@ -202,27 +204,42 @@ void get_wired_values(short wired_pin){
 
     anl_value = analogRead(wired_pin);
 
-    row = String(now_in_secs) + "|" + String(wired_pin) + "|" + String(anl_value);
+    //row = String(now_in_secs) + "|" + String(wired_pin) + "|" + String(anl_value);
 
-    store_row_to_sd(row, now_in_secs);
+    //store_row_to_sd(row, now_in_secs);
+
+    save_values(now_in_secs, 0, wired_pin, anl_value);
 
     last_measur_time = now_in_secs;
   }
 }
 
 
-/* helper method that writes a given row to the SD output file
- */
-void store_row_to_sd(String row, time_t now_in_secs){
+void get_wireless_values(){
+
+  uint8_t buf[VW_MAX_MESSAGE_LEN];
+  uint8_t buflen = VW_MAX_MESSAGE_LEN;
+
+  if (vw_get_message(buf, &buflen)) // Non-blocking
+  {
+    //int i;
+    //String row;
+    time_t now_in_secs = now();
+
+    //row = String(now_in_secs) + "|" + String(0) + "|" + String(876);
+
+    //store_row_to_sd(row,now_in_secs);
+
+    save_values(now_in_secs, buf);
+  }
+}
+
+
+void save_values(time_t time, uint8_t type, uint16_t id, uint16_t value){
 
   File file;
 
-  //short bytes_written = 0;
-
-  //construct the appropriate filename
-  //byte now_month = month(now_in_secs); //TODO: add 7200 seconds
-  //int now_year = year(now_in_secs);  //TODO: add 7200 seconds
-  String filename_str = String(month(now_in_secs)) + String(year(now_in_secs)) + ".txt";
+  String filename_str = String(month(time)) + String(year(time));
 
 #ifdef debug_mode
   Serial.println("Filename: "+filename_str);
@@ -234,12 +251,56 @@ void store_row_to_sd(String row, time_t now_in_secs){
   //open the file  
   file = SD.open(filename, FILE_WRITE);
 
-  //format the row to be written
-  char row_in_chars[row.length()+1];
-  row.toCharArray(row_in_chars,row.length()+1);
+  uint8_t packet[9];
 
-  //  bytes_written = file.println(row_in_chars);
-  file.println(row_in_chars);
+  *((uint32_t*)packet) = time;
+  *((uint8_t*)(packet+4)) = type;
+  *((uint16_t*)(packet+5)) = id;
+  *((uint16_t*)(packet+7)) = value;
+
+  short bytes = file.write(packet,9);
+
+#ifdef debug_mode
+  Serial.println("Bytes written: "+bytes);
+#endif
+
+  file.flush();
+  file.close();
+}
+
+
+
+void save_values(time_t time, uint8_t *type_id_valye){
+
+  File file;
+
+  String filename_str = String(month(time)) + String(year(time));
+
+#ifdef debug_mode
+  Serial.println("Filename: "+filename_str);
+#endif
+
+  char filename[filename_str.length() + 1];
+  filename_str.toCharArray(filename, filename_str.length() + 1);
+
+  //open the file  
+  file = SD.open(filename, FILE_WRITE);
+
+  uint8_t packet[9];
+
+  *((uint32_t*)packet) = time;                             //put time into packet
+  *((uint8_t*)packet+4) = *((uint8_t*)type_id_valye);      //put type into packet
+  *((uint8_t*)packet+5) = *((uint8_t*)(type_id_valye+1));  //put id into packet (first byte)
+  *((uint8_t*)packet+6) = *((uint8_t*)(type_id_valye+2));  //put id into packet (second byte)
+  *((uint8_t*)packet+7) = *((uint8_t*)(type_id_valye+3));  //put value into packet (first byte)
+  *((uint8_t*)packet+8) = *((uint8_t*)(type_id_valye+4));  //put value into packet (second byte)
+
+
+  short bytes = file.write(packet,9);
+
+#ifdef debug_mode
+  Serial.println("Bytes written: "+bytes);
+#endif
 
   file.flush();
   file.close();
@@ -272,22 +333,45 @@ void send_file_rows_to_client(EthernetClient client, char* date){
 
 }
 
-void get_wireless_values(){
 
-  uint8_t buf[VW_MAX_MESSAGE_LEN];
-  uint8_t buflen = VW_MAX_MESSAGE_LEN;
+/* helper method that writes a given row to the SD output file
+ */
+/*void store_row_to_sd(String row, time_t now_in_secs){
+ 
+ File file;
+ 
+ //short bytes_written = 0;
+ 
+ //construct the appropriate filename
+ //byte now_month = month(now_in_secs); //TODO: add 7200 seconds
+ //int now_year = year(now_in_secs);  //TODO: add 7200 seconds
+ String filename_str = String(month(now_in_secs)) + String(year(now_in_secs)) + ".txt";
+ 
+ #ifdef debug_mode
+ Serial.println("Filename: "+filename_str);
+ #endif
+ 
+ char filename[filename_str.length() + 1];
+ filename_str.toCharArray(filename, filename_str.length() + 1);
+ 
+ //open the file  
+ file = SD.open(filename, FILE_WRITE);
+ 
+ //format the row to be written
+ char row_in_chars[row.length()+1];
+ row.toCharArray(row_in_chars,row.length()+1);
+ 
+ //  bytes_written = file.println(row_in_chars);
+ file.println(row_in_chars);
+ 
+ file.flush();
+ file.close();
+ }*/
 
-  if (vw_get_message(buf, &buflen)) // Non-blocking
-  {
-    int i;
-    String row;
-    time_t now_in_secs = now();
 
-    row = String(now_in_secs) + "|" + String(0) + "|" + String(876);
 
-    store_row_to_sd(row,now_in_secs);
-  }
-}
+
+
 
 
 
