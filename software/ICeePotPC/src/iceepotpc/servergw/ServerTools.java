@@ -30,7 +30,7 @@ public class ServerTools{
 	 * @return: an arraylist of measurements (pot-moment-value)
 	 * @throws Exception 
 	 */
-	public synchronized static ArrayList<Meauserement> GetMeasurements(Calendar c, int pot) throws Exception {
+	public synchronized static ArrayList<Meauserement> GetMeasurements(Calendar c, int potId) throws Exception {
 
 		Context cntx = Context.getInstance();
 		
@@ -69,7 +69,7 @@ public class ServerTools{
 				{
 					//a whole line has been read, parse, store and begin a new line
 					Meauserement m = ParseMeasurementRow(response_str);
-					if(m.getPot() == pot)
+					if(m.getPot() == potId)
 					measurements.add(m);
 					
 					response_str = "";

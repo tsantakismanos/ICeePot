@@ -18,7 +18,7 @@ public class ServerService implements Runnable {
 	private Callable caller;
 	private ArrayList<Meauserement> measurements;
 	private Calendar from,to;
-	private int pot;
+	private int potId;
 	private Exception exception;
 	
 	
@@ -28,7 +28,7 @@ public class ServerService implements Runnable {
 	 * @param to: time window of the results
 	 * @param pot: indicator of the measured pot (0,1,2,...)
 	 */
-	public ServerService(Callable caller, Calendar from, Calendar to, int pot) {
+	public ServerService(Callable caller, Calendar from, Calendar to, int potId) {
 		
 		this.measurements = new ArrayList<Meauserement>();
 		this.caller = caller;
@@ -36,7 +36,7 @@ public class ServerService implements Runnable {
 		this.from.setTime(from.getTime());
 		this.to = Calendar.getInstance();
 		this.to.setTime(to.getTime());
-		this.pot = pot;
+		this.potId = potId;
 	}
 	
 	
@@ -47,12 +47,12 @@ public class ServerService implements Runnable {
 			//for all months in range
 			while((from.get(Calendar.MONTH) != to.get(Calendar.MONTH)) 
 					|| (from.get(Calendar.YEAR) != to.get(Calendar.YEAR))){
-				measurements.addAll(ServerTools.GetMeasurements(from, pot));
+				measurements.addAll(ServerTools.GetMeasurements(from, potId));
 				from.add(Calendar.MONTH, 1);
 				caller.updateProgressBar();
 			}
 			
-			measurements.addAll(ServerTools.GetMeasurements(to, pot));
+			measurements.addAll(ServerTools.GetMeasurements(to, potId));
 			caller.updateProgressBar();
 			
 			caller.updateMeasurementData(measurements, null);
