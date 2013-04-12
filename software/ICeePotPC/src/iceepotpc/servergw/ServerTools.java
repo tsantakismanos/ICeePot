@@ -68,7 +68,7 @@ public class ServerTools{
 			response = is.read();
 
 			while (response != -1) {
-				if(respPacketIdx == 8) //a new packet has been received
+				if(respPacketIdx == 9) //a new packet has been received
 				{
 					// parse, store and begin a new line
 					Meauserement m = ParseMeasurementRow(responsePacket);
