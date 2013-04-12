@@ -1,7 +1,6 @@
 package iceepotpc.ui;
 
 import iceepotpc.application.Context;
-import iceepotpc.application.Pot;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -170,12 +169,14 @@ public class NewPotDialog extends JDialog {
 						if(ValidateDescr() && 
 								ValidateId()) {
 
-							Pot p = new Pot(txtPotDescr.getText(), Integer
+							/*Pot p = new Pot(txtPotDescr.getText(), Integer
 									.parseInt(txtPotId.getText()), sldMinMoist
 									.getValue(), sldMaxMoist.getValue());
-
+*/
 							try {
-								cntx.addPot(p);
+								cntx.addPot(txtPotDescr.getText(),Integer
+										.parseInt(txtPotId.getText()), sldMinMoist
+										.getValue(), sldMaxMoist.getValue());
 							} catch (Exception e1) {
 								JOptionPane.showMessageDialog(
 										(Component) e.getSource(),
@@ -206,7 +207,7 @@ public class NewPotDialog extends JDialog {
 		}
 	}
 	
-	/** Validateion if no description has been given
+	/** Validation if no description has been given
 	 * @return
 	 */
 	private boolean ValidateDescr(){
@@ -223,16 +224,18 @@ public class NewPotDialog extends JDialog {
 	}
 	
 	/**
-	 * Id validation
+	 * Id validation: if already exists
 	 */
 	private boolean ValidateId(){
 		
 		try{
 			int i = Integer.parseInt(txtPotId.getText());
-			if(i<0 || i>5){
+			
+			if(cntx.getPotById(i) != null){
+			
 				JOptionPane.showMessageDialog(
 						me,
-						"Id should be between 0 and 5", "Error",
+						"ID already exists", "Error",
 						JOptionPane.ERROR_MESSAGE);
 				return false;
 			}else{
@@ -242,28 +245,11 @@ public class NewPotDialog extends JDialog {
 		}catch (NumberFormatException nfe) {
 			JOptionPane.showMessageDialog(
 					me,
-					"Id should be in number format", "Error",
+					"ID should be in number format", "Error",
 					JOptionPane.ERROR_MESSAGE);
 			return false;
 		}
 		
 	}
 	
-	/**
-	 * validation to see if max > min
-	 */
-	/*private boolean ValidateLimits(){
-		
-		if(sldMaxMoist.getValue() <= sldMinMoist.getValue()){
-			JOptionPane.showMessageDialog(
-					me,
-					"Max moisture value should be greater than Min one", "Error",
-					JOptionPane.ERROR_MESSAGE);
-			return false;
-		}
-		else
-			return true;
-			
-	}*/
-
 }

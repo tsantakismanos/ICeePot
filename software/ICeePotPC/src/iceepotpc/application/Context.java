@@ -124,7 +124,10 @@ public class Context {
 	 *            : the pot to be added to the context & to the settings file
 	 * @throws Exception
 	 */
-	public void addPot(Pot p) throws Exception {
+	public void addPot(String descr, int id, double min, double max) throws Exception {
+		
+		Pot p = new Pot(descr, id, min, max);
+		
 		pots.add(p);
 		try {
 			Settings.addPotToSettings(p);
