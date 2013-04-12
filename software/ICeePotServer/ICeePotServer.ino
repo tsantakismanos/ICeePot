@@ -23,9 +23,9 @@
 #include <VirtualWire.h>
 
 
-#define interval_in_min 60 //time interval (in minutes) between measurementσ
+#define interval_in_min 30 //time interval (in minutes) between measurementσ
 //#define debug_mode 
-#define wireless_enabled
+//#define wireless_enabled
 #define wired_enabled
 #define server_mode
 
@@ -35,7 +35,6 @@ void get_wireless_values();
 void save_values(time_t time, uint8_t *type_id_valye);
 void save_values(time_t time, uint8_t type, uint16_t id, uint16_t value);
 void send_file_rows_to_client(EthernetClient client, char* date);
-//void store_row_to_sd(String row, time_t now_in_secs);
 
 //variable for periodic measurement
 time_t last_measur_time = 0;
@@ -48,7 +47,7 @@ byte mac[] = {
 byte ip[] = { 
   192, 168, 1, 20 };    //the inner IP of the server
 
-IPAddress ntp_server_ip(64, 90, 182, 55); // time.nist.gov NTP server
+IPAddress ntp_server_ip(216, 171, 112, 36); // time.nist.gov NTP server
 
 #ifdef server_mode
 //server instantiation
@@ -67,6 +66,9 @@ void setup() {
 
 #ifdef server_mode
   server.begin();
+#ifdef debug_mode
+    Serial.println("ServerOK");
+#endif
 #endif
 
   isSynchronized = false;
@@ -129,6 +131,11 @@ void loop() {
       Serial.println("TimeOK: "+now_in_seconds);
 #endif
     }
+    else{
+#ifdef debug_mode
+      Serial.println("TimeNotOK");
+#endif
+    }
   }
 
 #ifdef wireless_enabled
@@ -187,9 +194,6 @@ void loop() {
  */
 void get_wired_values(short wired_pin){
 
-  //time value to be kept in each row
-  //unsigned long now_in_millis = millis();
-
   //time value to be compared for interval & file creation
   time_t now_in_secs = now();
 
@@ -203,10 +207,6 @@ void get_wired_values(short wired_pin){
 #endif
 
     anl_value = analogRead(wired_pin);
-
-    //row = String(now_in_secs) + "|" + String(wired_pin) + "|" + String(anl_value);
-
-    //store_row_to_sd(row, now_in_secs);
 
     save_values(now_in_secs, 0, wired_pin, anl_value);
 
@@ -222,13 +222,7 @@ void get_wireless_values(){
 
   if (vw_get_message(buf, &buflen)) // Non-blocking
   {
-    //int i;
-    //String row;
     time_t now_in_secs = now();
-
-    //row = String(now_in_secs) + "|" + String(0) + "|" + String(876);
-
-    //store_row_to_sd(row,now_in_secs);
 
     save_values(now_in_secs, buf);
   }
@@ -259,13 +253,15 @@ void save_values(time_t time, uint8_t type, uint16_t id, uint16_t value){
   *((uint16_t*)(packet+7)) = value;
 
   short bytes = file.write(packet,9);
-
-#ifdef debug_mode
-  Serial.println("Bytes written: "+bytes);
-#endif
-
+  
   file.flush();
   file.close();
+
+#ifdef debug_mode
+  Serial.println("Bytes written: "+String(bytes));
+#endif
+
+  
 }
 
 
@@ -297,13 +293,15 @@ void save_values(time_t time, uint8_t *type_id_valye){
 
 
   short bytes = file.write(packet,9);
+  
+  file.flush();
+  file.close();
 
 #ifdef debug_mode
   Serial.println("Bytes written: "+bytes);
 #endif
 
-  file.flush();
-  file.close();
+  
 }
 
 /* helper method that sends the content of the SD file
@@ -332,48 +330,3 @@ void send_file_rows_to_client(EthernetClient client, char* date){
   file.close();  
 
 }
-
-
-/* helper method that writes a given row to the SD output file
- */
-/*void store_row_to_sd(String row, time_t now_in_secs){
- 
- File file;
- 
- //short bytes_written = 0;
- 
- //construct the appropriate filename
- //byte now_month = month(now_in_secs); //TODO: add 7200 seconds
- //int now_year = year(now_in_secs);  //TODO: add 7200 seconds
- String filename_str = String(month(now_in_secs)) + String(year(now_in_secs)) + ".txt";
- 
- #ifdef debug_mode
- Serial.println("Filename: "+filename_str);
- #endif
- 
- char filename[filename_str.length() + 1];
- filename_str.toCharArray(filename, filename_str.length() + 1);
- 
- //open the file  
- file = SD.open(filename, FILE_WRITE);
- 
- //format the row to be written
- char row_in_chars[row.length()+1];
- row.toCharArray(row_in_chars,row.length()+1);
- 
- //  bytes_written = file.println(row_in_chars);
- file.println(row_in_chars);
- 
- file.flush();
- file.close();
- }*/
-
-
-
-
-
-
-
-
-
-
