@@ -2,6 +2,8 @@
 
 void setup(){
   
+  Serial.begin(9600);
+  
   //SD neccessary calls
   pinMode(10, OUTPUT);
   if(SD.begin(4) == false){
@@ -9,7 +11,7 @@ void setup(){
     return;
   }
   
-  
+  Serial.println("SDOK");
   migrate_file("22013.txt", "22013");
   migrate_file("32013.txt", "32013");
  //migrate_file("42013.txt", "42013");
@@ -25,10 +27,10 @@ void migrate_file(char* filename_src, char* filename_trgt){
   
   
   File source = SD.open(filename_src);
-  Serial.println("File to read from: "+filename_src):
+  //Serial.println("File to read from: "+filename_src):
   
   File target = SD.open(filename_trgt, FILE_WRITE);
-  Serial.println("File to write to: "+filename_trgt):
+  //Serial.println("File to write to: "+filename_trgt):
 
   byte b;
   String row = "";
@@ -49,7 +51,7 @@ void migrate_file(char* filename_src, char* filename_trgt){
     if(b == '\n'){
       
       //row got
-      Serial.println("row: " + row);
+      //Serial.println("row: " + row);
       
       //split and put to variables
       moment_s = row.substring(0,row.indexOf("|"));
