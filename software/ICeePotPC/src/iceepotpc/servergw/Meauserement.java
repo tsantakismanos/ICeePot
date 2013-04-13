@@ -18,8 +18,9 @@ import java.io.Serializable;
 public class Meauserement implements Serializable{
 	
 	private static final long serialVersionUID = 3977644217746517687L;
-	private int pot;
 	private long moment;
+	private MeasurementType type;
+	private int id;
 	private double value;
 	
 	
@@ -28,16 +29,23 @@ public class Meauserement implements Serializable{
 	 * @param moment: time in which the measurement was taken
 	 * @param value: the value of the parameter taken (moisture, temperature, battery level)
 	 */
-	public Meauserement(int pot, long moment, double value) {
+	public Meauserement(long moment, int type, int id, double value) {
 		super();
-		this.pot = pot;
 		this.moment = moment;
+		switch(type){
+		case 0:
+			this.type = MeasurementType.MOISTURE;
+		case 1:
+			this.type = MeasurementType.BATTERY;
+		}
+		
+		this.id = id;
 		this.value = value;
 	}
 
 	//getters
-	public int getPot() {
-		return pot;
+	public int getId() {
+		return id;
 	}
 	public long getMoment() {
 		return moment;
@@ -45,10 +53,14 @@ public class Meauserement implements Serializable{
 	public double getValue() {
 		return value;
 	}
-	
+	public MeasurementType getType() {
+		return type;
+	}
+
+
 	//setters
-	public void setPot(int pot) {
-		this.pot = pot;
+	public void setId(int id) {
+		this.id = id;
 	}
 	public void setMoment(long moment) {
 		this.moment = moment;
@@ -56,6 +68,10 @@ public class Meauserement implements Serializable{
 	public void setValue(double value) {
 		this.value = value;
 	}
+	public void setType(MeasurementType type) {
+		this.type = type;
+	}
+
 	
 	
 

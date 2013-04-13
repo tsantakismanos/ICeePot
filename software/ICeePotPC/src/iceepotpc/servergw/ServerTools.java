@@ -39,7 +39,7 @@ public class ServerTools{
 		String excMessage = "";
 		
 		//construct the request in a string
-		String request_str = Integer.toString(c.get(Calendar.MONTH)) + Integer.toString(c.get(Calendar.YEAR)) + ".txt";
+		String request_str = Integer.toString(c.get(Calendar.MONTH)) + Integer.toString(c.get(Calendar.YEAR));
 
 		InputStream is = null;
 		OutputStream os = null;
@@ -49,8 +49,11 @@ public class ServerTools{
 			request_str = request_str.concat("\0");
 			byte[] request = request_str.getBytes();
 			
+			byte[] responsePacket = new byte[9];
+			int respPacketIdx = 0;
+			
 			int response = 0;
-			String response_str = "";
+			//String response_str = "";
 			s = new Socket(cntx.getServerHost(), cntx.getServerPort());
 			s.setSoTimeout(cntx.getServerTimeout());
 			os = s.getOutputStream();
@@ -65,17 +68,19 @@ public class ServerTools{
 			response = is.read();
 
 			while (response != -1) {
-				if((char)response == '\n')
+				if(respPacketIdx == 9) //a new packet has been received
 				{
-					//a whole line has been read, parse, store and begin a new line
-					Meauserement m = ParseMeasurementRow(response_str);
-					if(m.getPot() == potId)
+					// parse, store and begin a new line
+					Meauserement m = ParseMeasurementRow(responsePacket);
+					if(m.getId() == potId)
 					measurements.add(m);
 					
-					response_str = "";
+					respPacketIdx = 0;
 				}
-				else
-					response_str = response_str + (char) response;
+				
+				responsePacket[respPacketIdx] = (byte)response;
+				respPacketIdx++;
+				
 				
 				response = is.read();
 			}
@@ -102,14 +107,28 @@ public class ServerTools{
 	
 	
 	/**
-	 * @param s: a row of the form: seconds|id|value
+	 * @param s: a packet byte of the form: <time><type><id><value>
 	 * @return a measurement object with the above values after parsing that row
 	 */
-	private static Meauserement ParseMeasurementRow(String s){
+	private static Meauserement ParseMeasurementRow(byte[] s){
 		
-		String[] parts = s.split("\\|");
 		
-		Meauserement m = new Meauserement(Integer.parseInt(parts[1]), Long.parseLong(parts[0])*1000, Double.parseDouble(parts[2]));
+		Meauserement m = null;
+		
+		long moment = (0xFF & s[0])|
+				      ((0xFF & s[1]) << 8)|
+				      ((0xFF & s[2]) << 16)|
+				      ((0xFF & s[3]) << 24);
+		int type = (0xFF & s[4]);
+		int id = (0xFF & s[5])|
+			      ((0xFF & s[6]) << 8);
+		double value = (0xFF & s[7])|
+			      		((0xFF & s[8]) << 8);
+		
+		m = new Meauserement(moment*1000, type, id, value);
+		
+		
+		//Meauserement m = new Meauserement(Integer.parseInt(parts[1]), Long.parseLong(parts[0])*1000, Double.parseDouble(parts[2]));
 		
 		return m;
 	}
