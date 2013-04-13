@@ -13,8 +13,8 @@ void setup(){
   
   Serial.println("SDOK");
   migrate_file("22013.txt", "22013");
-  migrate_file("32013.txt", "32013");
- //migrate_file("42013.txt", "42013");
+  //migrate_file("32013.txt", "32013");
+  //migrate_file("42013.txt", "42013");
 }
 
 void loop(){
@@ -27,12 +27,10 @@ void migrate_file(char* filename_src, char* filename_trgt){
   
   
   File source = SD.open(filename_src);
-  //Serial.println("File to read from: "+filename_src):
   
   File target = SD.open(filename_trgt, FILE_WRITE);
-  //Serial.println("File to write to: "+filename_trgt):
-
-  byte b;
+ 
+  char b;
   String row = "";
   String moment_s = "";
   String id_s = "";
@@ -48,27 +46,30 @@ void migrate_file(char* filename_src, char* filename_trgt){
     b = (char)source.read();
     row.concat(String(b));
     
+    
     if(b == '\n'){
       
       //row got
-      //Serial.println("row: " + row);
+      Serial.println("row: " + row);
       
       //split and put to variables
       moment_s = row.substring(0,row.indexOf("|"));
       id_s = row.substring(row.indexOf("|")+1, row.indexOf("|",row.indexOf("|")+1));
-      value_s = row.substring(row.indexOf("|",row.indexOf("|"+1)));
+      value_s = row.substring(row.indexOf("|",row.indexOf("|")+1)+1);
       
       Serial.println("text values: " + moment_s + "-" + id_s + "-" + value_s);
       
-      char* c;
-      moment_s.toCharArray(c, moment_s.length()+1);
-      moment_n = (uint32_t)atoi(c);
+      char moment_c[moment_s.length()+1];
+      moment_s.toCharArray(moment_c, moment_s.length()+1);
+      moment_n = atol(moment_c);
       
-      id_s.toCharArray(c, id_s.length()+1);
-      id_n = (uint16_t)atoi(c);
+      char id_c[id_s.length()+1];
+      id_s.toCharArray(id_c, id_s.length()+1);
+      id_n = atoi(id_c);
       
-      value_s.toCharArray(c, value_s.length()+1);
-      value_n = (uint16_t)atoi(c);
+      char value_c[value_s.length()+1];
+      value_s.toCharArray(value_c, value_s.length()+1);
+      value_n = atoi(value_c);
       
       Serial.println("numeric values: " + String(moment_n) + "-" + String(id_n) + "-" + String(value_n));
       
@@ -84,7 +85,7 @@ void migrate_file(char* filename_src, char* filename_trgt){
       target.flush();
       
       Serial.println("bytes written: "+String(bytes));
-      Serial.println("---------------------------------");
+      //Serial.println("---------------------------------");
 
       //reset row
       row = "";
@@ -95,5 +96,7 @@ void migrate_file(char* filename_src, char* filename_trgt){
   
   target.close();
   source.close();
+  
+  Serial.println("finished");
   
 }
