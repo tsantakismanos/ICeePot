@@ -12,7 +12,7 @@ void setup(){
   }
   
   Serial.println("SDOK");
-  migrate_file("22013.txt", "22013");
+  //migrate_file("22013.txt", "22013");
   //migrate_file("32013.txt", "32013");
   //migrate_file("42013.txt", "42013");
 }
