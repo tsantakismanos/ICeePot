@@ -36,18 +36,16 @@ public class SettingsDialog extends JDialog {
 	private JTextField txtServerPort;
 
 	Context cntx;
-	private JDialog me = null;
 	private JTextField txtServerTimeOut;
 	
 	/**
 	 * Create the dialog.
 	 */
 	public SettingsDialog() {
-		me = this;
 		try {
 			cntx = Context.getInstance();
 		} catch (Exception e1) {
-			JOptionPane.showMessageDialog(me,
+			JOptionPane.showMessageDialog(this,
 					e1.getMessage(),
 					"Error", JOptionPane.ERROR_MESSAGE);
 		}
@@ -102,7 +100,7 @@ public class SettingsDialog extends JDialog {
 			txtServerTimeOut = new JTextField();
 			contentPanel.add(txtServerTimeOut, "4, 6, fill, default");
 			txtServerTimeOut.setColumns(10);
-			txtServerTimeOut.setText(String.valueOf(cntx.getServerTimeout()));
+			txtServerTimeOut.setText(String.valueOf(cntx.getServerTimeout()/1000));
 		}
 		{
 			JPanel buttonPane = new JPanel();
@@ -116,11 +114,11 @@ public class SettingsDialog extends JDialog {
 							ValidateTimeOut())
 						{
 							try {
-								cntx.updateServer(txtServerHostName.getText(), Integer.parseInt(txtServerPort.getText()), Integer.parseInt(txtServerTimeOut.getText()));
+								cntx.updateServer(txtServerHostName.getText(), Integer.parseInt(txtServerPort.getText()), Integer.parseInt(txtServerTimeOut.getText())*1000);
 							} catch (Exception e) {
 								JOptionPane.showMessageDialog((Component) ae.getSource(), "Error in Updating server settings: "+e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 							}finally{
-								me.dispose();
+								SettingsDialog.this.dispose();
 							}
 						}
 					}
@@ -135,7 +133,7 @@ public class SettingsDialog extends JDialog {
 					public void actionPerformed(ActionEvent e) {
 						Window[] w = JWindow.getWindows();
 						for(int i=0; i<w.length; i++)
-							me.dispose();
+							SettingsDialog.this.dispose();
 					}
 				});
 				cancelButton.setActionCommand("Cancel");
@@ -150,7 +148,7 @@ public class SettingsDialog extends JDialog {
 			return true;
 		}catch(NumberFormatException nfe){
 			JOptionPane.showMessageDialog(
-					me,
+					this,
 					"Server port should be in number format", "Error",
 					JOptionPane.ERROR_MESSAGE);
 			return false;
@@ -163,7 +161,7 @@ public class SettingsDialog extends JDialog {
 			return true;
 		}catch(NumberFormatException nfe){
 			JOptionPane.showMessageDialog(
-					me,
+					this,
 					"Server timeout should be in number format", "Error",
 					JOptionPane.ERROR_MESSAGE);
 			return false;

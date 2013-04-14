@@ -3,7 +3,6 @@ package iceepotpc.ui;
 import iceepotpc.application.Context;
 
 import java.awt.BorderLayout;
-import java.awt.Component;
 import java.awt.FlowLayout;
 
 import javax.swing.JButton;
@@ -39,7 +38,6 @@ public class NewPotDialog extends JDialog {
 	private JSlider sldMaxMoist;
 
 	private Context cntx;
-	private JDialog me = null;
 	private JTextField txtMinMoistDispl;
 	private JTextField txtMaxMoistDispl;
 
@@ -47,11 +45,10 @@ public class NewPotDialog extends JDialog {
 	 * Create the dialog.
 	 */
 	public NewPotDialog() {
-		me = this;
 		try {
 			cntx = Context.getInstance();
 		} catch (Exception e2) {
-			JOptionPane.showMessageDialog(me,
+			JOptionPane.showMessageDialog(this,
 					e2.getMessage(),
 					"Error", JOptionPane.ERROR_MESSAGE);
 		}
@@ -169,22 +166,18 @@ public class NewPotDialog extends JDialog {
 						if(ValidateDescr() && 
 								ValidateId()) {
 
-							/*Pot p = new Pot(txtPotDescr.getText(), Integer
-									.parseInt(txtPotId.getText()), sldMinMoist
-									.getValue(), sldMaxMoist.getValue());
-*/
 							try {
 								cntx.addPot(txtPotDescr.getText(),Integer
 										.parseInt(txtPotId.getText()), sldMinMoist
 										.getValue(), sldMaxMoist.getValue());
 							} catch (Exception e1) {
 								JOptionPane.showMessageDialog(
-										(Component) e.getSource(),
+										NewPotDialog.this,
 										"Problem in adding port: "
 												+ e1.getMessage(), "Error",
 										JOptionPane.ERROR_MESSAGE);
 							} finally {
-								me.dispose();
+								NewPotDialog.this.dispose();
 							}
 						}
 
@@ -198,7 +191,7 @@ public class NewPotDialog extends JDialog {
 				JButton cancelButton = new JButton("Cancel");
 				cancelButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
-						me.dispose();
+						NewPotDialog.this.dispose();
 					}
 				});
 				cancelButton.setActionCommand("Cancel");
@@ -213,7 +206,7 @@ public class NewPotDialog extends JDialog {
 	private boolean ValidateDescr(){
 		if(txtPotDescr.getText().equals("")){
 			JOptionPane.showMessageDialog(
-					me,
+					this,
 					"Pot Description cannot be empty", "Error",
 					JOptionPane.ERROR_MESSAGE);
 		
@@ -234,7 +227,7 @@ public class NewPotDialog extends JDialog {
 			if(cntx.getPotById(i) != null){
 			
 				JOptionPane.showMessageDialog(
-						me,
+						this,
 						"ID already exists", "Error",
 						JOptionPane.ERROR_MESSAGE);
 				return false;
@@ -244,7 +237,7 @@ public class NewPotDialog extends JDialog {
 			}
 		}catch (NumberFormatException nfe) {
 			JOptionPane.showMessageDialog(
-					me,
+					this,
 					"ID should be in number format", "Error",
 					JOptionPane.ERROR_MESSAGE);
 			return false;

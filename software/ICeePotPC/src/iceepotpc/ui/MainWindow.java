@@ -146,7 +146,7 @@ public class MainWindow implements Observer{
 	public void createTab(JTabbedPane tabbedPane, int potId){
 		PotPanel pnlPot;
 		try {
-			pnlPot = new PotPanel(potId, frame);
+			pnlPot = new PotPanel(potId);
 			tabbedPane.addTab(Context.getInstance().getPotById(potId).getDescr(), null, pnlPot, null);
 		} catch (Exception e) {
 			JOptionPane.showMessageDialog(frame,

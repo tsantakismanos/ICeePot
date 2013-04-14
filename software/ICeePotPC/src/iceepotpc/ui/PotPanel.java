@@ -15,7 +15,6 @@ import java.util.Date;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -85,7 +84,6 @@ public class PotPanel extends JPanel {
 	ArrayList<Meauserement> measurements = null;
 	
 	protected int potId;
-	private JFrame frame;
 	private JTextField txtMinMoistDispl;
 	private JTextField txtMaxMoistDispl;
 
@@ -94,9 +92,8 @@ public class PotPanel extends JPanel {
 	 * 
 	 * @throws Exception
 	 */
-	public PotPanel(int potId, final JFrame frame) throws Exception {
+	public PotPanel(int potId) throws Exception {
 
-		this.frame = frame;
 		this.potId = potId;
 
 		setSize(new Dimension(900, 780));
@@ -381,7 +378,7 @@ public class PotPanel extends JPanel {
 						Integer.parseInt((String) cmbYearTo.getSelectedItem()));
 
 				if (from.getTime().getTime() > to.getTime().getTime()) {
-					JOptionPane.showMessageDialog(frame,
+					JOptionPane.showMessageDialog(PotPanel.this,
 							"The \"From\" date is after the \"To\" one",
 							"Warning", JOptionPane.ERROR_MESSAGE);
 				} else {
@@ -405,7 +402,7 @@ public class PotPanel extends JPanel {
 				try {
 					Context.getInstance().getPotById(PotPanel.this.potId).setMinMoistVal(sldMinMoist.getValue());
 				} catch (Exception e) {
-					JOptionPane.showMessageDialog(frame, e.getMessage(),
+					JOptionPane.showMessageDialog(PotPanel.this, e.getMessage(),
 							"Warning", JOptionPane.WARNING_MESSAGE);
 				}
 			}
@@ -423,7 +420,7 @@ public class PotPanel extends JPanel {
 				try {
 					Context.getInstance().getPotById(PotPanel.this.potId).setMaxMoistVal(sldMaxMoist.getValue());
 				} catch (Exception e) {
-					JOptionPane.showMessageDialog(frame, e.getMessage(),
+					JOptionPane.showMessageDialog(PotPanel.this, e.getMessage(),
 							"Warning", JOptionPane.WARNING_MESSAGE);
 				}
 			}
@@ -502,7 +499,7 @@ public class PotPanel extends JPanel {
 			measurements = null;
 			
 			if (exceptionFromServer != null) {
-				JOptionPane.showMessageDialog(frame,
+				JOptionPane.showMessageDialog(PotPanel.this,
 						exceptionFromServer.getMessage(), "Error",
 						JOptionPane.ERROR_MESSAGE);
 			} else {
@@ -510,7 +507,7 @@ public class PotPanel extends JPanel {
 
 				// request has finished, now fill the UI
 				if (measurements == null || measurements.size() == 0)
-					JOptionPane.showMessageDialog(frame,
+					JOptionPane.showMessageDialog(PotPanel.this,
 							"Measurements not available for time given",
 							"Warning", JOptionPane.WARNING_MESSAGE);
 				else {
@@ -539,7 +536,7 @@ public class PotPanel extends JPanel {
 						pnlChart.setChart(fc);
 						pnlChart.setVisible(true);
 					} catch (Exception e) {
-						JOptionPane.showMessageDialog(frame,
+						JOptionPane.showMessageDialog(PotPanel.this,
 								"Error in Drawing",
 								"Warning", JOptionPane.WARNING_MESSAGE);
 					}
