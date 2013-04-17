@@ -116,6 +116,31 @@ public class Context {
 	public void setObserversForNewPots(ArrayList<Observer> observersForNewPots) {
 		ObserversForNewPots = observersForNewPots;
 	}
+	
+	
+	/**helper method to be called when UI is to remove a  pot
+	 * @param potId
+	 * @throws Exception
+	 */
+	public void removePot(int potId) throws Exception{
+		
+		for(int i=0; i<pots.size(); i++){
+			if(pots.get(i).getId() == potId){
+				pots.remove(i);
+				try {
+					Settings.removePotFromSettings(potId);
+				} catch (Exception e) {
+					throw new Exception("Error in context remove pot - " + e.getMessage());
+				}
+			}
+		}
+		
+		// notify the observers
+		if (ObserversForNewPots != null)
+			for (int i = 0; i < ObserversForNewPots.size(); i++)
+				ObserversForNewPots.get(i).update(null, null);
+		
+	}
 
 	/**
 	 * helper method to be called when UI is to create a new pot
@@ -138,7 +163,7 @@ public class Context {
 		// notify the observers
 		if (ObserversForNewPots != null)
 			for (int i = 0; i < ObserversForNewPots.size(); i++)
-				ObserversForNewPots.get(i).update(null, p.getId());
+				ObserversForNewPots.get(i).update(null, null);
 	}
 
 	/**

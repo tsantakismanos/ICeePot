@@ -35,6 +35,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 
 import java.awt.Dimension;
+import javax.swing.JSeparator;
 
 
 
@@ -115,6 +116,20 @@ public class MainWindow implements Observer{
 		});
 		mnFile.add(mntmAddPot);
 		
+		//Add remove pot menu item
+		JMenuItem mntmRemPot = new JMenuItem("Remove Pot");
+		mntmRemPot.addMouseListener(new MouseAdapter() {
+
+			@Override
+			public void mousePressed(MouseEvent e) {
+				RemovePotDialog dialog = new RemovePotDialog();
+				dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+				dialog.setVisible(true);
+				dialog.pack();
+			}
+		});
+		mnFile.add(mntmRemPot);
+		
 		//Add close menu item
 		JMenuItem mntmClose = new JMenuItem("Close");
 		mntmClose.addMouseListener(new MouseAdapter() {
@@ -124,6 +139,9 @@ public class MainWindow implements Observer{
 				frame.dispose();
 			}
 		});
+		
+		JSeparator separator = new JSeparator();
+		mnFile.add(separator);
 		mnFile.add(mntmClose);
 		
 		tabbedPane = new JTabbedPane(JTabbedPane.TOP);
@@ -155,16 +173,26 @@ public class MainWindow implements Observer{
 		}
 		
 	}
+	
+	/** method that refreshes the Main window's tabs. 
+	 * Called by Observer's update method
+	 * @param tabbedPane: the pane to be refreshed
+	 */
+	public void refreshTabs(JTabbedPane tabbedPane){
+		
+		tabbedPane.removeAll();
+		for(int i=0; i<cntx.getPots().size(); i++)
+			createTab(tabbedPane,cntx.getPots().get(i).getId());
+	}
 
+	
 	/* (non-Javadoc)
 	 * @see java.util.Observer#update(java.util.Observable, java.lang.Object)
 	 */
 	@Override
 	public void update(Observable o, Object arg) {
 		
-		int potId = Integer.parseInt(arg.toString());
-
-		createTab(tabbedPane, potId);
+		refreshTabs(tabbedPane);
 	}
 
 	

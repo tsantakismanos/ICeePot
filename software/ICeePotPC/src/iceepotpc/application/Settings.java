@@ -9,6 +9,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.Transformer;
+
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
@@ -67,7 +68,7 @@ public class Settings {
 	}
 	
 	/**
-	 * helper private method called by the constructor to fetch the 
+	 * helper method called to fetch the 
 	 * settings from settings.xml file & store it to the context variables
 	 * @throws ParserConfigurationException 
 	 * @throws IOException 
@@ -124,6 +125,45 @@ public class Settings {
 				}
 	}
 	
+	/**
+	 * method removing a pot from the settings file
+	 * @param potId: the id of the pot
+	 * @throws Exception
+	 */
+	public static void removePotFromSettings(int potId) throws Exception{
+		Document dom;
+		
+		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+		
+		
+		DocumentBuilder db = dbf.newDocumentBuilder();
+			
+		dom = db.parse("settings.xml");
+		
+		
+		
+		//get the list of pots
+		NodeList nlstPots = dom.getElementsByTagName("pot");
+		
+		//getting each pot's details
+		for(int i=0; i<nlstPots.getLength(); i++){
+			
+			int id = Integer.parseInt((((Element)nlstPots.item(i)).getElementsByTagName("id")).item(0).getTextContent());
+			
+			if(potId == id){
+				nlstPots.item(i).getParentNode().removeChild((Node)nlstPots.item(i));
+				break;
+			}
+			
+		}
+		
+		TransformerFactory transformerFactory = TransformerFactory.newInstance();
+		Transformer transformer = transformerFactory.newTransformer();
+		DOMSource source = new DOMSource(dom);
+		StreamResult result = new StreamResult(new File("settings.xml"));
+		transformer.transform(source, result);
+	}
+	
 	
 	/**
 	 * helper method which stores the context variables to the settings file
@@ -136,41 +176,39 @@ public class Settings {
 		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 		
 		
-			DocumentBuilder db = dbf.newDocumentBuilder();
+		DocumentBuilder db = dbf.newDocumentBuilder();
 			
-			dom = db.parse("settings.xml");
+		dom = db.parse("settings.xml");
 			
-			//get the root element
-			NodeList nRoot = dom.getElementsByTagName("settings");
+		//get the root element
+		NodeList nRoot = dom.getElementsByTagName("settings");
 			
-			Element elDescr = dom.createElement("descr");
-			elDescr.setTextContent(p.getDescr());
+		Element elDescr = dom.createElement("descr");
+		elDescr.setTextContent(p.getDescr());
 			
-			Element elId = dom.createElement("id");
-			elId.setTextContent(String.valueOf(p.getId()));
+		Element elId = dom.createElement("id");
+		elId.setTextContent(String.valueOf(p.getId()));
 			
-			Element elMinMoist = dom.createElement("minMoist");
-			elMinMoist.setTextContent(String.valueOf(p.getMinMoistVal()));
+		Element elMinMoist = dom.createElement("minMoist");
+		elMinMoist.setTextContent(String.valueOf(p.getMinMoistVal()));
 			
-			Element elMaxMoist = dom.createElement("maxMoist");
-			elMaxMoist.setTextContent(String.valueOf(p.getMaxMoistVal()));
+		Element elMaxMoist = dom.createElement("maxMoist");
+		elMaxMoist.setTextContent(String.valueOf(p.getMaxMoistVal()));
 			
-			Node elPot = dom.createElement("pot");
+		Node elPot = dom.createElement("pot");
 			
-			elPot.appendChild(elDescr);
-			elPot.appendChild(elId);
-			elPot.appendChild(elMinMoist);
-			elPot.appendChild(elMaxMoist);
+		elPot.appendChild(elDescr);
+		elPot.appendChild(elId);
+		elPot.appendChild(elMinMoist);
+		elPot.appendChild(elMaxMoist);
 			
-			nRoot.item(0).appendChild(elPot);
+		nRoot.item(0).appendChild(elPot);
 			
-			TransformerFactory transformerFactory = TransformerFactory.newInstance();
-			Transformer transformer = transformerFactory.newTransformer();
-			DOMSource source = new DOMSource(dom);
-			StreamResult result = new StreamResult(new File("settings.xml"));
-			transformer.transform(source, result);
-			
-		
+		TransformerFactory transformerFactory = TransformerFactory.newInstance();
+		Transformer transformer = transformerFactory.newTransformer();
+		DOMSource source = new DOMSource(dom);
+		StreamResult result = new StreamResult(new File("settings.xml"));
+		transformer.transform(source, result);
 	}
 	
 	/**
