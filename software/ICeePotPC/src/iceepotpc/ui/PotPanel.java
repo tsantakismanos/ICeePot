@@ -6,6 +6,7 @@ import iceepotpc.application.Context;
 import iceepotpc.charteng.ChartCreator;
 import iceepotpc.servergw.Meauserement;
 import iceepotpc.servergw.ServerService;
+import iceepotpc.ui.MainWindow.ViewType;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -84,6 +85,7 @@ public class PotPanel extends JPanel {
 	ArrayList<Meauserement> measurements = null;
 	
 	protected int potId;
+	protected ViewType viewType;
 	private JTextField txtMinMoistDispl;
 	private JTextField txtMaxMoistDispl;
 
@@ -92,9 +94,10 @@ public class PotPanel extends JPanel {
 	 * 
 	 * @throws Exception
 	 */
-	public PotPanel(int potId) throws Exception {
+	public PotPanel(int potId, ViewType viewType) throws Exception {
 
 		this.potId = potId;
+		this.viewType = viewType;
 
 		setSize(new Dimension(900, 780));
 		setMinimumSize(new Dimension(900, 780));
@@ -185,23 +188,25 @@ public class PotPanel extends JPanel {
 		txtLastTime.setEditable(false);
 
 		// panel results
-		txtResults = new JTextArea();
-		txtResults.setEditable(false);
-		txtResults.setTabSize(2);
-
-		pnlResults = new JScrollPane(txtResults);
-		pnlResults
-				.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-		pnlResults
-				.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-		GridBagConstraints gbc_pnlResults = new GridBagConstraints();
-		gbc_pnlResults.fill = GridBagConstraints.BOTH;
-		gbc_pnlResults.insets = new Insets(5, 5, 5, 5);
-		gbc_pnlResults.gridx = 0;
-		gbc_pnlResults.gridy = 1;
-		this.add(pnlResults, gbc_pnlResults);
-		txtResults.setColumns(1);
-		txtResults.setRows(30);
+		if(viewType == ViewType.DETAIL){
+			txtResults = new JTextArea();
+			txtResults.setEditable(false);
+			txtResults.setTabSize(2);
+	
+			pnlResults = new JScrollPane(txtResults);
+			pnlResults
+					.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+			pnlResults
+					.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+			GridBagConstraints gbc_pnlResults = new GridBagConstraints();
+			gbc_pnlResults.fill = GridBagConstraints.BOTH;
+			gbc_pnlResults.insets = new Insets(5, 5, 5, 5);
+			gbc_pnlResults.gridx = 0;
+			gbc_pnlResults.gridy = 1;
+			this.add(pnlResults, gbc_pnlResults);
+			txtResults.setColumns(1);
+			txtResults.setRows(30);
+		}
 
 		pnlChart = new ChartPanel(null);
 		pnlChart.setMaximumDrawWidth(2048);
@@ -211,9 +216,18 @@ public class PotPanel extends JPanel {
 		GridBagConstraints gbc_pnlChart = new GridBagConstraints();
 		gbc_pnlChart.fill = GridBagConstraints.BOTH;
 		gbc_pnlChart.insets = new Insets(0, 0, 5, 0);
-		gbc_pnlChart.gridx = 1;
-		gbc_pnlChart.gridy = 1;
-		add(pnlChart, gbc_pnlChart);
+		
+		if(viewType == ViewType.DETAIL){
+			gbc_pnlChart.gridx = 1;
+			gbc_pnlChart.gridy = 1;
+			gbc_pnlChart.gridwidth = 1;
+			add(pnlChart, gbc_pnlChart);
+		}else{
+			gbc_pnlChart.gridx = 0;
+			gbc_pnlChart.gridy = 1;
+			gbc_pnlChart.gridwidth = 2;
+			add(pnlChart, gbc_pnlChart);
+		}
 
 		JPanel pnlMoistLimits = new JPanel();
 		GridBagConstraints gbc_pnlMoistLimits = new GridBagConstraints();
@@ -458,7 +472,10 @@ public class PotPanel extends JPanel {
 		}
 
 		private void SetUIBeforeRequest() {
-			txtResults.setText("");
+			
+			if(viewType == ViewType.DETAIL)
+				txtResults.setText("");
+			
 			txtLastValue.setText("");
 			txtLastTime.setText("");
 			pnlChart.setVisible(false);
@@ -511,15 +528,16 @@ public class PotPanel extends JPanel {
 							"Measurements not available for time given",
 							"Warning", JOptionPane.WARNING_MESSAGE);
 				else {
-					for (int i = 0; i < measurements.size(); i++) {
-						txtResults.setText(txtResults.getText()
-								+ "\n"
-								+ df.format(new Date(measurements.get(i)
-										.getMoment())) + "\t"
-								+ measurements.get(i).getValue());
-						Dimension d = txtResults.getPreferredSize();
-						pnlResults.setPreferredSize(d);
-					}
+					if(viewType == ViewType.DETAIL)
+						for (int i = 0; i < measurements.size(); i++) {
+							txtResults.setText(txtResults.getText()
+									+ "\n"
+									+ df.format(new Date(measurements.get(i)
+											.getMoment())) + "\t"
+									+ measurements.get(i).getValue());
+							Dimension d = txtResults.getPreferredSize();
+							pnlResults.setPreferredSize(d);
+						}
 					Calendar c = Calendar.getInstance();
 					c.setTimeInMillis((long) measurements.get(
 							measurements.size() - 1).getMoment());

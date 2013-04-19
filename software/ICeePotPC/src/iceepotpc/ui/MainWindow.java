@@ -48,9 +48,13 @@ import javax.swing.JSeparator;
  */
 public class MainWindow implements Observer{
 	
+	public enum ViewType{SIMPLE, DETAIL};
+	
 	private JFrame frame;
 	private JTabbedPane tabbedPane;
 	Context cntx;
+	private ViewType viewType;	//0 for simple, 1 for detailed
+	
 	
 	/**
 	 * Create the application's main window.
@@ -58,6 +62,7 @@ public class MainWindow implements Observer{
 	public MainWindow() {
 		try {
 			cntx = Context.getInstance();
+			viewType = ViewType.DETAIL;
 		} catch (Exception e) {
 			
 			JOptionPane.showMessageDialog(frame,
@@ -144,6 +149,35 @@ public class MainWindow implements Observer{
 		mnFile.add(separator);
 		mnFile.add(mntmClose);
 		
+		JMenu mnView = new JMenu("View");
+		menuBar.add(mnView);
+		
+		JMenuItem mntmSimple = new JMenuItem("Simple");
+		mntmSimple.addMouseListener(new MouseAdapter() {
+
+			@Override
+			public void mousePressed(MouseEvent e) {
+				viewType = ViewType.SIMPLE;
+				refreshTabs();
+			}
+			
+			
+			
+		});
+		mnView.add(mntmSimple);
+		
+		JMenuItem mntmDetailed = new JMenuItem("Details");
+		mntmDetailed.addMouseListener(new MouseAdapter() {
+
+			@Override
+			public void mousePressed(MouseEvent e) {
+				viewType = ViewType.DETAIL;
+				refreshTabs();
+			}
+			
+		});
+		mnView.add(mntmDetailed);
+		
 		tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 		tabbedPane.setMinimumSize(new Dimension(900, 780));
 		tabbedPane.setPreferredSize(new Dimension(900, 780));
@@ -151,7 +185,7 @@ public class MainWindow implements Observer{
 		
 		if(cntx.getPots() != null)
 			for(int i=0; i<cntx.getPots().size(); i++)
-				createTab(tabbedPane, cntx.getPots().get(i).getId());
+				createTab(cntx.getPots().get(i).getId());
 		
 		
 	}
@@ -161,16 +195,17 @@ public class MainWindow implements Observer{
 	 *  helper method that is called when it is required
 	 *  to create a Tab which represents a pot (input / output)
 	 */
-	public void createTab(JTabbedPane tabbedPane, int potId){
-		PotPanel pnlPot;
+	public PotPanel createTab(int potId){
+		PotPanel pnlPot = null;
 		try {
-			pnlPot = new PotPanel(potId);
+			pnlPot = new PotPanel(potId, viewType);
 			tabbedPane.addTab(Context.getInstance().getPotById(potId).getDescr(), null, pnlPot, null);
 		} catch (Exception e) {
 			JOptionPane.showMessageDialog(frame,
 					e.getMessage(),
 					"Error", JOptionPane.ERROR_MESSAGE);
 		}
+		return pnlPot;
 		
 	}
 	
@@ -178,11 +213,12 @@ public class MainWindow implements Observer{
 	 * Called by Observer's update method
 	 * @param tabbedPane: the pane to be refreshed
 	 */
-	public void refreshTabs(JTabbedPane tabbedPane){
+	public void refreshTabs(){
 		
 		tabbedPane.removeAll();
-		for(int i=0; i<cntx.getPots().size(); i++)
-			createTab(tabbedPane,cntx.getPots().get(i).getId());
+		for(int i=0; i<cntx.getPots().size(); i++){
+			createTab(cntx.getPots().get(i).getId());
+		}
 	}
 
 	
@@ -192,7 +228,7 @@ public class MainWindow implements Observer{
 	@Override
 	public void update(Observable o, Object arg) {
 		
-		refreshTabs(tabbedPane);
+		refreshTabs();
 	}
 
 	
