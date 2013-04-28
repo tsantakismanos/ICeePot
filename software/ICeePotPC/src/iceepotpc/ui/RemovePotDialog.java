@@ -91,7 +91,7 @@ public class RemovePotDialog extends JDialog {
 		fl_pnlButtons.setAlignment(FlowLayout.RIGHT);
 		getContentPane().add(pnlButtons, BorderLayout.SOUTH);
 
-		JButton btnDone = new JButton("Done");
+		JButton btnDone = new JButton("OK");
 		btnDone.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 

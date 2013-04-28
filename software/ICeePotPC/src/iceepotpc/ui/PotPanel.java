@@ -525,7 +525,7 @@ public class PotPanel extends JPanel {
 				// request has finished, now fill the UI
 				if (measurements == null || measurements.size() == 0)
 					JOptionPane.showMessageDialog(PotPanel.this,
-							"Measurements not available for time given",
+							"Measurements not available for the given months",
 							"Warning", JOptionPane.WARNING_MESSAGE);
 				else {
 					if(viewType == ViewType.DETAIL)
