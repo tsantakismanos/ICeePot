@@ -1,3 +1,4 @@
+/software/ICeePotPC/settings.xml
 #################
 ## Eclipse
 #################
@@ -161,3 +162,4 @@ pip-log.txt
 
 # Mac crap
 .DS_Store
+software/ICeePotPC/settings.xml
