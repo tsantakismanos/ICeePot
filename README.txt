@@ -9,9 +9,9 @@ Client-Server hierarchy with an arduino ethernet board acting as a server which 
 
 folders:
 - documentation: contains useful notes, diagrams about the project
-  - notes: about tools used,code explanations etc 
-  - diagrams: flows, schematics, class diagrams etc
+  - notes: about tools used, code explanations, etc 
+  - diagrams: flows, schematics, class diagrams, etc
 - software: the project's code organized in the following way:
-   - ICeePotServer: the sketch to be uploaded & executed on the arduino acting as a server
+   - ICeePotServer: the sketch to be uploaded & executed on the arduino acting as the server
    - ICeePotPC: java swing project which implements the client sending time requests and showing results returned in a graphic way
 - hardware: schematic files, projects related to the hardware used for this solution
