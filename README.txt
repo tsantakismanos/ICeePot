@@ -5,7 +5,7 @@ main goal:
 - accessing & managing that information remotely
 
 hierarchy:
-Client-Server hierarchy with an arduino ethernet board acting as a server which reads the moisture condition from analog pins & post this information on demand
+Client-Server hierarchy with an arduino ethernet board acting as a server which reads the moisture condition from analog pins & serves this information on demand
 
 folders:
 - documentation: contains useful notes, diagrams about the project
