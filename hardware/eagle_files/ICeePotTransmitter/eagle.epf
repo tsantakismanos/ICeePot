@@ -339,9 +339,6 @@ UsedLibrary="C:/Program Files (x86)/EAGLE-6.3.0/lbr/xilinx-xc9.lbr"
 UsedLibrary="C:/Program Files (x86)/EAGLE-6.3.0/lbr/xilinx-xcv.lbr"
 UsedLibrary="C:/Program Files (x86)/EAGLE-6.3.0/lbr/zetex.lbr"
 UsedLibrary="C:/Program Files (x86)/EAGLE-6.3.0/lbr/zilog.lbr"
-UsedLibrary="C:/projects/iceepot/src/eagle_libraries/SparkFun-RF.lbr"
-UsedLibrary="C:/projects/iceepot/src/eagle_libraries/adafruit.lbr"
-UsedLibrary="C:/projects/iceepot/src/eagle/RF433Shield/RFM.lbr"
 
 [Win_1]
 Type="Control Panel"
