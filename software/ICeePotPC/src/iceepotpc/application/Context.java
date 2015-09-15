@@ -196,10 +196,11 @@ public class Context {
 	 * @param newMaxValue
 	 * @throws Exception
 	 */
-	public void updateMoistLimits(int id, double newMinValue, double newMaxValue)
+	public void updateMoistLimits(int id)
 			throws Exception {
 		try {
-			Settings.modifyMinMoistValue(id, newMinValue, newMaxValue);
+			
+			Settings.modifyMinMoistValue(id, getPotById(id).getMinMoistVal(), getPotById(id).getMaxMoistVal());
 		} catch (Exception e) {
 			throw new Exception("Error in context update limits - "
 					+ e.getMessage());

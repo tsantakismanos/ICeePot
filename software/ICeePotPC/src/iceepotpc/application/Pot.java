@@ -53,11 +53,9 @@ public class Pot {
 	}
 	public void setMinMoistVal(double minMoistVal) throws Exception {
 		this.minMoistVal = minMoistVal;
-		Context.getInstance().updateMoistLimits(id, this.minMoistVal, this.maxMoistVal);
 	}
 	public void setMaxMoistVal(double maxMoistVal) throws Exception {
 		this.maxMoistVal = maxMoistVal;
-		Context.getInstance().updateMoistLimits(id, this.minMoistVal, this.maxMoistVal);
 	}
 
 }

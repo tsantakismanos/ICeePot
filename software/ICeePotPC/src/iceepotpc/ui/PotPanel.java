@@ -415,6 +415,7 @@ public class PotPanel extends JPanel {
 				
 				try {
 					Context.getInstance().getPotById(PotPanel.this.potId).setMinMoistVal(sldMinMoist.getValue());
+					Context.getInstance().updateMoistLimits(PotPanel.this.potId);
 				} catch (Exception e) {
 					JOptionPane.showMessageDialog(PotPanel.this, e.getMessage(),
 							"Warning", JOptionPane.WARNING_MESSAGE);
@@ -433,6 +434,7 @@ public class PotPanel extends JPanel {
 				
 				try {
 					Context.getInstance().getPotById(PotPanel.this.potId).setMaxMoistVal(sldMaxMoist.getValue());
+					Context.getInstance().updateMoistLimits(PotPanel.this.potId);
 				} catch (Exception e) {
 					JOptionPane.showMessageDialog(PotPanel.this, e.getMessage(),
 							"Warning", JOptionPane.WARNING_MESSAGE);
