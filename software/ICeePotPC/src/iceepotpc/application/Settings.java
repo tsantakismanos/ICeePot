@@ -1,6 +1,8 @@
 package iceepotpc.application;
 
 import java.io.File;
+import iceepotlib.entities.*;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Observer;

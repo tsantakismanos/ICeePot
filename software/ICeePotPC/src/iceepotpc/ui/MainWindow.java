@@ -36,7 +36,7 @@ import javax.swing.JOptionPane;
 
 import java.awt.Dimension;
 import javax.swing.JSeparator;
-
+import iceepotlib.entities.*;
 
 
 
