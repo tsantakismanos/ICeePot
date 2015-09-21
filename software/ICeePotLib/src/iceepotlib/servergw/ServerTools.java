@@ -1,7 +1,6 @@
-package iceepotpc.servergw;
+package iceepotlib.servergw;
 
 
-import iceepotpc.application.Context;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -30,9 +29,8 @@ public class ServerTools{
 	 * @return: an arraylist of measurements (pot-moment-value)
 	 * @throws Exception 
 	 */
-	public synchronized static ArrayList<Meauserement> GetMeasurements(Calendar c, int potId) throws Exception {
+	public synchronized static ArrayList<Meauserement> GetMeasurements(Calendar c, int potId, String host, int port, int timeout) throws Exception {
 
-		Context cntx = Context.getInstance();
 		
 		ArrayList<Meauserement> measurements = new ArrayList<Meauserement>();
 		
@@ -54,8 +52,8 @@ public class ServerTools{
 			
 			int response = 0;
 			//String response_str = "";
-			s = new Socket(cntx.getServerHost(), cntx.getServerPort());
-			s.setSoTimeout(cntx.getServerTimeout());
+			s = new Socket(host, port);
+			s.setSoTimeout(timeout);
 			os = s.getOutputStream();
 
 			// send request

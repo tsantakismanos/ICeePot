@@ -1,4 +1,4 @@
-package iceepotpc.servergw;
+package iceepotlib.servergw;
 
 public enum MeasurementType {
 	

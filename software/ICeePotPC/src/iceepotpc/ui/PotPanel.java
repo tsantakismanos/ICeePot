@@ -2,9 +2,7 @@ package iceepotpc.ui;
 
 import iceepotpc.application.Context;
 import iceepotpc.charteng.ChartCreator;
-import iceepotpc.servergw.Callable;
-import iceepotpc.servergw.Meauserement;
-import iceepotpc.servergw.ServerService;
+import iceepotlib.servergw.*;
 import iceepotpc.ui.MainWindow.ViewType;
 
 import java.text.DateFormat;
@@ -470,11 +468,16 @@ public class PotPanel extends JPanel {
 		@Override
 		public void run() {
 
-			SetUIBeforeRequest();
-
-			ServerService s = new ServerService(this, from, to, potId);
-			Thread t = new Thread(s);
-			t.start();
+			try{
+				SetUIBeforeRequest();
+	
+				ServerService s = new ServerService(this, from, to, potId, Context.getInstance().getServerHost(), Context.getInstance().getServerPort(), Context.getInstance().getServerTimeout());
+				Thread t = new Thread(s);
+				t.start();
+			}catch(Exception e){
+				JOptionPane.showMessageDialog(PotPanel.this, e.getMessage(),
+						"Warning", JOptionPane.WARNING_MESSAGE);
+			}
 		}
 
 		private void SetUIBeforeRequest() {
