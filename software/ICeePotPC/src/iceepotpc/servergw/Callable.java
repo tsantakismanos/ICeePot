@@ -1,6 +1,4 @@
-package iceepotpc.application;
-
-import iceepotpc.servergw.Meauserement;
+package iceepotpc.servergw;
 
 import java.util.ArrayList;
 

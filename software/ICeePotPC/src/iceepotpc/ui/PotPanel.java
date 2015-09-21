@@ -1,9 +1,8 @@
 package iceepotpc.ui;
 
-import iceepotpc.application.Callable;
 import iceepotpc.application.Context;
-
 import iceepotpc.charteng.ChartCreator;
+import iceepotpc.servergw.Callable;
 import iceepotpc.servergw.Meauserement;
 import iceepotpc.servergw.ServerService;
 import iceepotpc.ui.MainWindow.ViewType;
@@ -31,25 +30,30 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
-
 import java.awt.event.ItemListener;
 import java.awt.event.ItemEvent;
 import java.awt.Component;
+
 import javax.swing.border.CompoundBorder;
+
 import java.awt.ComponentOrientation;
 import java.awt.Dimension;
+
 import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.ColumnSpec;
 import com.jgoodies.forms.factories.FormFactory;
 import com.jgoodies.forms.layout.RowSpec;
+
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
+
 import javax.swing.border.LineBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import java.awt.Color;
+
 import javax.swing.JProgressBar;
 import javax.swing.JSlider;
 

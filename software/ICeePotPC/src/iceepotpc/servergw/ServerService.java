@@ -3,8 +3,6 @@ package iceepotpc.servergw;
 import java.util.ArrayList;
 import java.util.Calendar;
 
-import iceepotpc.application.Callable;
-
 /** Runnable class to perform the asynchronous task of sending
  * time requests to the server using the ServerTools methods
  * It is also responsible of updating the callers progress bar 
