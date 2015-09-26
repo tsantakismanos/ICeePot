@@ -1,6 +1,7 @@
 apply plugin: 'java'
 apply plugin: 'eclipse'
 
+
 sourceCompatibility = 1.5
 version = '1.0'
 jar {
@@ -26,7 +27,8 @@ test {
 uploadArchives {
     repositories {
        flatDir {
-           dirs 'repos'
+           dirs '../repository'
+           name 'iceepotlib'
        }
     }
 }
