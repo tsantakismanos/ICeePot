@@ -1,9 +1,12 @@
-package iceepot.iceepotmobile;
+package iceepotmobile.ui;
 
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ListView;
+
+import iceepot.iceepotmobile.R;
 import iceepotlib.entities.*;
 
 
@@ -13,6 +16,9 @@ public class MainActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        ListView lvwPots = (ListView)findViewById(R.id.lvwPots);
+
     }
 
     @Override
