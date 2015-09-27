@@ -16,6 +16,13 @@ public class Pot {
 	private double maxMoistVal;
 	
 	
+	public Pot(){
+		id = -1;
+		descr = null;
+		minMoistVal = -1;
+		maxMoistVal = -1;
+	}
+	
 	
 	/**Class constructor creating the Pot 
 	 * @param descr: like Mint, Basil, ...
@@ -24,7 +31,6 @@ public class Pot {
 	 * @param max: the maximum value of the moisture
 	 */
 	public Pot(String descr, int id, double min, double max) {
-		super();
 		this.descr = descr;
 		this.id = id;
 		this.minMoistVal = min;
