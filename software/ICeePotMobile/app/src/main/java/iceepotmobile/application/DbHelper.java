@@ -1,5 +1,6 @@
 package iceepotmobile.application;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -24,6 +25,31 @@ public class DbHelper extends SQLiteOpenHelper {
 
         db.execSQL("CREATE TABLE POT (ID INTEGER PRIMARY_KEY, DESCR TEXT, MIN_MOIST_VAL FLOAT, MAX_MOIST_VAL FLOAT);");
         db.execSQL("CREATE TABLE SETTINGS (HOST TEXT, PORT INTEGER, TIMEOUT INTEGER);");
+
+        ContentValues cv;
+
+        cv = new ContentValues();
+        cv.put("ID",0);
+        cv.put("DESCR","Basil");
+        cv.put("MIN_MOIST_VAL", 0);
+        cv.put("MAX_MOIST_VAL", 0);
+        db.insert("POT", null, cv);
+
+        cv = new ContentValues();
+        cv.put("ID",1);
+        cv.put("DESCR","Mint");
+        cv.put("MIN_MOIST_VAL",0);
+        cv.put("MAX_MOIST_VAL",0);
+        db.insert("POT", null, cv);
+
+        cv = new ContentValues();
+        cv.put("ID",2);
+        cv.put("DESCR","Lemon Tree");
+        cv.put("MIN_MOIST_VAL",0);
+        cv.put("MAX_MOIST_VAL",0);
+        db.insert("POT", null, cv);
+
+        db.setTransactionSuccessful();
 
         db.endTransaction();
 
