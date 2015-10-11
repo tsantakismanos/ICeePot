@@ -3,4 +3,8 @@
 
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+    <string name="new_pot_desct">Description (e.g.: Mint)</string>
+    <string name="new_pot_id">Id (e.g.: 0, 1)</string>
+    <string name="new_pot_min_moist">Moisture (Min)</string>
+    <string name="new_pot_max_moist">Moisture (Max)</string>
 </resources>

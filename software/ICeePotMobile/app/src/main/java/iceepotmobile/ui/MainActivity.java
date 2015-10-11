@@ -4,10 +4,12 @@ import android.app.LoaderManager;
 import android.content.AsyncTaskLoader;
 import android.content.Context;
 import android.content.CursorLoader;
+import android.content.Intent;
 import android.content.Loader;
 import android.net.Uri;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -27,7 +29,7 @@ import iceepotmobile.application.PotsLoader;
 import iceepotmobile.model.Pot;
 
 
-public class MainActivity extends ActionBarActivity implements LoaderManager.LoaderCallbacks<List<Pot>>{
+public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<List<Pot>>{
 
     private PotsAdapter potsAdapter;
     private ListView lvwPots;
@@ -62,6 +64,10 @@ public class MainActivity extends ActionBarActivity implements LoaderManager.Loa
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
+        }
+        if(id == R.id.add_pot){
+            Intent i = new Intent(this, NewPotActivity.class);
+            startActivity(i);
         }
 
         return super.onOptionsItemSelected(item);
