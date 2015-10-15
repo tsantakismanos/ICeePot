@@ -43,8 +43,22 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
         potsAdapter = new PotsAdapter();
 
-        getLoaderManager().initLoader(0,null,this);
+        getLoaderManager().initLoader(0, null, this);
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        getLoaderManager().restartLoader(0, null, this);
     }
 
     @Override

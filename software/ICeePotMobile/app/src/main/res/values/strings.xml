@@ -7,4 +7,5 @@
     <string name="new_pot_id">Id (e.g.: 0, 1)</string>
     <string name="new_pot_min_moist">Moisture (Min)</string>
     <string name="new_pot_max_moist">Moisture (Max)</string>
+    <string name="new_pot_warning">OK</string>
 </resources>

@@ -1,5 +1,8 @@
 package iceepotmobile.ui;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.support.v7.app.AppCompatActivity;
@@ -102,9 +105,21 @@ public class NewPotActivity extends AppCompatActivity{
 
                 Pot p = new Pot(Integer.parseInt(etxId.getText().toString()), etxDescription.getText().toString(), Double.valueOf(txtMinMoistVal.getText().toString()), Double.valueOf(txtMaxMoistVal.getText().toString()));
                 p.insert(DbHelper.getIntance(this));
+                this.finish();
 
             }catch (Exception ex) {
                 Log.e("iceepotmobile", "NewPotActivity: " + ex.getLocalizedMessage());
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+                builder.setPositiveButton(R.string.new_pot_warning, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.dismiss();
+                    }
+                });
+                builder.setMessage(ex.getMessage());
+
+                builder.create().show();
             }
         }
 
