@@ -1,6 +1,7 @@
 package iceepotmobile.model;
 
 
+import android.content.ContentValues;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.NonNull;
 
@@ -70,5 +71,17 @@ public class Pot extends iceepotlib.entities.Pot {
         cur.close();
 
         return pots;
+    }
+
+    public void insert(DbHelper dbHelper){
+        SQLiteDatabase db =dbHelper.getWritableDatabase();
+
+        ContentValues cv = new ContentValues();
+        cv.put(Pot.IDX_ID, this.getId());
+        cv.put(Pot.IDX_DESCR, this.getDescr());
+        cv.put(Pot.IDX_MIN_MOIST_VAL, this.getMinMoistVal());
+        cv.put(Pot.IDX_MAX_MOIST_VAL, this.getMaxMoistVal());
+
+        db.insert("POT", null, cv);
     }
 }

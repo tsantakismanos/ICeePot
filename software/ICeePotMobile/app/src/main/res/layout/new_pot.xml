@@ -10,8 +10,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/etxDescription"
-        android:text="@string/new_pot_desct"
-        android:layout_marginBottom="20dp" />
+        android:layout_marginBottom="20dp"
+        android:autoText="false"
+        android:hint="@string/new_pot_desct" />
 
     <EditText
         android:layout_width="wrap_content"
@@ -19,15 +20,28 @@
         android:inputType="number"
         android:ems="10"
         android:id="@+id/etxId"
-        android:text="@string/new_pot_id"
-        android:layout_marginBottom="40dp" />
+        android:layout_marginBottom="40dp"
+        android:hint="@string/new_pot_id" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="@string/new_pot_min_moist"
-        android:id="@+id/txtMinMoisture" />
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="@string/new_pot_min_moist"
+            android:id="@+id/txtMinMoisture"
+            android:layout_marginRight="20dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:id="@+id/txtMinMoistVal" />
+    </LinearLayout>
 
     <SeekBar
         android:layout_width="match_parent"
@@ -36,12 +50,25 @@
         android:max="950"
         android:layout_marginBottom="20dp" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="@string/new_pot_max_moist"
-        android:id="@+id/txtMaxMoisture" />
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="@string/new_pot_max_moist"
+            android:id="@+id/txtMaxMoisture"
+            android:layout_marginRight="20dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:id="@+id/txtMaxMoistVal" />
+    </LinearLayout>
 
     <SeekBar
         android:layout_width="match_parent"
