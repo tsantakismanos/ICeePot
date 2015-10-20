@@ -109,17 +109,7 @@ public class NewPotActivity extends AppCompatActivity{
 
             }catch (Exception ex) {
                 Log.e("iceepotmobile", "NewPotActivity: " + ex.getLocalizedMessage());
-                AlertDialog.Builder builder = new AlertDialog.Builder(this);
-
-                builder.setPositiveButton(R.string.new_pot_warning, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        dialogInterface.dismiss();
-                    }
-                });
-                builder.setMessage(ex.getMessage());
-
-                builder.create().show();
+                GenericDialog.createFromException(this, ex).show();
             }
         }
 
