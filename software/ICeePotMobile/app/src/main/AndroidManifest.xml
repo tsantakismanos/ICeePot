@@ -18,6 +18,8 @@
         </activity>
         <activity android:name="iceepotmobile.ui.NewPotActivity"
             android:label="New Pot"></activity>
+        <activity android:name="iceepotmobile.ui.PotActivity"
+            android:label=""></activity>
     </application>
 
 </manifest>

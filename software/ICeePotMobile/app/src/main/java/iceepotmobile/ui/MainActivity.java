@@ -15,6 +15,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Adapter;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
@@ -40,6 +41,16 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         setContentView(R.layout.activity_main);
 
         lvwPots = (ListView)findViewById(R.id.lvwPots);
+
+        lvwPots.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Pot p = potsAdapter.getItem(i);
+                Intent p_i = new Intent(MainActivity.this, PotActivity.class);
+                p_i.putExtra("pot",p);
+                startActivity(p_i);
+            }
+        });
 
         potsAdapter = new PotsAdapter();
 
@@ -123,7 +134,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         }
 
         @Override
-        public Object getItem(int i) {
+        public Pot getItem(int i) {
             return pots.get(i);
         }
 

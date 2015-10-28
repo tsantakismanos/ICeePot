@@ -5,6 +5,7 @@ import android.content.ContentValues;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.NonNull;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -17,7 +18,7 @@ import iceepotmobile.application.DbHelper;
 /**
  * Created by manos on 27/9/2015.
  */
-public class Pot extends iceepotlib.entities.Pot {
+public class Pot extends iceepotlib.entities.Pot implements Serializable{
 
     public static final String IDX_ID="ID";
     public static final String IDX_DESCR="DESCR";
