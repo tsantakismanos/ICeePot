@@ -1,6 +1,8 @@
 package iceepotlib.servergw;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 
 /**
@@ -15,7 +17,7 @@ import java.io.Serializable;
  * - The value is a number from 300-700
  */
 
-public class Meauserement implements Serializable{
+public class Measurement implements Serializable{
 	
 	private static final long serialVersionUID = 3977644217746517687L;
 	private long moment;
@@ -29,7 +31,7 @@ public class Meauserement implements Serializable{
 	 * @param moment: time in which the measurement was taken
 	 * @param value: the value of the parameter taken (moisture, temperature, battery level)
 	 */
-	public Meauserement(long moment, int type, int id, double value) {
+	public Measurement(long moment, int type, int id, double value) {
 		super();
 		this.moment = moment;
 		switch(type){
@@ -72,7 +74,16 @@ public class Meauserement implements Serializable{
 		this.type = type;
 	}
 
-	
+	public static HashMap<Long, Double> getHashMap(ArrayList<Measurement> list){
+		
+		HashMap<Long, Double> map = new HashMap<Long, Double>(list.size());
+		
+		for(int i=0;i<list.size();i++){
+			map.put(list.get(i).getMoment(), list.get(i).getValue());
+		}
+		
+		return map;
+	}
 	
 
 }

@@ -14,10 +14,9 @@ import java.util.Calendar;
 public class ServerService implements Runnable {
 	
 	private Callable caller;
-	private ArrayList<Meauserement> measurements;
+	private ArrayList<Measurement> measurements;
 	private Calendar from,to;
 	private int potId;
-	private Exception exception;
 	private String host;
 	private int port;
 	private int timeout;
@@ -31,7 +30,7 @@ public class ServerService implements Runnable {
 	 */
 	public ServerService(Callable caller, Calendar from, Calendar to, int potId, String host, int port, int timeout) {
 		
-		this.measurements = new ArrayList<Meauserement>();
+		this.measurements = new ArrayList<Measurement>();
 		this.caller = caller;
 		this.from = Calendar.getInstance();
 		this.from.setTime(from.getTime());
@@ -60,8 +59,7 @@ public class ServerService implements Runnable {
 			
 			caller.updateMeasurementData(measurements, null);
 		}catch(Exception e){
-			this.exception = new Exception(e.getMessage());
-			caller.updateMeasurementData(measurements, this.exception);
+			caller.updateMeasurementData(measurements, e);
 		}
 	}
 

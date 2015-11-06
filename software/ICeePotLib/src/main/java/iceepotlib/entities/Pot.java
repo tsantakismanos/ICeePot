@@ -1,5 +1,7 @@
 package iceepotlib.entities;
 
+import java.io.Serializable;
+
 /**
  * @author tsantakis
  * Class that models the pot which is identified by a 
@@ -8,8 +10,13 @@ package iceepotlib.entities;
  *
  */
 
-public class Pot {
+public class Pot implements Serializable{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4479827403666233587L;
+	
 	private String descr;
 	private int id;
 	private double minMoistVal;

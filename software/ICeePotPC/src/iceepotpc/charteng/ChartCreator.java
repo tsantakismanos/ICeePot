@@ -22,7 +22,7 @@ import org.jfree.data.time.TimeSeriesDataItem;
 public class ChartCreator 
 {
 	
-	public static JFreeChart createChart(ArrayList<Meauserement> measurements, double minMoist, double maxMoist){
+	public static JFreeChart createChart(ArrayList<Measurement> measurements, double minMoist, double maxMoist){
 		
 		
 		

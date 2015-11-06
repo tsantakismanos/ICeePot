@@ -18,7 +18,7 @@ import iceepotmobile.application.DbHelper;
 /**
  * Created by manos on 27/9/2015.
  */
-public class Pot extends iceepotlib.entities.Pot implements Serializable{
+public class Pot extends iceepotlib.entities.Pot{
 
     public static final String IDX_ID="ID";
     public static final String IDX_DESCR="DESCR";
@@ -85,4 +85,6 @@ public class Pot extends iceepotlib.entities.Pot implements Serializable{
 
         db.insert("POT", null, cv);
     }
+
+
 }

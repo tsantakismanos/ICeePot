@@ -2,11 +2,9 @@ package iceepotlib.servergw;
 
 
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Calendar;
 
@@ -29,12 +27,12 @@ public class ServerTools{
 	 * @return: an arraylist of measurements (pot-moment-value)
 	 * @throws Exception 
 	 */
-	public synchronized static ArrayList<Meauserement> GetMeasurements(Calendar c, int potId, String host, int port, int timeout) throws Exception {
+	public synchronized static ArrayList<Measurement> GetMeasurements(Calendar c, int potId, String host, int port, int timeout) throws Exception {
 
 		
-		ArrayList<Meauserement> measurements = new ArrayList<Meauserement>();
+		ArrayList<Measurement> measurements = new ArrayList<Measurement>();
 		
-		String excMessage = "";
+		
 		
 		//construct the request in a string
 		String request_str = Integer.toString(c.get(Calendar.MONTH)) + Integer.toString(c.get(Calendar.YEAR));
@@ -69,7 +67,7 @@ public class ServerTools{
 				if(respPacketIdx == 9) //a new packet has been received
 				{
 					// parse, store and begin a new line
-					Meauserement m = ParseMeasurementRow(responsePacket);
+					Measurement m = ParseMeasurementRow(responsePacket);
 					if(m.getId() == potId)
 					measurements.add(m);
 					
@@ -82,24 +80,24 @@ public class ServerTools{
 				
 				response = is.read();
 			}
-
-		} catch (UnknownHostException ex) {
-			excMessage = excMessage + "\n" + ex.getMessage(); 
-			throw new Exception(excMessage);
-		} catch (IOException ex) {
-			excMessage = excMessage + "\n" + ex.getMessage(); 
-		} finally {
+			
 			try {
 				is.close();
 				s.close();
-				if(excMessage != "")
-					throw new Exception(excMessage);
-			} catch (Exception ex) {
-				excMessage = excMessage + "\n" + ex.getMessage(); 
-				throw new Exception(excMessage);
+			} catch (Exception exi) {
+				
 			}
 
-		}
+		} catch (Exception ex) {
+			
+			try {
+				is.close();
+				s.close();
+			} catch (Exception exi) {
+				
+			}
+			throw new Exception(ex);
+		} 
 		return measurements;
 	}
 	
@@ -108,10 +106,10 @@ public class ServerTools{
 	 * @param s: a packet byte of the form: <time><type><id><value>
 	 * @return a measurement object with the above values after parsing that row
 	 */
-	private static Meauserement ParseMeasurementRow(byte[] s){
+	private static Measurement ParseMeasurementRow(byte[] s){
 		
 		
-		Meauserement m = null;
+		Measurement m = null;
 		
 		long moment = (0xFF & s[0])|
 				      ((0xFF & s[1]) << 8)|
@@ -123,7 +121,7 @@ public class ServerTools{
 		double value = (0xFF & s[7])|
 			      		((0xFF & s[8]) << 8);
 		
-		m = new Meauserement(moment*1000, type, id, value);
+		m = new Measurement(moment*1000, type, id, value);
 		
 		
 		//Meauserement m = new Meauserement(Integer.parseInt(parts[1]), Long.parseLong(parts[0])*1000, Double.parseDouble(parts[2]));

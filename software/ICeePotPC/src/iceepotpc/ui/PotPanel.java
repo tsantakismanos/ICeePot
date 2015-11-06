@@ -84,7 +84,7 @@ public class PotPanel extends JPanel {
 	private Calendar from;
 	private Calendar to;
 
-	ArrayList<Meauserement> measurements = null;
+	ArrayList<Measurement> measurements = null;
 	
 	protected int potId;
 	protected ViewType viewType;
@@ -520,7 +520,7 @@ public class PotPanel extends JPanel {
 
 		@Override
 		public void updateMeasurementData(
-				ArrayList<Meauserement> measurementsFromServer,
+				ArrayList<Measurement> measurementsFromServer,
 				Exception exceptionFromServer) {
 			measurements = null;
 			

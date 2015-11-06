@@ -12,6 +12,6 @@ import java.util.ArrayList;
 public interface Callable {
 	
 	public void updateProgressBar();
-	public void updateMeasurementData(ArrayList<Meauserement> measurements, Exception exceptionFromServer);
+	public void updateMeasurementData(ArrayList<Measurement> measurements, Exception exceptionFromServer);
 
 }
