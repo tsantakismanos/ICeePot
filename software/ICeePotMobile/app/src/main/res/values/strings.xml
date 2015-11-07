@@ -8,4 +8,27 @@
     <string name="new_pot_min_moist">Moisture (Min)</string>
     <string name="new_pot_max_moist">Moisture (Max)</string>
     <string name="new_pot_warning">OK</string>
+    <string name="pot_from">From</string>
+    <string name="pot_to">To</string>
+
+    <string-array name="months">
+        <item name="pot_jan">January</item>
+        <item name="pot_feb">February</item>
+        <item name="pot_mar">March</item>
+        <item name="pot_apr">April</item>
+        <item name="pot_may">May</item>
+        <item name="pot_jun">June</item>
+        <item name="pot_jul">July</item>
+        <item name="pot_aug">August</item>
+        <item name="pot_sep">September</item>
+        <item name="pot_oct">October</item>
+        <item name="pot_nov">November</item>
+        <item name="pot_dec">December</item>
+    </string-array>
+    <string-array name="years">
+        <item name="pot_2013">2013</item>
+        <item name="pot_2014">2014</item>
+        <item name="pot_2015">2015</item>
+    </string-array>
+
 </resources>

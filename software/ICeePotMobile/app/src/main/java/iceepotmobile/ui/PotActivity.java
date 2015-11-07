@@ -5,10 +5,14 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.support.v7.app.AppCompatActivity;
 import android.text.Layout;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.Spinner;
 
 import org.achartengine.ChartFactory;
 import org.achartengine.GraphicalView;
@@ -34,14 +38,44 @@ import iceepotmobile.model.Pot;
 /**
  * Created by manos on 28/10/2015.
  */
-public class PotActivity extends Activity{
+public class PotActivity extends AppCompatActivity{
 
     ProgressBar pgbLoading;
     GraphicalView grwGraph;
     LinearLayout lytGraph;
+    LinearLayout lytFilters;
+    Spinner sprFromMonth;
+    Spinner sprFromYear;
+    Spinner sprToMonth;
+    Spinner sprToYear;
 
+    Pot pot;
     Calendar from;
     Calendar to;
+
+    private void initUI(){
+        pgbLoading.setVisibility(View.INVISIBLE);
+        lytGraph.setVisibility(View.INVISIBLE);
+        lytFilters.setVisibility(View.VISIBLE);
+    }
+
+    private void loadingUI(){
+        pgbLoading.setVisibility(View.VISIBLE);
+        lytGraph.setVisibility(View.INVISIBLE);
+        lytFilters.setVisibility(View.VISIBLE);
+    }
+
+    private void doneUI(){
+        pgbLoading.setVisibility(View.INVISIBLE);
+        lytGraph.setVisibility(View.VISIBLE);
+        lytFilters.setVisibility(View.VISIBLE);
+    }
+
+    private void errorUI(){
+        pgbLoading.setVisibility(View.INVISIBLE);
+        lytGraph.setVisibility(View.INVISIBLE);
+        lytFilters.setVisibility(View.VISIBLE);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,21 +85,49 @@ public class PotActivity extends Activity{
 
         pgbLoading = (ProgressBar) findViewById(R.id.pgbLoading);
         lytGraph = (LinearLayout)findViewById(R.id.lytGraph);
+        lytFilters = (LinearLayout)findViewById(R.id.lytFilters);
+        sprFromMonth = (Spinner)findViewById(R.id.sprFromMonth);
+        sprFromYear = (Spinner)findViewById(R.id.sprFromYear);
+        sprToMonth = (Spinner)findViewById(R.id.sprToMonth);
+        sprToYear = (Spinner)findViewById(R.id.sprToYear);
 
         Intent i = getIntent();
-        Pot p = (Pot)i.getSerializableExtra("pot");
+        pot = (Pot)i.getSerializableExtra("pot");
+
+        initUI();
+
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_pot, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        if(item.getItemId() == R.id.pot_get){
+
+            loadData();
+        }
+        return super.onOptionsItemSelected(item);
+
+    }
+
+    private void loadData(){
 
         from = Calendar.getInstance();
-        from.set(Calendar.MONTH, 1);
-        from.set(Calendar.YEAR, 2013);
+        from.set(Calendar.MONTH, sprFromMonth.getSelectedItemPosition()+1);
+        from.set(Calendar.YEAR, Integer.parseInt((String) sprFromYear.getSelectedItem()));
         from.set(Calendar.DAY_OF_MONTH, 1);
         to = Calendar.getInstance();
-        to.set(Calendar.MONTH, 2);
-        to.set(Calendar.YEAR, 2013);
+        to.set(Calendar.MONTH, sprToMonth.getSelectedItemPosition()+1);
+        to.set(Calendar.YEAR, Integer.parseInt((String) sprToYear.getSelectedItem()));
         to.set(Calendar.DAY_OF_MONTH, 1);
 
-        ServerTask task = new ServerTask(p);
-        task.execute(p);
+        ServerTask task = new ServerTask(pot);
+        task.execute(pot);
     }
 
     public class ServerTask extends AsyncTask<Pot, Void, ArrayList<Measurement>>{
@@ -99,12 +161,12 @@ public class PotActivity extends Activity{
 
         @Override
         protected void onPreExecute() {
+
             super.onPreExecute();
 
-            lytGraph.setVisibility(View.INVISIBLE);
-            pgbLoading.setVisibility(View.VISIBLE);
-
             ex = null;
+
+            loadingUI();
         }
 
         @Override
@@ -113,7 +175,7 @@ public class PotActivity extends Activity{
 
             if(ex != null){
                 GenericDialog.createFromException(PotActivity.this, ex).show();
-                pgbLoading.setVisibility(View.INVISIBLE);
+                errorUI();
             }else {
 
                 XYMultipleSeriesDataset dataset = new XYMultipleSeriesDataset();
@@ -127,16 +189,16 @@ public class PotActivity extends Activity{
                 renderer.addSeriesRenderer(new XYSeriesRenderer());
 
                 renderer.setPanEnabled(false);
-                //renderer.setXAxisMin(from.getTimeInMillis());
-                //renderer.setXAxisMax(to.getTimeInMillis());
                 renderer.setYAxisMin(0);
                 renderer.setYAxisMax(900);
+                renderer.setBackgroundColor(getResources().getColor(R.color.background_material_light));
+                renderer.setApplyBackgroundColor(true);
 
                 grwGraph = ChartFactory.getTimeChartView(PotActivity.this,dataset, renderer,null);
+                grwGraph.setBackgroundColor(getResources().getColor(R.color.background_material_light));
                 lytGraph.addView(grwGraph);
 
-                lytGraph.setVisibility(View.VISIBLE);
-                pgbLoading.setVisibility(View.INVISIBLE);
+                doneUI();
             }
         }
 
