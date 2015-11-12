@@ -1,6 +1,7 @@
-package iceepotlib.servergw;
+package iceepotpc.service;
 
 import java.util.ArrayList;
+import iceepotlib.servergw.*;
 
 /** Interface to be implemented 
  * by those UI elements that need to perform Server

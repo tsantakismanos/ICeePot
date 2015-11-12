@@ -1,7 +1,8 @@
-package iceepotlib.servergw;
+package iceepotpc.service;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import iceepotlib.servergw.*;
 
 /** Runnable class to perform the asynchronous task of sending
  * time requests to the server using the ServerTools methods
@@ -49,12 +50,12 @@ public class ServerService implements Runnable {
 			//for all months in range
 			while((from.get(Calendar.MONTH) != to.get(Calendar.MONTH)) 
 					|| (from.get(Calendar.YEAR) != to.get(Calendar.YEAR))){
-				measurements.addAll(ServerTools.GetMeasurements(from, potId, host, port, timeout));
+				measurements.addAll(ServerTools.GetMeasurements(from.get(Calendar.MONTH), from.get(Calendar.YEAR), potId, host, port, timeout));
 				from.add(Calendar.MONTH, 1);
 				caller.updateProgressBar();
 			}
 			
-			measurements.addAll(ServerTools.GetMeasurements(to, potId, host, port, timeout));
+			//measurements.addAll(ServerTools.GetMeasurements(to.get(Calendar.MONTH), to.get(Calendar.YEAR), potId, host, port, timeout));
 			caller.updateProgressBar();
 			
 			caller.updateMeasurementData(measurements, null);

@@ -30,7 +30,6 @@ import java.util.Iterator;
 
 import iceepot.iceepotmobile.R;
 import iceepotlib.servergw.Measurement;
-import iceepotlib.servergw.ServerService;
 import iceepotlib.servergw.ServerTools;
 import iceepotmobile.model.Pot;
 
@@ -50,8 +49,6 @@ public class PotActivity extends AppCompatActivity{
     Spinner sprToYear;
 
     Pot pot;
-    Calendar from;
-    Calendar to;
 
     private void initUI(){
         pgbLoading.setVisibility(View.INVISIBLE);
@@ -117,21 +114,32 @@ public class PotActivity extends AppCompatActivity{
 
     private void loadData(){
 
-        from = Calendar.getInstance();
-        from.set(Calendar.MONTH, sprFromMonth.getSelectedItemPosition()+1);
+        Calendar from = Calendar.getInstance();
+        from.set(Calendar.MONTH, sprFromMonth.getSelectedItemPosition());
         from.set(Calendar.YEAR, Integer.parseInt((String) sprFromYear.getSelectedItem()));
         from.set(Calendar.DAY_OF_MONTH, 1);
-        to = Calendar.getInstance();
-        to.set(Calendar.MONTH, sprToMonth.getSelectedItemPosition()+1);
+        from.set(Calendar.HOUR,0);
+        from.set(Calendar.MINUTE,0);
+        from.set(Calendar.SECOND,0);
+        from.set(Calendar.MILLISECOND,0);
+
+        Calendar to = Calendar.getInstance();
+        to.set(Calendar.MONTH, sprToMonth.getSelectedItemPosition());
         to.set(Calendar.YEAR, Integer.parseInt((String) sprToYear.getSelectedItem()));
         to.set(Calendar.DAY_OF_MONTH, 1);
+        to.set(Calendar.HOUR,0);
+        to.set(Calendar.MINUTE,0);
+        to.set(Calendar.SECOND,0);
+        to.set(Calendar.MILLISECOND,0);
 
-        ServerTask task = new ServerTask(pot);
+        ServerTask task = new ServerTask(pot, from.getTime(), to.getTime());
         task.execute(pot);
     }
 
     public class ServerTask extends AsyncTask<Pot, Void, ArrayList<Measurement>>{
 
+        Date from;
+        Date to;
         Exception ex;
         Pot p;
 
@@ -139,8 +147,8 @@ public class PotActivity extends AppCompatActivity{
 
             HashMap<Long, Double> hashMap = new HashMap<Long, Double>();
 
-            hashMap.put(Long.valueOf(from.getTimeInMillis()), Double.valueOf(p.getMaxMoistVal()));
-            hashMap.put(Long.valueOf(to.getTimeInMillis()), Double.valueOf(p.getMaxMoistVal()));
+            hashMap.put(Long.valueOf(from.getTime()), Double.valueOf(p.getMaxMoistVal()));
+            hashMap.put(Long.valueOf(to.getTime()), Double.valueOf(p.getMaxMoistVal()));
 
             return  hashMap;
         }
@@ -149,14 +157,16 @@ public class PotActivity extends AppCompatActivity{
 
             HashMap<Long, Double> hashMap = new HashMap<Long, Double>();
 
-            hashMap.put(Long.valueOf(from.getTimeInMillis()), Double.valueOf(p.getMinMoistVal()));
-            hashMap.put(Long.valueOf(to.getTimeInMillis()), Double.valueOf(p.getMinMoistVal()));
+            hashMap.put(Long.valueOf(from.getTime()), Double.valueOf(p.getMinMoistVal()));
+            hashMap.put(Long.valueOf(to.getTime()), Double.valueOf(p.getMinMoistVal()));
 
             return  hashMap;
         }
 
-        public ServerTask(Pot p) {
+        public ServerTask(Pot p, Date from, Date to) {
             this.p = p;
+            this.from = from;
+            this.to = to;
         }
 
         @Override
@@ -196,6 +206,7 @@ public class PotActivity extends AppCompatActivity{
 
                 grwGraph = ChartFactory.getTimeChartView(PotActivity.this,dataset, renderer,null);
                 grwGraph.setBackgroundColor(getResources().getColor(R.color.background_material_light));
+                lytGraph.removeAllViews();
                 lytGraph.addView(grwGraph);
 
                 doneUI();
@@ -208,17 +219,17 @@ public class PotActivity extends AppCompatActivity{
             ArrayList<Measurement> measurements = new ArrayList<Measurement>();
 
             Calendar idx = Calendar.getInstance();
-            idx.setTimeInMillis(from.getTimeInMillis());
+            idx.setTimeInMillis(from.getTime());
+
+            Calendar last = Calendar.getInstance();
+            last.setTimeInMillis(to.getTime());
 
             try{
                 //for all months in range
-                while((idx.get(Calendar.MONTH) != to.get(Calendar.MONTH))
-                        || (idx.get(Calendar.YEAR) != to.get(Calendar.YEAR))){
-                    measurements.addAll(ServerTools.GetMeasurements(idx, pots[0].getId(), "homeplants.ddns.net", 3629, 20000));
+                while(idx.before(last)){
+                    measurements.addAll(ServerTools.GetMeasurements(idx.get(Calendar.MONTH)+1, idx.get(Calendar.YEAR), pots[0].getId(), "homeplants.ddns.net", 3629, 20000));
                     idx.add(Calendar.MONTH, 1);
                 }
-
-                measurements.addAll(ServerTools.GetMeasurements(to, pots[0].getId(), "homeplants.ddns.net", 3629, 20000));
 
             }catch(Exception e){
                 ex = e;

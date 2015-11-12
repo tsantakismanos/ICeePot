@@ -6,7 +6,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
-import java.util.Calendar;
 
 /**
  * @author tsantakismanos 
@@ -27,7 +26,7 @@ public class ServerTools{
 	 * @return: an arraylist of measurements (pot-moment-value)
 	 * @throws Exception 
 	 */
-	public synchronized static ArrayList<Measurement> GetMeasurements(Calendar c, int potId, String host, int port, int timeout) throws Exception {
+	public synchronized static ArrayList<Measurement> GetMeasurements(int month, int year, int potId, String host, int port, int timeout) throws Exception {
 
 		
 		ArrayList<Measurement> measurements = new ArrayList<Measurement>();
@@ -35,7 +34,7 @@ public class ServerTools{
 		
 		
 		//construct the request in a string
-		String request_str = Integer.toString(c.get(Calendar.MONTH)) + Integer.toString(c.get(Calendar.YEAR));
+		String request_str = Integer.toString(month) + Integer.toString(year);
 
 		InputStream is = null;
 		OutputStream os = null;
