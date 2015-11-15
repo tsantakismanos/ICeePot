@@ -1,9 +1,12 @@
 package iceepotmobile.ui;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Layout;
@@ -132,7 +135,7 @@ public class PotActivity extends AppCompatActivity{
         to.set(Calendar.SECOND,0);
         to.set(Calendar.MILLISECOND,0);
 
-        ServerTask task = new ServerTask(pot, from.getTime(), to.getTime());
+        ServerTask task = new ServerTask(pot, from.getTime(), to.getTime(), this);
         task.execute(pot);
     }
 
@@ -142,6 +145,7 @@ public class PotActivity extends AppCompatActivity{
         Date to;
         Exception ex;
         Pot p;
+        Context context;
 
         private HashMap<Long, Double> getMaxHashMap(){
 
@@ -163,10 +167,11 @@ public class PotActivity extends AppCompatActivity{
             return  hashMap;
         }
 
-        public ServerTask(Pot p, Date from, Date to) {
+        public ServerTask(Pot p, Date from, Date to, Context context) {
             this.p = p;
             this.from = from;
             this.to = to;
+            this.context = context;
         }
 
         @Override
@@ -227,7 +232,7 @@ public class PotActivity extends AppCompatActivity{
             try{
                 //for all months in range
                 while(idx.before(last)){
-                    measurements.addAll(ServerTools.GetMeasurements(idx.get(Calendar.MONTH)+1, idx.get(Calendar.YEAR), pots[0].getId(), "homeplants.ddns.net", 3629, 20000));
+                    measurements.addAll(ServerTools.GetMeasurements(idx.get(Calendar.MONTH)+1, idx.get(Calendar.YEAR), pots[0].getId(), getHost(context), getPort(context), getTimeout(context)));
                     idx.add(Calendar.MONTH, 1);
                 }
 
@@ -257,5 +262,36 @@ public class PotActivity extends AppCompatActivity{
 
         return series;
 
+    }
+
+    private String getHost(Context context){
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        String host = sharedPreferences.getString(SettingsActivity.KEY_PREF_HOST, "");
+
+        return host;
+    }
+    private int getPort(Context context){
+        int port = 0;
+
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        try {
+            port = Integer.parseInt(sharedPreferences.getString(SettingsActivity.KEY_PREF_PORT, "0"));
+        }catch (NumberFormatException ex){
+
+        }
+
+        return port;
+    }
+    private int getTimeout(Context context){
+        int timeout = 30;
+
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+
+        try {
+            timeout = Integer.parseInt(sharedPreferences.getString(SettingsActivity.KEY_PREF_TIMEOUT, "30"));
+        }catch (NumberFormatException ex){
+
+        }
+        return timeout*1000;
     }
 }

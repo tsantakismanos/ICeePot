@@ -88,7 +88,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-            return true;
+            Intent iSettings = new Intent(this, SettingsActivity.class);
+            startActivity(iSettings);
         }
         if(id == R.id.add_pot){
             Intent i = new Intent(this, NewPotActivity.class);

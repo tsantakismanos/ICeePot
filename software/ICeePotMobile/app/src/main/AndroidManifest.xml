@@ -22,6 +22,8 @@
             android:label="New Pot"></activity>
         <activity android:name="iceepotmobile.ui.PotActivity"
             android:label=""></activity>
+        <activity android:name="iceepotmobile.ui.SettingsActivity"
+            android:label="Settings"/>
     </application>
 
 </manifest>

@@ -31,4 +31,11 @@
         <item name="pot_2015">2015</item>
     </string-array>
 
+    <string name="prefHostTitle">Host</string>
+    <string name="prefHostSummary">The hosting server name</string>
+    <string name="prefPortTitle">Port</string>
+    <string name="prefPortSummary">The hosting server port</string>
+    <string name="prefTimeoutTitle">Timeout</string>
+    <string name="prefTimeoutSummary">The timeout for the server requests</string>
+
 </resources>
