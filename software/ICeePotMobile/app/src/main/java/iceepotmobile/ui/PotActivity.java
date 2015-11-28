@@ -199,20 +199,32 @@ public class PotActivity extends AppCompatActivity{
                 dataset.addSeries(mapToTimeSeries(getMinHashMap()));
 
                 XYMultipleSeriesRenderer renderer  = new XYMultipleSeriesRenderer();
-                renderer.addSeriesRenderer(new XYSeriesRenderer());
-                renderer.addSeriesRenderer(new XYSeriesRenderer());
-                renderer.addSeriesRenderer(new XYSeriesRenderer());
+                XYSeriesRenderer actual = new XYSeriesRenderer();
+                XYSeriesRenderer min = new XYSeriesRenderer();
+                XYSeriesRenderer max = new XYSeriesRenderer();
+                min.setColor(getResources().getColor(R.color.Limits));
+                max.setColor(getResources().getColor(R.color.Limits));
+                actual.setShowLegendItem(false);
+                min.setShowLegendItem(false);
+                max.setShowLegendItem(false);
+
+                renderer.addSeriesRenderer(actual);
+                renderer.addSeriesRenderer(max);
+                renderer.addSeriesRenderer(min);
 
                 renderer.setPanEnabled(false);
                 renderer.setYAxisMin(0);
                 renderer.setYAxisMax(900);
-                renderer.setBackgroundColor(getResources().getColor(R.color.background_material_light));
-                renderer.setApplyBackgroundColor(true);
+                renderer.setMarginsColor(getResources().getColor(R.color.GraphBackground));
+                renderer.setAxesColor(getResources().getColor(R.color.Axes));
+                renderer.setXLabelsColor(getResources().getColor(R.color.Axes));
+
 
                 grwGraph = ChartFactory.getTimeChartView(PotActivity.this,dataset, renderer,null);
-                grwGraph.setBackgroundColor(getResources().getColor(R.color.background_material_light));
+
                 lytGraph.removeAllViews();
                 lytGraph.addView(grwGraph);
+                lytGraph.setBackgroundColor(getResources().getColor(R.color.GraphBackground));
 
                 doneUI();
             }

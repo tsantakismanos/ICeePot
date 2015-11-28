@@ -9,4 +9,8 @@
         <item name="android:textColor">#1D265E</item>
     </style>
 
+    <color name="GraphBackground">#D4F7CD</color>
+    <color name="Axes">#1D265E</color>
+    <color name="Limits">#F51B4A</color>
+
 </resources>
