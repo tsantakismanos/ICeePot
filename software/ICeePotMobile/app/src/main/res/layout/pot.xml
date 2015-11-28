@@ -38,61 +38,72 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentStart="false">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="@string/pot_from"
-            android:id="@+id/txtFrom" />
 
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="wrap_content"
+
+        <RelativeLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/lytFrom">
 
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/PotFont"
+                android:text="@string/pot_from"
+                android:id="@+id/txtFrom"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"/>
+
             <Spinner
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/sprFromMonth"
-                android:layout_weight="1"
-                android:entries="@array/months"/>
+                android:entries="@array/months"
+                android:layout_centerVertical="true"
+                android:layout_toLeftOf="@+id/sprFromYear"/>
 
             <Spinner
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/sprFromYear"
-                android:layout_weight="1"
-                android:entries="@array/years"/>
-        </LinearLayout>
+                android:entries="@array/years"
+                android:layout_centerVertical="true"
+                android:layout_alignParentRight="true"/>
+        </RelativeLayout>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="@string/pot_to"
-            android:id="@+id/txtTo" />
 
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="wrap_content"
+
+        <RelativeLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/lytTo">
 
-            <Spinner
-                android:layout_width="match_parent"
+            <TextView
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/sprToMonth"
-                android:layout_weight="1"
-                android:entries="@array/months"/>
+                style="@style/PotFont"
+                android:text="@string/pot_to"
+                android:id="@+id/txtTo"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"/>
 
             <Spinner
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/sprToMonth"
+                android:entries="@array/months"
+                android:layout_centerVertical="true"
+                android:layout_toLeftOf="@+id/sprToYear"/>
+
+            <Spinner
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/sprToYear"
-                android:layout_weight="1"
-                android:entries="@array/years"/>
-        </LinearLayout>
+                android:entries="@array/years"
+                android:layout_centerVertical="true"
+                android:layout_alignParentRight="true"/>
+        </RelativeLayout>
 
     </LinearLayout>
 

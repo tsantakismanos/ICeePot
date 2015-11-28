@@ -1,31 +1,23 @@
 package iceepotmobile.ui;
 
+import android.app.Activity;
 import android.app.LoaderManager;
-import android.content.AsyncTaskLoader;
-import android.content.Context;
-import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
-import android.net.Uri;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
-import android.widget.SimpleCursorAdapter;
-import android.database.Cursor;
 import android.widget.TextView;
 
 import java.util.List;
 
 import iceepot.iceepotmobile.R;
-import iceepotmobile.application.DbHelper;
 import iceepotmobile.application.PotsLoader;
 import iceepotmobile.model.Pot;
 
@@ -38,7 +30,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.main);
 
         lvwPots = (ListView)findViewById(R.id.lvwPots);
 
