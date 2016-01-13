@@ -32,8 +32,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 
 import iceepot.iceepotmobile.R;
-import iceepotlib.servergw.Measurement;
-import iceepotlib.servergw.ServerTools;
+import iceepotlib.gateway.Measurement;
+import iceepotlib.gateway.Server;
 import iceepotmobile.model.Pot;
 
 
@@ -244,7 +244,7 @@ public class PotActivity extends AppCompatActivity{
             try{
                 //for all months in range
                 while(idx.before(last)){
-                    measurements.addAll(ServerTools.GetMeasurements(idx.get(Calendar.MONTH)+1, idx.get(Calendar.YEAR), pots[0].getId(), getHost(context), getPort(context), getTimeout(context)));
+                    measurements.addAll(Server.GetMeasurements(idx.get(Calendar.MONTH)+1, idx.get(Calendar.YEAR), pots[0].getId(), getHost(context), getPort(context), getTimeout(context)));
                     idx.add(Calendar.MONTH, 1);
                 }
 

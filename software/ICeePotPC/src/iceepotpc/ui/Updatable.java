@@ -1,7 +1,8 @@
-package iceepotpc.service;
+package iceepotpc.ui;
 
 import java.util.ArrayList;
-import iceepotlib.servergw.*;
+
+import iceepotlib.gateway.*;
 
 /** Interface to be implemented 
  * by those UI elements that need to perform Server
@@ -10,7 +11,7 @@ import iceepotlib.servergw.*;
  * @author tsantakis
  *
  */
-public interface Callable {
+public interface Updatable {
 	
 	public void updateProgressBar();
 	public void updateMeasurementData(ArrayList<Measurement> measurements, Exception exceptionFromServer);

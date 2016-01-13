@@ -1,4 +1,4 @@
-package iceepotlib.servergw;
+package iceepotlib.gateway;
 
 import java.io.Serializable;
 import java.util.ArrayList;

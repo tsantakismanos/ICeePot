@@ -15,28 +15,22 @@ package iceepotpc.ui;
 
 import iceepotpc.application.Context;
 
-import javax.swing.JFrame;
 import java.awt.BorderLayout;
-
+import java.awt.Dimension;
+import java.awt.Toolkit;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-
-
-
-import javax.swing.JTabbedPane;
-import java.awt.Toolkit;
 import java.util.Observable;
 import java.util.Observer;
 
 import javax.swing.JDialog;
-import javax.swing.JMenuBar;
+import javax.swing.JFrame;
 import javax.swing.JMenu;
+import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
-
-import java.awt.Dimension;
 import javax.swing.JSeparator;
-import iceepotlib.entities.*;
+import javax.swing.JTabbedPane;
 
 
 

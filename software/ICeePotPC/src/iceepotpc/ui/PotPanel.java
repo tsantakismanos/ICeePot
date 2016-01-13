@@ -2,9 +2,8 @@ package iceepotpc.ui;
 
 import iceepotpc.application.Context;
 import iceepotpc.charteng.ChartCreator;
-import iceepotlib.servergw.*;
-import iceepotpc.service.Callable;
-import iceepotpc.service.ServerService;
+import iceepotlib.gateway.*;
+import iceepotpc.service.Caller;
 import iceepotpc.ui.MainWindow.ViewType;
 
 import java.text.DateFormat;
@@ -465,7 +464,7 @@ public class PotPanel extends JPanel {
 	 *         during that request (progress bar , buttons etc) - fill the UI
 	 *         elements after each successful request
 	 */
-	private class ProgressBarThread implements Runnable, Callable {
+	private class ProgressBarThread implements Runnable, Updatable {
 
 		@Override
 		public void run() {
@@ -473,7 +472,7 @@ public class PotPanel extends JPanel {
 			try{
 				SetUIBeforeRequest();
 	
-				ServerService s = new ServerService(this, from, to, potId, Context.getInstance().getServerHost(), Context.getInstance().getServerPort(), Context.getInstance().getServerTimeout());
+				Caller s = new Caller(this, from, to, potId, Context.getInstance().getServerHost(), Context.getInstance().getServerPort(), Context.getInstance().getServerTimeout());
 				Thread t = new Thread(s);
 				t.start();
 			}catch(Exception e){

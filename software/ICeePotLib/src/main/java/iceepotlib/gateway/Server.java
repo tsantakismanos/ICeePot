@@ -1,4 +1,4 @@
-package iceepotlib.servergw;
+package iceepotlib.gateway;
 
 
 
@@ -14,7 +14,7 @@ import java.util.ArrayList;
  *      arduino server. The time unit of measurements requested is a month
  * 
  */
-public class ServerTools{
+public class Server{
 	
 	
 	/**
