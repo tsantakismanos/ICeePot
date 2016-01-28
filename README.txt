@@ -1,17 +1,19 @@
 ICeePot 
 
-main goal:
-- periodically measuring the moisture (or any other) condition of plants in a pot with the use of moisture sensors
-- accessing & managing that information remotely
+GOAL
+ICeePot solution is a way to help remotely accessing and managing pot moisture information. It combines several server-client technologies to gather, organize and provide moisture information in clients PC and mobile phones.
 
-hierarchy:
-Client-Server hierarchy with an arduino ethernet board acting as a server which reads the moisture condition from analog pins & serves this information on demand
+HIERARCHY
+ICeePot follows the server-client architecture with the one (or several) pot server performing and saving moisture measurements and one or several mobile or desktop applications responsible for presenting moisture graphs per pot.
 
-folders:
-- documentation: contains useful notes, diagrams about the project
+PROJECTS:
+ICeePot/software folder contains the various projects implementing the Solutions functionality:
+ - ICeePotServer: This is basically the source code of an arduino ethernet board. It reads the moisture condition from analog     pins &        saves this information on its SD card.
+ - ICeePotLib: This is a library project and cointains the entities and tools used in the client Projects. It's a java project that uses        gradle to add itself in the local repository. 
+ - ICeePotPC: This is a java application acting as an ICeePot client. It provides a UI to display moisture information and has dependencies    on ICeePotLib
+ - ICeePotMobile: This is another ICeePot client implemented as an android application. It depens on ICeePotLib as well and provides           moisture aggregated information.
+
+DOCUMENTATION:
+ICeePot/documentation folder contains useful notes, diagrams about the project
   - notes: about tools used, code explanations, etc 
   - diagrams: flows, schematics, class diagrams, etc
-- software: the project's code organized in the following way:
-   - ICeePotServer: the sketch to be uploaded & executed on the arduino acting as the server
-   - ICeePotPC: java swing project which implements the client sending time requests and showing results returned in a graphic way
-- hardware: schematic files, projects related to the hardware used for this solution
