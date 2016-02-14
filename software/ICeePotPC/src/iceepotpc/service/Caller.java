@@ -3,6 +3,7 @@ package iceepotpc.service;
 import java.util.ArrayList;
 import java.util.Calendar;
 
+import iceepotlib.entities.Measurement;
 import iceepotlib.gateway.*;
 import iceepotpc.ui.Updatable;
 

@@ -1,5 +1,6 @@
 package iceepotpc.charteng;
 
+import iceepotlib.entities.Measurement;
 import iceepotlib.gateway.*;
 
 import java.util.ArrayList;

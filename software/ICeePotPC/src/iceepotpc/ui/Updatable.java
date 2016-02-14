@@ -2,6 +2,7 @@ package iceepotpc.ui;
 
 import java.util.ArrayList;
 
+import iceepotlib.entities.Measurement;
 import iceepotlib.gateway.*;
 
 /** Interface to be implemented 

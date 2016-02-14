@@ -1,4 +1,4 @@
-package iceepotlib.gateway;
+package iceepotlib.entities;
 
 import java.io.Serializable;
 import java.util.ArrayList;

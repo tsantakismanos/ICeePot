@@ -2,6 +2,7 @@ package iceepotpc.ui;
 
 import iceepotpc.application.Context;
 import iceepotpc.charteng.ChartCreator;
+import iceepotlib.entities.Measurement;
 import iceepotlib.gateway.*;
 import iceepotpc.service.Caller;
 import iceepotpc.ui.MainWindow.ViewType;

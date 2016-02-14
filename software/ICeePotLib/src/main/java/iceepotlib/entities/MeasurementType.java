@@ -1,4 +1,4 @@
-package iceepotlib.gateway;
+package iceepotlib.entities;
 
 public enum MeasurementType {
 	

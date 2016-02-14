@@ -32,7 +32,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 
 import iceepot.iceepotmobile.R;
-import iceepotlib.gateway.Measurement;
+import iceepotlib.entities.Measurement;
 import iceepotlib.gateway.Server;
 import iceepotmobile.model.Pot;
 
