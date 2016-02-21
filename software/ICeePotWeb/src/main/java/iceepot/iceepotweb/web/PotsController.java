@@ -3,7 +3,7 @@ package iceepot.iceepotweb.web;
 import iceepot.iceepotweb.model.Measurement;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
 
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,14 +18,14 @@ public class PotsController {
 	
 	
 	@RequestMapping(value="/{potId}/moisture", method=RequestMethod.GET)
-	public List<Measurement> potMoisture(
+	public HashMap<Long, Double> potMoisture(
 			@PathVariable("potId") long potId,
 			@RequestParam("timeFrom") long timeFrom,
 			@RequestParam("timeTo") long timeTo){
 	
-		List<Measurement> measurements = new ArrayList<Measurement>();
+		ArrayList<Measurement> measurements = new ArrayList<Measurement>();
 		
-		return measurements;
+		return Measurement.getHashMap(measurements);
 		
 	}
 

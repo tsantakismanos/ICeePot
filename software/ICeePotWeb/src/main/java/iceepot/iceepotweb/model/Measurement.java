@@ -1,5 +1,8 @@
 package iceepot.iceepotweb.model;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
 public class Measurement {
 
 	private long moment;
@@ -26,5 +29,16 @@ public class Measurement {
 		this.value = value;
 	}
 	
+	
+	public static HashMap<Long, Double> getHashMap(ArrayList<Measurement> list){
+		
+		HashMap<Long, Double> map = new HashMap<Long, Double>(list.size());
+		
+		for(int i=0;i<list.size();i++){
+			map.put(list.get(i).getMoment(), list.get(i).getValue());
+		}
+		
+		return map;
+	}
 	
 }
