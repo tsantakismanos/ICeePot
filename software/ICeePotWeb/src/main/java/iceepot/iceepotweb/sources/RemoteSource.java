@@ -1,6 +1,7 @@
 package iceepot.iceepotweb.sources;
 
 import iceepot.iceepotweb.model.Measurement;
+import iceepot.iceepotweb.model.MeasurementType;
 
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -41,7 +42,7 @@ public class RemoteSource implements MeasurementsSource {
 		return timeout;
 	}
 
-	public List<Measurement> getByMonthNYear(int month, int year, int potId) throws Exception {
+	public List<Measurement> getByMonthNYear(int month, int year, int potId, MeasurementType type) throws Exception {
 
 		ArrayList<Measurement> measurements = new ArrayList<Measurement>();
 		
@@ -81,8 +82,8 @@ public class RemoteSource implements MeasurementsSource {
 					// parse, store and begin a new line
 					Row row = new Row(responsePacket);
 
-					if(row.id == potId){
-						Measurement m = new Measurement(row.moment*1000, row.type, row.value);
+					if(row.id == potId && row.type == type.ordinal()){
+						Measurement m = new Measurement(row.moment*1000, row.value);
 						measurements.add(m);
 					}
 					
@@ -116,7 +117,7 @@ public class RemoteSource implements MeasurementsSource {
 		
 	}
 
-	public List<Measurement> getByRange(int monthFrom, int yearFrom, int monthTo, int yearTo, int potId) throws Exception {
+	public List<Measurement> getByRange(int monthFrom, int yearFrom, int monthTo, int yearTo, int potId, MeasurementType type) throws Exception {
 		
 		List<Measurement> measurements = new ArrayList<Measurement>();
 		
@@ -139,7 +140,7 @@ public class RemoteSource implements MeasurementsSource {
          last.set(Calendar.MILLISECOND,0);
          
          while(idx.before(last)){
-        	 measurements.addAll(getByMonthNYear(idx.get(Calendar.MONTH), idx.get(Calendar.YEAR), potId));
+        	 measurements.addAll(getByMonthNYear(idx.get(Calendar.MONTH), idx.get(Calendar.YEAR), potId, type));
         	 idx.add(Calendar.MONTH, 1);
          }
 		return measurements;

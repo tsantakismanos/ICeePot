@@ -32,7 +32,7 @@ public class PotsControllerTest {
 		MockMvc mockMvc = MockMvcBuilders.standaloneSetup(potsController).build(); 
 		
 		mockMvc.perform(MockMvcRequestBuilders
-						.get("/pots/" + String.valueOf(potTestUnit.getPotId()))
+						.get("/pots/" + String.valueOf(potTestUnit.getPotId()) + "/moisture")
 						.param("timeFrom", String.valueOf(potTestUnit.getTimeFrom()))
 						.param("timeTo",String.valueOf(potTestUnit.getTimeTo())))
 				.andExpect(MockMvcResultMatchers.status().isOk())

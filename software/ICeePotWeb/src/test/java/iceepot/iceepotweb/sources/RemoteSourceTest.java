@@ -2,6 +2,7 @@ package iceepot.iceepotweb.sources;
 
 import static org.junit.Assert.*;
 import iceepot.iceepotweb.config.RootConfig;
+import iceepot.iceepotweb.model.MeasurementType;
 import iceepot.iceepotweb.sources.RemoteSource;
 
 import org.junit.Test;
@@ -30,10 +31,10 @@ public class RemoteSourceTest {
 	}
 	
 	@Test
-	public void shouldReturnByMonth(){
+	public void shouldReturnMoistureByMonth(){
 		
 		try {
-			assertTrue(remoteSource.getByMonthNYear(1, 2014, 0).size() != 0);
+			assertTrue(remoteSource.getByMonthNYear(1, 2014, 0, MeasurementType.MOISTURE).size() != 0);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -42,10 +43,10 @@ public class RemoteSourceTest {
 	}
 	
 	@Test
-	public void shouldReturnByRange(){
+	public void shouldReturnMoistureByRange(){
 		
 		try {
-			assertTrue(remoteSource.getByRange(1,2014, 2, 2014, 0).size() != 0);
+			assertTrue(remoteSource.getByRange(1,2014, 2, 2014, 0, MeasurementType.MOISTURE).size() != 0);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

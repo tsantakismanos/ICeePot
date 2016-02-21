@@ -17,8 +17,8 @@ public class PotsController {
 
 	
 	
-	@RequestMapping(value="/{potId}", method=RequestMethod.GET)
-	public List<Measurement> pot(
+	@RequestMapping(value="/{potId}/moisture", method=RequestMethod.GET)
+	public List<Measurement> potMoisture(
 			@PathVariable("potId") long potId,
 			@RequestParam("timeFrom") long timeFrom,
 			@RequestParam("timeTo") long timeTo){
