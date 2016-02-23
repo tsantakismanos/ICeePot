@@ -16,7 +16,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 public class RemoteSourceTest {
 
 	@Autowired
-	RemoteSource remoteSource;
+	MeasurementsSource remoteSource;
 	
 	@Test
 	public void shouldNotBeNull(){
@@ -25,9 +25,9 @@ public class RemoteSourceTest {
 	
 	@Test
 	public void shouldMatchValues(){
-		assertEquals(RootConfig.REMOTE_SOURCE_HOST, remoteSource.getHost());
-		assertEquals(RootConfig.REMOTE_SOURCE_PORT, remoteSource.getPort());
-		assertEquals(RootConfig.REMOTE_SOURCE_TIMEOUT, remoteSource.getTimeout());
+		assertEquals(RootConfig.REMOTE_SOURCE_HOST, ((RemoteSource)remoteSource).getHost());
+		assertEquals(RootConfig.REMOTE_SOURCE_PORT, ((RemoteSource)remoteSource).getPort());
+		assertEquals(RootConfig.REMOTE_SOURCE_TIMEOUT, ((RemoteSource)remoteSource).getTimeout());
 	}
 	
 	@Test

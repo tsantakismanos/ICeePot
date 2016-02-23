@@ -1,7 +1,7 @@
 package iceepot.iceepotweb.model;
 
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class Measurement {
 
@@ -30,7 +30,7 @@ public class Measurement {
 	}
 	
 	
-	public static HashMap<Long, Double> getHashMap(ArrayList<Measurement> list){
+	public static HashMap<Long, Double> getHashMap(List<Measurement> list){
 		
 		HashMap<Long, Double> map = new HashMap<Long, Double>(list.size());
 		

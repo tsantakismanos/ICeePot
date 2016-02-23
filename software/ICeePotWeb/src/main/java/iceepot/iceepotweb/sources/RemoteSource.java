@@ -42,7 +42,7 @@ public class RemoteSource implements MeasurementsSource {
 		return timeout;
 	}
 
-	public List<Measurement> getByMonthNYear(int month, int year, int potId, MeasurementType type) throws Exception {
+	public List<Measurement> getByMonthNYear(int month, int year, int potId, MeasurementType type) throws SourceException {
 
 		ArrayList<Measurement> measurements = new ArrayList<Measurement>();
 		
@@ -99,8 +99,8 @@ public class RemoteSource implements MeasurementsSource {
 			try {
 				is.close();
 				s.close();
-			} catch (Exception exi) {
-				
+			} catch (Exception ex) {
+				throw new SourceException(ex.getLocalizedMessage());
 			}
 
 		} catch (Exception ex) {
@@ -109,15 +109,15 @@ public class RemoteSource implements MeasurementsSource {
 				is.close();
 				s.close();
 			} catch (Exception exi) {
-				
+				throw new SourceException(exi.getLocalizedMessage());
 			}
-			throw new Exception(ex);
+			throw new SourceException(ex.getLocalizedMessage());
 		} 
 		return measurements;
 		
 	}
 
-	public List<Measurement> getByRange(int monthFrom, int yearFrom, int monthTo, int yearTo, int potId, MeasurementType type) throws Exception {
+	public List<Measurement> getByRange(int monthFrom, int yearFrom, int monthTo, int yearTo, int potId, MeasurementType type) throws SourceException {
 		
 		List<Measurement> measurements = new ArrayList<Measurement>();
 		

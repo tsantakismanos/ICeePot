@@ -1,5 +1,6 @@
 package iceepot.iceepotweb.config;
 
+import iceepot.iceepotweb.sources.MeasurementsSource;
 import iceepot.iceepotweb.sources.RemoteSource;
 
 import org.springframework.context.annotation.Bean;
@@ -18,7 +19,7 @@ public class RootConfig {
 	public static int REMOTE_SOURCE_TIMEOUT = 30;
 	
 	@Bean
-	public RemoteSource getRemoteSource(){
+	public MeasurementsSource getRemoteSource(){
 		return new RemoteSource(REMOTE_SOURCE_HOST, REMOTE_SOURCE_PORT, REMOTE_SOURCE_TIMEOUT);
 	}
 
