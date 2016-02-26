@@ -1,18 +1,20 @@
 package iceepot.iceepotweb.sources;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import iceepot.iceepotweb.config.RootConfig;
 import iceepot.iceepotweb.model.MeasurementType;
-import iceepot.iceepotweb.sources.RemoteSource;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes=RootConfig.class)
+@ActiveProfiles("test")
 public class RemoteSourceTest {
 
 	@Autowired
@@ -22,14 +24,7 @@ public class RemoteSourceTest {
 	public void shouldNotBeNull(){
 		assertNotNull(remoteSource);
 	}
-	
-	@Test
-	public void shouldMatchValues(){
-		assertEquals(RootConfig.REMOTE_SOURCE_HOST, ((RemoteSource)remoteSource).getHost());
-		assertEquals(RootConfig.REMOTE_SOURCE_PORT, ((RemoteSource)remoteSource).getPort());
-		assertEquals(RootConfig.REMOTE_SOURCE_TIMEOUT, ((RemoteSource)remoteSource).getTimeout());
-	}
-	
+		
 	@Test
 	public void shouldReturnMoistureByMonth(){
 		
