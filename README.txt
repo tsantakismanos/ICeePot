@@ -12,6 +12,8 @@ ICeePot/software folder contains the various projects implementing the Solutions
  - ICeePotLib: This is a library project and cointains the entities and tools used in the client Projects. It's a java project that uses        gradle to add itself in the local repository. 
  - ICeePotPC: This is a java application acting as an ICeePot client. It provides a UI to display moisture information and has dependencies    on ICeePotLib
  - ICeePotMobile: This is another ICeePot client implemented as an android application. It depens on ICeePotLib as well and provides           moisture aggregated information.
+ - ICeePotWeb: This is soon to be another ICeePot client aimed to act as both a web UI and a API of the ICeePotServer. It will provide a REST API for ICeePotPC and ICeePotMobile clients which now contact directly ICeePotServer with the use of ICeePotLib
+
 
 DOCUMENTATION:
 ICeePot/documentation folder contains useful notes, diagrams about the project
