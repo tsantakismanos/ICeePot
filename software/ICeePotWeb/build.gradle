@@ -1,14 +1,19 @@
 apply plugin: 'java'
 apply plugin: 'eclipse'
+apply plugin: 'war'
 
 sourceCompatibility = 1.8
-version = '1.0'
+version = ''
 jar {
     manifest {
         attributes 'Implementation-Title': 'Gradle Quickstart',
                    'Implementation-Version': version
     }
 }
+
+war{
+	baseName='iceepotweb'
+}	
 
 repositories {
     mavenCentral()
@@ -22,7 +27,7 @@ dependencies {
     compile 'org.springframework:spring-web:4.2.4.RELEASE'
     compile 'org.springframework:spring-webmvc:4.2.4.RELEASE'
     compile 'org.springframework:spring-test:4.2.4.RELEASE'
-    compile 'javax.servlet:javax.servlet-api:3.0.1'
+    providedCompile 'javax.servlet:javax.servlet-api:3.0.1'
     compile 'commons-lang:commons-lang:2.2'
     compile 'com.fasterxml.jackson.core:jackson-databind:2.6.3'
     compile 'org.slf4j:slf4j-api:1.7.16'
