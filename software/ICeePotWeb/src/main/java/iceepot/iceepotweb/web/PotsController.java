@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/pots")
+@RequestMapping(value="/pots")
 public class PotsController {
 	
 	private MeasurementsSource remoteSource;
@@ -35,7 +35,7 @@ public class PotsController {
 		
 		this.remoteSource = remoteSource;
 	}
-
+	
 
 	@RequestMapping(value="/{potId}/moisture", method=RequestMethod.GET)
 	public HashMap<Long, Double> potMoisture(
