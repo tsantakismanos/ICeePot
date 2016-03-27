@@ -12,7 +12,7 @@ jar {
 }
 
 war{
-	baseName='iceepotweb'
+	baseName='ICeePotWeb'
 }	
 
 repositories {
