@@ -17,11 +17,18 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    packagingOptions{
+        exclude 'META-INF/notice.txt'
+        exclude 'META-INF/license.txt'
+    }
 }
 
 repositories {
     maven{
         url "https://repository-achartengine.forge.cloudbees.com/snapshot/"
+    }
+    maven{
+        url "https://repo.spring.io/libs-milestone"
     }
 }
 
@@ -31,4 +38,5 @@ dependencies {
     compile 'com.android.support:appcompat-v7:22.2.0'
     compile fileTree(dir: '../../repository', include: ['*.jar'])
     compile 'org.achartengine:achartengine:1.2.0'
+    compile 'org.springframework.android:spring-android-rest-template:2.0.0.M3'
 }

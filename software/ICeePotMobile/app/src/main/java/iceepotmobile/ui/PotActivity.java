@@ -24,12 +24,15 @@ import org.achartengine.model.XYMultipleSeriesDataset;
 import org.achartengine.renderer.SimpleSeriesRenderer;
 import org.achartengine.renderer.XYMultipleSeriesRenderer;
 import org.achartengine.renderer.XYSeriesRenderer;
+import org.springframework.web.client.RestTemplate;
+
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 import iceepot.iceepotmobile.R;
 import iceepotlib.entities.Measurement;
@@ -235,13 +238,27 @@ public class PotActivity extends AppCompatActivity{
 
             ArrayList<Measurement> measurements = new ArrayList<Measurement>();
 
-            Calendar idx = Calendar.getInstance();
+            /*Calendar idx = Calendar.getInstance();
             idx.setTimeInMillis(from.getTime());
 
             Calendar last = Calendar.getInstance();
-            last.setTimeInMillis(to.getTime());
+            last.setTimeInMillis(to.getTime());*/
 
-            try{
+
+            RestTemplate restTemplate = new RestTemplate();
+
+            Map<String, String> urlVariables = new HashMap<String, String>();
+            urlVariables.put("potId", String.valueOf(pots[0].getId()));
+            urlVariables.put("monthFrom", String.valueOf(sprFromMonth.getSelectedItemPosition()));
+            urlVariables.put("yearFrom", String.valueOf(sprFromYear.getSelectedItem()));
+            urlVariables.put("monthTo", String.valueOf(sprToMonth.getSelectedItemPosition()));
+            urlVariables.put("yearFrom", String.valueOf(sprFromYear.getSelectedItemPosition()));
+
+
+            HashMap<Long, Double> result = restTemplate.getForObject(getHost(context) + ":" + getPort(context) + "/ICeePotWeb/pots/{potId}/moisture", HashMap.class, urlVariables);
+
+
+           /*try{
                 //for all months in range
                 while(idx.before(last)){
                     measurements.addAll(Server.GetMeasurements(idx.get(Calendar.MONTH)+1, idx.get(Calendar.YEAR), pots[0].getId(), getHost(context), getPort(context), getTimeout(context)));
@@ -250,7 +267,7 @@ public class PotActivity extends AppCompatActivity{
 
             }catch(Exception e){
                 ex = e;
-            }
+            }*/
 
             return measurements;
         }
@@ -280,7 +297,7 @@ public class PotActivity extends AppCompatActivity{
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         String host = sharedPreferences.getString(SettingsActivity.KEY_PREF_HOST, "");
 
-        return host;
+        return "http://" + host;
     }
     private int getPort(Context context){
         int port = 0;
