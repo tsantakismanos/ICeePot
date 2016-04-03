@@ -5,7 +5,6 @@ import iceepot.iceepotweb.model.MeasurementType;
 import iceepot.iceepotweb.sources.MeasurementsSource;
 import iceepot.iceepotweb.sources.SourceException;
 
-import java.util.HashMap;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -38,7 +37,7 @@ public class PotsController {
 	
 
 	@RequestMapping(value="/{potId}/moisture", method=RequestMethod.GET)
-	public HashMap<Long, Double> potMoisture(
+	public List<Measurement> potMoisture(
 			@PathVariable("potId") int potId,
 			@RequestParam("monthFrom") int monthFrom,
 			@RequestParam("yearFrom") int yearFrom,
@@ -52,7 +51,7 @@ public class PotsController {
 		else
 			measurements = remoteSource.getByRange(monthFrom, yearFrom, monthTo, yearTo, potId, MeasurementType.MOISTURE);
 		
-		return Measurement.getHashMap(measurements);
+		return measurements;
 		
 	}
 	
