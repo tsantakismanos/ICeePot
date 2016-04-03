@@ -9,6 +9,10 @@ public class Measurement {
     private long moment;
     private double value;
 
+    public Measurement() {
+
+    }
+
     public Measurement(long moment, double value) {
         this.moment = moment;
         this.value = value;
