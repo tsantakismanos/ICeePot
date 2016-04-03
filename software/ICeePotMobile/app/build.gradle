@@ -39,4 +39,5 @@ dependencies {
     compile fileTree(dir: '../../repository', include: ['*.jar'])
     compile 'org.achartengine:achartengine:1.2.0'
     compile 'org.springframework.android:spring-android-rest-template:2.0.0.M3'
+    compile 'com.fasterxml.jackson.core:jackson-databind:2.6.3'
 }

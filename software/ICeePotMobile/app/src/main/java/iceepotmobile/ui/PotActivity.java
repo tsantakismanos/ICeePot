@@ -24,10 +24,14 @@ import org.achartengine.model.XYMultipleSeriesDataset;
 import org.achartengine.renderer.SimpleSeriesRenderer;
 import org.achartengine.renderer.XYMultipleSeriesRenderer;
 import org.achartengine.renderer.XYSeriesRenderer;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -35,8 +39,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 import iceepot.iceepotmobile.R;
-import iceepotlib.entities.Measurement;
-import iceepotlib.gateway.Server;
+import iceepotmobile.model.Measurement;
 import iceepotmobile.model.Pot;
 
 
@@ -142,7 +145,7 @@ public class PotActivity extends AppCompatActivity{
         task.execute(pot);
     }
 
-    public class ServerTask extends AsyncTask<Pot, Void, ArrayList<Measurement>>{
+    public class ServerTask extends AsyncTask<Pot, Void, List<Measurement>>{
 
         Date from;
         Date to;
@@ -188,7 +191,7 @@ public class PotActivity extends AppCompatActivity{
         }
 
         @Override
-        protected void onPostExecute(ArrayList<Measurement> measurements) {
+        protected void onPostExecute(List<Measurement> measurements) {
             super.onPostExecute(measurements);
 
             if(ex != null){
@@ -234,9 +237,9 @@ public class PotActivity extends AppCompatActivity{
         }
 
         @Override
-        protected ArrayList<Measurement> doInBackground(Pot... pots) {
+        protected List<Measurement> doInBackground(Pot... pots) {
 
-            ArrayList<Measurement> measurements = new ArrayList<Measurement>();
+            List<Measurement> measurements = new ArrayList<Measurement>();
 
             /*Calendar idx = Calendar.getInstance();
             idx.setTimeInMillis(from.getTime());
@@ -244,19 +247,25 @@ public class PotActivity extends AppCompatActivity{
             Calendar last = Calendar.getInstance();
             last.setTimeInMillis(to.getTime());*/
 
+            try{
 
-            RestTemplate restTemplate = new RestTemplate();
+                RestTemplate restTemplate = new RestTemplate();
 
-            Map<String, String> urlVariables = new HashMap<String, String>();
-            urlVariables.put("potId", String.valueOf(pots[0].getId()));
-            urlVariables.put("monthFrom", String.valueOf(sprFromMonth.getSelectedItemPosition()));
-            urlVariables.put("yearFrom", String.valueOf(sprFromYear.getSelectedItem()));
-            urlVariables.put("monthTo", String.valueOf(sprToMonth.getSelectedItemPosition()));
-            urlVariables.put("yearFrom", String.valueOf(sprFromYear.getSelectedItemPosition()));
+                Map<String, String> urlVariables = new HashMap<String, String>();
+                urlVariables.put("potId", String.valueOf(pots[0].getId()));
+                urlVariables.put("monthFrom", String.valueOf(sprFromMonth.getSelectedItemPosition()+1));
+                urlVariables.put("yearFrom", String.valueOf(sprFromYear.getSelectedItem()));
+                urlVariables.put("monthTo", String.valueOf(sprToMonth.getSelectedItemPosition()+1));
+                urlVariables.put("yearTo", String.valueOf(sprToYear.getSelectedItem()));
 
 
-            HashMap<Long, Double> result = restTemplate.getForObject(getHost(context) + ":" + getPort(context) + "/ICeePotWeb/pots/{potId}/moisture", HashMap.class, urlVariables);
+                ResponseEntity<List<Measurement>> restResponse = restTemplate.exchange(getHost(context) + ":" + getPort(context) + "/ICeePotWeb/pots/{potId}/moisture?monthFrom={monthFrom}&yearFrom={yearFrom}&monthTo={monthTo}&yearTo={yearTo}", HttpMethod.GET, null, new ParameterizedTypeReference<List<Measurement>>() {}, urlVariables);
 
+                measurements = restResponse.getBody();
+
+                }catch(Exception e){
+                    ex = e;
+                }
 
            /*try{
                 //for all months in range
