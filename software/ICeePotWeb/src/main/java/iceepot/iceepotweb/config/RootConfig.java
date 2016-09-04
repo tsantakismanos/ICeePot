@@ -1,6 +1,6 @@
 package iceepot.iceepotweb.config;
 
-import iceepot.iceepotweb.sources.MeasurementsSource;
+import iceepot.iceepotweb.sources.Source;
 import iceepot.iceepotweb.sources.RemoteSource;
 
 import org.springframework.context.annotation.Bean;
@@ -18,25 +18,25 @@ public class RootConfig {
 	
 	@Bean
 	@Profile("dev")
-	public MeasurementsSource getDevRemoteSource(){
+	public Source getDevRemoteSource(){
 		return new RemoteSource("homeplants.ddns.net", 3629, 30);
 	}
 
 	@Bean
 	@Profile("prod")
-	public MeasurementsSource getProdRemoteSource(){
+	public Source getProdRemoteSource(){
 		return new RemoteSource("homeplants.ddns.net", 3629, 30);
 	}
 	
 	@Bean
 	@Profile("test")
-	public MeasurementsSource getTestRemoteSource(){
+	public Source getTestRemoteSource(){
 		return new RemoteSource("homeplants.ddns.net", 3629, 30);
 	}
 	
 	@Bean
 	@Profile("error")
-	public MeasurementsSource getErrorRemoteSource(){
+	public Source getErrorRemoteSource(){
 		return new RemoteSource("homeplants.ddns.net", 3622, 30);
 	}
 }

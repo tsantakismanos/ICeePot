@@ -1,10 +1,12 @@
 package iceepot.iceepotweb.web;
 
+import iceepot.iceepotweb.model.Date;
 import iceepot.iceepotweb.model.Measurement;
 import iceepot.iceepotweb.model.MeasurementType;
-import iceepot.iceepotweb.sources.MeasurementsSource;
+import iceepot.iceepotweb.sources.Source;
 import iceepot.iceepotweb.sources.SourceException;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -23,14 +25,14 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(value="/pots")
 public class PotsController {
 	
-	private MeasurementsSource remoteSource;
+	private Source remoteSource;
 	
 	public PotsController() {
 	
 	}
 
 	@Autowired
-	public PotsController(MeasurementsSource remoteSource) {
+	public PotsController(Source remoteSource) {
 		
 		this.remoteSource = remoteSource;
 	}
@@ -44,12 +46,13 @@ public class PotsController {
 			@RequestParam("monthTo") int monthTo,
 			@RequestParam("yearTo") int yearTo){
 	
-		List<Measurement> measurements;
-				
-		if(monthFrom == monthTo && yearFrom == yearTo)
-			measurements = remoteSource.getByMonthNYear(monthFrom, yearFrom, potId, MeasurementType.MOISTURE);
-		else
-			measurements = remoteSource.getByRange(monthFrom, yearFrom, monthTo, yearTo, potId, MeasurementType.MOISTURE);
+		List<Measurement> measurements = new ArrayList<Measurement>();
+		
+		List<Date> dates = Date.createDateRange(monthFrom, yearFrom, monthTo, yearTo);
+		
+		for(Date date:dates){
+			measurements.addAll(remoteSource.listPotMeasurementByTypeDate(potId, date, MeasurementType.MOISTURE));
+		}
 		
 		return measurements;
 		

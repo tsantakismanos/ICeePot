@@ -3,6 +3,7 @@ package iceepot.iceepotweb.sources;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import iceepot.iceepotweb.config.RootConfig;
+import iceepot.iceepotweb.model.Date;
 import iceepot.iceepotweb.model.MeasurementType;
 
 import org.junit.Test;
@@ -18,7 +19,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 public class RemoteSourceTest {
 
 	@Autowired
-	MeasurementsSource remoteSource;
+	Source remoteSource;
 	
 	@Test
 	public void shouldNotBeNull(){
@@ -29,7 +30,7 @@ public class RemoteSourceTest {
 	public void shouldReturnMoistureByMonth(){
 		
 		try {
-			assertTrue(remoteSource.getByMonthNYear(1, 2014, 0, MeasurementType.MOISTURE).size() != 0);
+			assertTrue(remoteSource.listPotMeasurementByTypeDate(0,new Date(1,2014),MeasurementType.MOISTURE).size() != 0);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -37,15 +38,4 @@ public class RemoteSourceTest {
 		
 	}
 	
-	@Test
-	public void shouldReturnMoistureByRange(){
-		
-		try {
-			assertTrue(remoteSource.getByRange(1,2014, 2, 2014, 0, MeasurementType.MOISTURE).size() != 0);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-	}
 }

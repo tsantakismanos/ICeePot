@@ -1,5 +1,6 @@
 package iceepot.iceepotweb.sources;
 
+import iceepot.iceepotweb.model.Date;
 import iceepot.iceepotweb.model.Measurement;
 import iceepot.iceepotweb.model.MeasurementType;
 
@@ -7,10 +8,9 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
-public class RemoteSource implements MeasurementsSource {
+public class RemoteSource implements Source {
 
 	private String host; 
 	private int port;
@@ -27,8 +27,7 @@ public class RemoteSource implements MeasurementsSource {
 		this.port = port;
 		this.timeout = timeout;
 	}
-	
-	
+		
 
 	public String getHost() {
 		return host;
@@ -42,13 +41,16 @@ public class RemoteSource implements MeasurementsSource {
 		return timeout;
 	}
 
-	public List<Measurement> getByMonthNYear(int month, int year, int potId, MeasurementType type) throws SourceException {
-
+	
+	@Override
+	public List<Measurement> listPotMeasurementByTypeDate(int potId, Date date,
+			MeasurementType type)  throws SourceException{
+		
 		ArrayList<Measurement> measurements = new ArrayList<Measurement>();
 		
 		
 		//construct the request in a string
-		String request_str = Integer.toString(month) + Integer.toString(year);
+		String request_str = date.toString();
 
 		InputStream is = null;
 		OutputStream os = null;
@@ -83,7 +85,7 @@ public class RemoteSource implements MeasurementsSource {
 					Row row = new Row(responsePacket);
 
 					if(row.id == potId && row.type == type.ordinal()){
-						Measurement m = new Measurement(row.moment*1000, row.value);
+						Measurement m = new Measurement(row.moment*1000, row.value, type);
 						measurements.add(m);
 					}
 					
@@ -114,39 +116,9 @@ public class RemoteSource implements MeasurementsSource {
 			throw new SourceException(ex.getLocalizedMessage());
 		} 
 		return measurements;
-		
+	
 	}
 
-	public List<Measurement> getByRange(int monthFrom, int yearFrom, int monthTo, int yearTo, int potId, MeasurementType type) throws SourceException {
-		
-		List<Measurement> measurements = new ArrayList<Measurement>();
-		
-		 Calendar idx = Calendar.getInstance();
-		 idx.set(Calendar.MONTH, monthFrom);
-		 idx.set(Calendar.YEAR, yearFrom);
-		 idx.set(Calendar.DAY_OF_MONTH, 1);
-		 idx.set(Calendar.HOUR,0);
-		 idx.set(Calendar.MINUTE,0);
-		 idx.set(Calendar.SECOND,0);
-		 idx.set(Calendar.MILLISECOND,0);
-
-         Calendar last = Calendar.getInstance();
-         last.set(Calendar.MONTH, monthTo);
-         last.set(Calendar.YEAR, yearTo);
-         last.set(Calendar.DAY_OF_MONTH, 1);
-         last.set(Calendar.HOUR,0);
-         last.set(Calendar.MINUTE,0);
-         last.set(Calendar.SECOND,0);
-         last.set(Calendar.MILLISECOND,0);
-         
-         while(idx.before(last)){
-        	 measurements.addAll(getByMonthNYear(idx.get(Calendar.MONTH), idx.get(Calendar.YEAR), potId, type));
-        	 idx.add(Calendar.MONTH, 1);
-         }
-		return measurements;
-	}
-	
-	
 	
 	private class Row{
 		
