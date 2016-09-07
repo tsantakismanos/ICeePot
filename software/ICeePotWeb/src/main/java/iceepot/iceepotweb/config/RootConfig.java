@@ -1,5 +1,6 @@
 package iceepot.iceepotweb.config;
 
+import iceepot.iceepotweb.sources.Cache;
 import iceepot.iceepotweb.sources.Source;
 import iceepot.iceepotweb.sources.RemoteSource;
 
@@ -38,5 +39,23 @@ public class RootConfig {
 	@Profile("error")
 	public Source getErrorRemoteSource(){
 		return new RemoteSource("homeplants.ddns.net", 3622, 30);
+	}
+	
+	@Bean
+	@Profile("test")
+	public Cache getTestLocalSource(){
+		return new Cache();
+	}
+	
+	@Bean
+	@Profile("dev")
+	public Cache getDevLocalSource(){
+		return new Cache();
+	}
+	
+	@Bean
+	@Profile("prod")
+	public Cache getProdLocalSource(){
+		return new Cache();
 	}
 }

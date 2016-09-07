@@ -1,18 +1,13 @@
 package iceepot.iceepotweb.model;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-public class Date implements Serializable{
+public class Date{
 
 	
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-	
+		
 	private int month;
 	private int year;
 	

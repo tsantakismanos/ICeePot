@@ -7,12 +7,12 @@ public class Measurement {
 
 	private long moment;
 	private double value;
-	private MeasurementType type;
+	
 		
-	public Measurement(long moment, double value, MeasurementType type) {
+	public Measurement(long moment, double value) {
 		this.moment = moment;
 		this.value = value;
-		this.type = type;
+		
 	}
 
 	public long getMoment() {
@@ -31,13 +31,7 @@ public class Measurement {
 		this.value = value;
 	}
 	
-	public MeasurementType getType() {
-		return type;
-	}
-
-	public void setType(MeasurementType type) {
-		this.type = type;
-	}
+	
 
 	public static HashMap<Long, Double> getHashMap(List<Measurement> list){
 		

@@ -3,6 +3,7 @@ package iceepot.iceepotweb.web;
 import iceepot.iceepotweb.model.Date;
 import iceepot.iceepotweb.model.Measurement;
 import iceepot.iceepotweb.model.MeasurementType;
+import iceepot.iceepotweb.sources.Cache;
 import iceepot.iceepotweb.sources.Source;
 import iceepot.iceepotweb.sources.SourceException;
 
@@ -26,15 +27,17 @@ import org.springframework.web.bind.annotation.RestController;
 public class PotsController {
 	
 	private Source remoteSource;
+	private Cache localSource;
 	
 	public PotsController() {
 	
 	}
 
 	@Autowired
-	public PotsController(Source remoteSource) {
+	public PotsController(Source remoteSource, Cache localSource) {
 		
 		this.remoteSource = remoteSource;
+		this.localSource = localSource;
 	}
 	
 
@@ -51,7 +54,14 @@ public class PotsController {
 		List<Date> dates = Date.createDateRange(monthFrom, yearFrom, monthTo, yearTo);
 		
 		for(Date date:dates){
-			measurements.addAll(remoteSource.listPotMeasurementByTypeDate(potId, date, MeasurementType.MOISTURE));
+			
+			List<Measurement> measurementsByDate = localSource.find(potId, date, MeasurementType.MOISTURE);
+			
+			if(measurementsByDate == null || measurementsByDate.isEmpty()){
+				measurementsByDate = remoteSource.listPotMeasurementByTypeDate(potId, date, MeasurementType.MOISTURE);
+				localSource.store(potId, date, MeasurementType.MOISTURE, measurementsByDate);
+			}
+			measurements.addAll(measurementsByDate);
 		}
 		
 		return measurements;

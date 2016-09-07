@@ -85,7 +85,7 @@ public class RemoteSource implements Source {
 					Row row = new Row(responsePacket);
 
 					if(row.id == potId && row.type == type.ordinal()){
-						Measurement m = new Measurement(row.moment*1000, row.value, type);
+						Measurement m = new Measurement(row.moment*1000, row.value);
 						measurements.add(m);
 					}
 					
@@ -119,6 +119,7 @@ public class RemoteSource implements Source {
 	
 	}
 
+
 	
 	private class Row{
 		
@@ -142,5 +143,7 @@ public class RemoteSource implements Source {
 		}
 		
 	}
+
+
 
 }
