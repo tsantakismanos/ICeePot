@@ -42,20 +42,8 @@ public class RootConfig {
 	}
 	
 	@Bean
-	@Profile("test")
-	public Cache getTestLocalSource(){
+	public Cache getTestCache(){
 		return new Cache();
 	}
 	
-	@Bean
-	@Profile("dev")
-	public Cache getDevLocalSource(){
-		return new Cache();
-	}
-	
-	@Bean
-	@Profile("prod")
-	public Cache getProdLocalSource(){
-		return new Cache();
-	}
 }
