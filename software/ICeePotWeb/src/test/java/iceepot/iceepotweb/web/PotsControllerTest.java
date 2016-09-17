@@ -41,6 +41,11 @@ public class PotsControllerTest {
 	}
 	
 	@Test
+	public void DecemberOnlyTest() throws Exception{
+		performSuccessfulPotTestUnit(new PotTestUnit(0, 12, 2014, 12, 2014));
+	}
+	
+	@Test
 	public void MarchToMayTest() throws Exception{
 		performSuccessfulPotTestUnit(new PotTestUnit(0, 3, 2014, 5, 2014));
 	}
@@ -83,6 +88,10 @@ public class PotsControllerTest {
 	@Test
 	public void TooBigRangeTest() throws Exception{
 		performFailedPotTestUnit(new PotTestUnit(0, 4, 2014, 10, 2014));
+	}
+	
+	public void CurrentMoistureTest() throws Exception{
+		performSuccessfulPotTestUnit(new PotTestUnit(0, Integer.parseInt(PotsController.EMPTY_PARAMETER),Integer.parseInt(PotsController.EMPTY_PARAMETER),Integer.parseInt(PotsController.EMPTY_PARAMETER),Integer.parseInt(PotsController.EMPTY_PARAMETER)));
 	}
 	
 	private void performFailedPotTestUnit(PotTestUnit potTestUnit) throws Exception{

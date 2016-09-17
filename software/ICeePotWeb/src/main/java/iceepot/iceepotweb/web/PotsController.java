@@ -8,6 +8,7 @@ import iceepot.iceepotweb.sources.Source;
 import iceepot.iceepotweb.sources.SourceException;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -47,8 +48,8 @@ public class PotsController {
 	@RequestMapping(value="/{potId}/moisture", method=RequestMethod.GET)
 	public List<Measurement> potMoisture(
 			@PathVariable("potId") int potId,
-			@RequestParam("monthFrom") int monthFrom,
-			@RequestParam("yearFrom") int yearFrom,
+			@RequestParam(value="monthFrom", defaultValue=EMPTY_PARAMETER) int monthFrom,
+			@RequestParam(value="yearFrom", defaultValue=EMPTY_PARAMETER) int yearFrom,
 			@RequestParam(value="monthTo", defaultValue=EMPTY_PARAMETER) int monthTo,
 			@RequestParam(value="yearTo", defaultValue=EMPTY_PARAMETER) int yearTo){
 
@@ -76,8 +77,19 @@ public class PotsController {
 	}
 	
 	private List<Date> handleInput(int monthFrom, int yearFrom, int monthTo, int yearTo){
-			
+		
+				
 		//fill empty input data
+		if(EMPTY_PARAMETER.equals(String.valueOf(monthFrom)) ||
+			EMPTY_PARAMETER.equals(String.valueOf(yearFrom))){
+			
+			Calendar now = Calendar.getInstance();
+			
+			monthFrom = now.get(Calendar.MONTH) + 1;
+			yearFrom = now.get(Calendar.YEAR);
+			
+		}
+		
 		if(EMPTY_PARAMETER.equals(String.valueOf(monthTo)))
 			monthTo = monthFrom;
 		if(EMPTY_PARAMETER.equals(String.valueOf(yearTo)))

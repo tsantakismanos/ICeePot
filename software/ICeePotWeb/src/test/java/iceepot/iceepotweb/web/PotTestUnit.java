@@ -7,6 +7,9 @@ public class PotTestUnit {
 	private int monthTo;
 	private int yearTo;
 	
+	
+	
+	
 	public PotTestUnit(int potId, int monthFrom, int yearFrom, int monthTo,
 			int yearTo) {
 		this.potId = potId;
